@@ -843,6 +843,44 @@
     .about-photo-frame { height: 300px; }
     .contact-layout { grid-template-columns: 1fr; gap: 40px; }
   }
+
+  /* ── RESPONSIVE GRIDS ── */
+  .grid-3col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .grid-3col--tight {
+    gap: 2px;
+  }
+
+  @media (max-width: 900px) {
+    .grid-3col { grid-template-columns: 1fr; }
+    .grid-3col--tight { gap: 2px; }
+  }
+
+  @media (max-width: 768px) {
+    /* Fix inline flex containers for contact & about bottom bar */
+    .flex-wrap-mobile {
+      flex-direction: column !important;
+      gap: 20px !important;
+    }
+    /* Hero actions stack */
+    .hero-actions { flex-direction: column; }
+    .hero-actions a { text-align: center; }
+    /* Quote bar in why-section */
+    .quote-bar { flex-direction: column; gap: 24px; text-align: center; }
+  }
+
+
+  @media (max-width: 768px) {
+    .quote-bar { padding: 28px 20px !important; }
+    .quote-bar > div:first-child { flex: 1 1 100% !important; }
+    .quote-bar > div:last-child { flex: 1 1 100% !important; width: 100% !important; }
+    .quote-bar a { display: block; text-align: center; }
+    .unterschied-bar { padding: 28px 20px !important; }
+  }
+
 </style>
 </head>
 <body>
@@ -911,7 +949,7 @@
     </p>
 
     <!-- Drei Säulen -->
-    <div style="display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-bottom: 48px;">
+    <div class="grid-3col" style="margin-bottom: 48px;">
 
       <!-- Säule 1: Produkt -->
       <div style="background: var(--white); border-radius: 4px; overflow: hidden; box-shadow: 0 2px 20px rgba(44,74,62,0.07);">
@@ -979,7 +1017,7 @@
     </div>
 
     <!-- Abschluss-Statement -->
-    <div style="background: var(--forest-deep); border-radius: 4px; padding: 40px 48px; display:flex; gap:48px; align-items:center; flex-wrap:wrap;">
+    <div class="quote-bar" style="background: var(--forest-deep); border-radius: 4px; padding: 32px 28px; display:flex; gap:32px; align-items:center; flex-wrap:wrap;">
       <div style="flex:1;min-width:240px;">
         <p style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--white);line-height:1.4;font-style:italic;">„Produkt, System und Mensch — alle drei müssen stimmen. Hier stimmen alle drei."</p>
         <p style="font-size:0.82rem;color:var(--gold-light);margin-top:12px;">— Sabine Kaya, @remote_sisterhood</p>
@@ -1141,7 +1179,7 @@
       Hinter dem Business steckt ein vollständiges Infrastruktur-Konzept: die <strong style="color: var(--forest);">10-Stunden-Woche-Plattform</strong>. Alles was du brauchst — aufgebaut, getestet, sofort nutzbar.
     </p>
 
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--cream-warm);">
+    <div class="grid-3col grid-3col--tight" style="background: var(--cream-warm);">
 
       <div style="background: var(--white); padding: 40px 36px; transition: all 0.3s;" onmouseover="this.style.background='var(--forest)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--white)' : 'rgba(245,240,232,0.7)'); this.querySelector('.sys-icon').style.background='rgba(200,169,110,0.15)';" onmouseout="this.style.background='var(--white)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--forest-deep)' : 'var(--text-mid)'); this.querySelector('.sys-icon').style.background='var(--accent-soft)';">
         <div class="sys-icon" style="width:48px;height:48px;background:var(--accent-soft);border-radius:2px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;font-size:1.4rem;transition:background 0.3s;">🎓</div>
@@ -1183,12 +1221,12 @@
     </div>
 
     <!-- Abgrenzung zu reinem FLP -->
-    <div style="margin-top:48px; padding:36px 40px; background:var(--forest-deep); border-radius:4px; display:flex; gap:40px; align-items:center; flex-wrap:wrap;">
-      <div style="flex:1; min-width:260px;">
+    <div class="unterschied-bar" style="margin-top:48px; background:var(--forest-deep); border-radius:4px; padding:36px 40px;">
+      <div style="margin-bottom:16px;">
         <p style="font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">Der Unterschied</p>
         <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--white);line-height:1.35;">10-Stunden-Woche + FLP:<br>Mehr als ein Produktvertrieb</h3>
       </div>
-      <div style="flex:2; min-width:280px;">
+      <div>
         <p style="font-size:0.9rem;color:rgba(245,240,232,0.7);line-height:1.8;">
           FLP liefert die Produkte. Das 10-Stunden-Woche-Konzept liefert das Business-System darum herum: Ausbildung, Community, Werkzeuge, Prozesse. Beides zusammen ist das, was andere Direktvertriebs-Modelle nicht haben — eine vollständige Infrastruktur, die du sofort nutzen kannst, ohne das Rad neu zu erfinden.
         </p>
