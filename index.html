@@ -881,6 +881,57 @@
     .unterschied-bar { padding: 28px 20px !important; }
   }
 
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(26,47,40,0.85);
+    backdrop-filter: blur(6px);
+    overflow-y: auto;
+    padding: 40px 20px;
+  }
+  .modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; }
+  .modal-box {
+    background: var(--cream);
+    border-radius: 4px;
+    max-width: 720px;
+    width: 100%;
+    padding: 56px 52px;
+    position: relative;
+    margin: auto;
+  }
+  .modal-close {
+    position: absolute; top: 20px; right: 24px;
+    background: none; border: none; cursor: pointer;
+    font-size: 1.5rem; color: var(--text-mid);
+    line-height: 1;
+  }
+  .modal-close:hover { color: var(--forest); }
+  .modal-box h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem; color: var(--forest-deep);
+    margin-bottom: 8px;
+  }
+  .modal-box h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; color: var(--forest);
+    margin: 28px 0 8px;
+  }
+  .modal-box p, .modal-box li {
+    font-size: 0.88rem; color: var(--text-mid);
+    line-height: 1.8; margin-bottom: 8px;
+  }
+  .modal-box ul { padding-left: 20px; margin-bottom: 12px; }
+  .modal-box .modal-divider {
+    border: none; border-top: 1px solid var(--cream-warm);
+    margin: 20px 0;
+  }
+  .modal-box a { color: var(--forest); }
+  @media (max-width: 768px) {
+    .modal-box { padding: 40px 24px; }
+  }
+
 </style>
 </head>
 <body>
@@ -928,7 +979,7 @@
   <div class="hero-image">
     <div class="hero-photo-wrap">
       <div class="hero-photo-frame" style="padding:0; overflow:hidden; display:flex; flex-direction:column;">
-        <img src="sabine.jpg" alt="Sabine Kaya" style="width:100%;flex:1;object-fit:cover;object-position:center 15%;display:block;min-height:0;">
+        <img src="sabine2.webp" alt="Sabine Kaya" style="width:100%;flex:1;object-fit:cover;object-position:center 15%;display:block;min-height:0;">
         <div style="background:var(--forest-deep);padding:18px 24px;flex-shrink:0;">
           <div class="hero-photo-name">Sabine Kaya</div>
           <div class="hero-photo-role">Ernährungsberaterin · FLP Partner · Basel</div>
@@ -1308,8 +1359,7 @@
     <div class="about-layout">
       <div>
         <div class="about-photo-frame" style="position:relative;">
-          <img src="sabine.jpg" alt="Sabine Kaya" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 15%;">
-          <div class="about-ig">@remote_sisterhood</div>
+          <img src="sabine2.webp" alt="Sabine Kaya" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 15%;">
         </div>
       </div>
       <div class="about-text">
@@ -1376,7 +1426,7 @@
   <p>
     © 2026 Sabine Kaya · @remote_sisterhood · Basel, Schweiz<br>
     Selbstständige Partnerin von Forever Living Products ·
-    <a href="#">Impressum</a> · <a href="#">Datenschutz</a>
+    <a href="#" onclick="openModal('modal-impressum');return false;">Impressum</a> · <a href="#" onclick="openModal('modal-datenschutz');return false;">Datenschutz</a>
   </p>
 </footer>
 
@@ -1400,5 +1450,101 @@
 
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
+
+<!-- IMPRESSUM MODAL -->
+<div class="modal-overlay" id="modal-impressum">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-impressum')">✕</button>
+    <h2>Impressum</h2>
+    <hr class="modal-divider">
+
+    <h3>Angaben gemäss Art. 3 UWG</h3>
+    <p><strong>Sabine Kaya</strong><br>
+    Einzelunternehmerin<br>
+    4304 Giebenach<br>
+    Schweiz</p>
+
+    <p><strong>E-Mail:</strong> <a href="mailto:hollaswelt20@gmail.com">hollaswelt20@gmail.com</a><br>
+    <strong>Instagram:</strong> <a href="https://instagram.com/remote_sisterhood" target="_blank">@remote_sisterhood</a></p>
+
+    <p><strong>UID:</strong> Noch nicht eingetragen<br>
+    <strong>MWST:</strong> Nicht MWST-pflichtig</p>
+
+    <hr class="modal-divider">
+
+    <h3>Tätigkeit</h3>
+    <p>Selbstständige Partnerin von Forever Living Products (FLP) und Mitglied des Konzepts „Die 10-Stunden-Woche". Diese Website dient zur Information über Produkte und die Geschäftsmöglichkeit im Direktvertrieb.</p>
+
+    <hr class="modal-divider">
+
+    <h3>Haftungsausschluss</h3>
+    <p>Die Inhalte dieser Website wurden mit grösster Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte übernehme ich keine Gewähr. Als Dienstanbieter bin ich für eigene Inhalte auf diesen Seiten verantwortlich. Für externe Links übernehme ich keine Haftung — die Verantwortung liegt bei den jeweiligen Betreibern.</p>
+
+    <h3>Keine Heilversprechen</h3>
+    <p>Alle Angaben zu Produkten dienen ausschliesslich der allgemeinen Information. Sie ersetzen keine medizinische Beratung und stellen keine Heilversprechen dar. Bei gesundheitlichen Fragen wende dich an eine Ärztin oder einen Arzt.</p>
+
+    <h3>Urheberrecht</h3>
+    <p>Die auf dieser Website veröffentlichten Inhalte und Werke unterliegen dem Schweizer Urheberrecht. Die Vervielfältigung, Bearbeitung oder Verbreitung ausserhalb der Grenzen des Urheberrechts bedarf der schriftlichen Zustimmung der Autorin.</p>
+  </div>
+</div>
+
+<!-- DATENSCHUTZ MODAL -->
+<div class="modal-overlay" id="modal-datenschutz">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-datenschutz')">✕</button>
+    <h2>Datenschutzerklärung</h2>
+    <p style="font-size:0.78rem;color:var(--text-light);">Gemäss Schweizer Datenschutzgesetz (revDSG), in Kraft seit 1. September 2023</p>
+    <hr class="modal-divider">
+
+    <h3>Verantwortliche Person</h3>
+    <p>Sabine Kaya<br>
+    4304 Giebenach, Schweiz<br>
+    <a href="mailto:hollaswelt20@gmail.com">hollaswelt20@gmail.com</a></p>
+
+    <hr class="modal-divider">
+
+    <h3>Welche Daten werden erfasst?</h3>
+    <p>Diese Website selbst speichert keine persönlichen Daten. Es werden keine Cookies gesetzt, keine Tracking-Tools eingesetzt und keine Formulare betrieben, die Daten auf dieser Website speichern.</p>
+    <p>Wenn du über einen der WhatsApp-Links Kontakt aufnimmst, gilt die Datenschutzerklärung von WhatsApp (Meta Platforms Ireland Ltd.). Die dort übermittelten Daten (Name, Nachricht) werden ausschliesslich zur Beantwortung deiner Anfrage verwendet und nicht an Dritte weitergegeben.</p>
+
+    <h3>Hosting</h3>
+    <p>Diese Website wird über GitHub Pages (GitHub Inc., USA) gehostet. Beim Aufruf der Seite kann GitHub technische Daten wie IP-Adressen in Server-Logs speichern. Weitere Informationen findest du in der Datenschutzerklärung von GitHub: <a href="https://docs.github.com/de/site-policy/privacy-policies/github-privacy-statement" target="_blank">github.com/privacy</a></p>
+
+    <h3>Externe Links</h3>
+    <p>Diese Website enthält Links zu externen Websites (z.B. WhatsApp, Instagram). Für die Datenschutzpraktiken dieser Anbieter übernehme ich keine Verantwortung.</p>
+
+    <h3>Deine Rechte</h3>
+    <p>Gemäss revDSG hast du das Recht auf:</p>
+    <ul>
+      <li>Auskunft über deine gespeicherten Daten</li>
+      <li>Berichtigung unrichtiger Daten</li>
+      <li>Löschung deiner Daten</li>
+      <li>Einschränkung der Bearbeitung</li>
+    </ul>
+    <p>Für Anfragen wende dich an: <a href="mailto:hollaswelt20@gmail.com">hollaswelt20@gmail.com</a></p>
+
+    <h3>Änderungen</h3>
+    <p>Diese Datenschutzerklärung kann jederzeit angepasst werden. Die aktuelle Version ist stets auf dieser Website abrufbar.</p>
+    <p style="font-size:0.78rem;color:var(--text-light);">Stand: April 2026</p>
+  </div>
+</div>
+
+<script>
+  function openModal(id) {
+    document.getElementById(id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  // Close on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', function(e) {
+      if (e.target === this) closeModal(this.id);
+    });
+  });
+</script>
+
 </body>
 </html>
