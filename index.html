@@ -13,13 +13,17 @@
     --forest-light: #3D6357;
     --cream: #F5F0E8;
     --cream-warm: #EDE5D4;
+    --rose: #EDE5D4;
+    --rose-deep: #D9C8B8;
+    --rose-soft: #F5EDE4;
+    --rose-blush: #F0E4D8;
     --gold: #C8A96E;
     --gold-light: #E2C896;
     --text-dark: #1C2B26;
     --text-mid: #4A5E58;
     --text-light: #8A9E98;
     --white: #FFFFFF;
-    --accent-soft: #E8F0ED;
+    --accent-soft: #EDE5D4;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -47,6 +51,8 @@
     font-size: 1.1rem;
     color: var(--forest);
     letter-spacing: 0.02em;
+    border-bottom: 2px solid var(--rose-deep);
+    padding-bottom: 2px;
   }
   .nav-logo span { color: var(--gold); }
   .nav-cta {
@@ -104,13 +110,14 @@
   .hero-badge {
     display: inline-block;
     padding: 6px 16px;
-    border: 1px solid rgba(200,169,110,0.5);
+    border: 1px solid rgba(237,229,212,0.4);
     border-radius: 2px;
     font-size: 0.72rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: var(--gold-light);
+    color: var(--rose);
     margin-bottom: 28px;
+    background: rgba(237,229,212,0.06);
   }
 
   .hero-title {
@@ -136,8 +143,8 @@
   }
 
   .hero-honest {
-    background: rgba(200,169,110,0.12);
-    border-left: 3px solid var(--gold);
+    background: rgba(237,229,212,0.12);
+    border-left: 3px solid var(--rose);
     padding: 16px 20px;
     border-radius: 0 4px 4px 0;
     margin-bottom: 36px;
@@ -270,6 +277,8 @@
     color: var(--gold);
     margin-bottom: 16px;
     display: block;
+    border-left: 3px solid var(--rose-deep);
+    padding-left: 10px;
   }
 
   .section-title {
@@ -365,8 +374,8 @@
   .step-num {
     font-family: 'Playfair Display', serif;
     font-size: 2.5rem;
-    color: var(--gold);
-    opacity: 0.5;
+    color: var(--rose-deep);
+    opacity: 0.8;
     line-height: 1;
     min-width: 50px;
   }
@@ -462,7 +471,7 @@
     box-shadow: 0 20px 60px rgba(44,74,62,0.12);
   }
 
-  .audience-card.product { border-top-color: var(--gold); }
+  .audience-card.product { border-top-color: var(--rose-deep); background: linear-gradient(180deg, var(--rose-soft) 0%, white 60%); }
   .audience-card.business { border-top-color: var(--forest); }
 
   .audience-card-type {
@@ -505,9 +514,9 @@
   .checkmarks li::before {
     content: '✓';
     position: absolute; left: 0;
-    color: var(--forest);
+    color: var(--rose-deep);
     font-weight: 700;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 
   .audience-cta {
@@ -536,7 +545,7 @@
   .audience-card.business .audience-cta:hover { background: var(--forest-light); }
 
   /* ── FAQ ── */
-  .faq-section { background: var(--white); }
+  .faq-section { background: var(--rose-soft); }
 
   .faq-layout {
     display: grid;
@@ -578,14 +587,14 @@
 
   .faq-toggle {
     width: 28px; height: 28px;
-    border: 1px solid var(--cream-warm);
+    border: 1px solid var(--rose-deep);
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
     font-size: 1.1rem;
     color: var(--forest);
     transition: all 0.3s;
-    background: var(--accent-soft);
+    background: var(--rose-blush);
   }
 
   .faq-item.open .faq-toggle {
@@ -689,15 +698,16 @@
 
   .value-chip {
     padding: 8px 18px;
-    border: 1px solid rgba(200,169,110,0.3);
+    border: 1px solid var(--rose-deep);
     border-radius: 2px;
     font-size: 0.8rem;
-    color: var(--gold-light);
+    color: var(--rose);
     letter-spacing: 0.05em;
+    background: rgba(237,229,212,0.08);
   }
 
   /* ── KONTAKT ── */
-  .contact-section { background: var(--cream-warm); }
+  .contact-section { background: var(--rose-soft); }
 
   .contact-layout {
     display: grid;
@@ -722,8 +732,8 @@
   }
 
   .contact-text .honest-note {
-    background: rgba(44,74,62,0.07);
-    border-left: 3px solid var(--forest);
+    background: var(--rose-blush);
+    border-left: 3px solid var(--rose-deep);
     padding: 16px 20px;
     margin-top: 24px;
     border-radius: 0 4px 4px 0;
@@ -980,9 +990,9 @@
     <div class="hero-photo-wrap">
       <div class="hero-photo-frame" style="padding:0; overflow:hidden; display:flex; flex-direction:column;">
         <img src="sabine2.webp" alt="Sabine Kaya" style="width:100%;flex:1;object-fit:cover;object-position:center 15%;display:block;min-height:0;">
-        <div style="background:var(--forest-deep);padding:18px 24px;flex-shrink:0;">
-          <div class="hero-photo-name">Sabine Kaya</div>
-          <div class="hero-photo-role">Ernährungsberaterin · FLP Partner · Basel</div>
+        <div style="background:var(--rose-deep);padding:18px 24px;flex-shrink:0;">
+          <div class="hero-photo-name" style="color:var(--forest-deep);">Sabine Kaya</div>
+          <div class="hero-photo-role" style="color:var(--forest);">Ernährungsberaterin · FLP Partner · Basel</div>
         </div>
       </div>
       <div class="hero-photo-tag">@remote_sisterhood</div>
