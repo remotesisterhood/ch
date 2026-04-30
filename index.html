@@ -13,12 +13,13 @@
     --forest-light: #3D6357;
     --cream: #F5F0E8;
     --cream-warm: #EDE5D4;
-    --rose: #EDE5D4;
-    --rose-deep: #D9C8B8;
-    --rose-soft: #F5EDE4;
-    --rose-blush: #F0E4D8;
-    --gold: #C8A96E;
-    --gold-light: #E2C896;
+    --rose: #F0D5CC;
+    --rose-deep: #D9A898;
+    --rose-soft: #F7E8E4;
+    --rose-blush: #F0D5CC;
+    --rose-dark: #C4897A;
+    --gold: #F0D5CC;
+    --gold-light: #F7E8E4;
     --text-dark: #1C2B26;
     --text-mid: #4A5E58;
     --text-light: #8A9E98;
@@ -42,19 +43,19 @@
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     padding: 18px 40px;
     display: flex; justify-content: space-between; align-items: center;
-    background: rgba(245,240,232,0.92);
+    background: rgba(247,232,228,0.95);
     backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(200,169,110,0.2);
+    border-bottom: 1px solid rgba(240,213,204,0.25);
   }
   .nav-logo {
     font-family: 'Playfair Display', serif;
     font-size: 1.1rem;
     color: var(--forest);
     letter-spacing: 0.02em;
-    border-bottom: 2px solid var(--rose-deep);
+    border-bottom: 2px solid var(--rose);
     padding-bottom: 2px;
   }
-  .nav-logo span { color: var(--gold); }
+  .nav-logo span { color: var(--rose); }
   .nav-cta {
     background: var(--forest);
     color: var(--cream);
@@ -72,7 +73,7 @@
   /* ── HERO ── */
   .hero {
     min-height: 100vh;
-    background: var(--forest-deep);
+    background: linear-gradient(135deg, var(--forest-deep) 60%, #2A1F1D 100%);
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;
@@ -87,7 +88,7 @@
     top: -200px; right: -200px;
     width: 700px; height: 700px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(200,169,110,0.08) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(240,213,204,0.15) 0%, transparent 70%);
     pointer-events: none;
   }
 
@@ -110,14 +111,14 @@
   .hero-badge {
     display: inline-block;
     padding: 6px 16px;
-    border: 1px solid rgba(237,229,212,0.4);
+    border: 1px solid rgba(240,213,204,0.5);
     border-radius: 2px;
     font-size: 0.72rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--rose);
     margin-bottom: 28px;
-    background: rgba(237,229,212,0.06);
+    background: rgba(240,213,204,0.1);
   }
 
   .hero-title {
@@ -130,7 +131,7 @@
 
   .hero-title em {
     font-style: italic;
-    color: var(--gold-light);
+    color: var(--rose);
   }
 
   .hero-subtitle {
@@ -143,7 +144,7 @@
   }
 
   .hero-honest {
-    background: rgba(237,229,212,0.12);
+    background: rgba(240,213,204,0.15);
     border-left: 3px solid var(--rose);
     padding: 16px 20px;
     border-radius: 0 4px 4px 0;
@@ -155,12 +156,12 @@
     color: rgba(245,240,232,0.8);
     line-height: 1.6;
   }
-  .hero-honest strong { color: var(--gold-light); }
+  .hero-honest strong { color: var(--rose); }
 
   .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
 
   .btn-primary {
-    background: var(--gold);
+    background: var(--rose);
     color: var(--forest-deep);
     padding: 14px 32px;
     font-size: 0.88rem;
@@ -171,7 +172,7 @@
     transition: all 0.3s;
     display: inline-block;
   }
-  .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-primary:hover { background: var(--rose); transform: translateY(-1px); }
 
   .btn-ghost {
     border: 1px solid rgba(245,240,232,0.3);
@@ -183,7 +184,7 @@
     transition: all 0.3s;
     display: inline-block;
   }
-  .btn-ghost:hover { border-color: var(--gold); color: var(--gold-light); }
+  .btn-ghost:hover { border-color: var(--rose); color: var(--rose); }
 
   .hero-image {
     position: relative; z-index: 2;
@@ -207,7 +208,7 @@
     justify-content: center;
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(200,169,110,0.3);
+    border: 1px solid rgba(240,213,204,0.35);
   }
 
   .hero-photo-frame::before {
@@ -218,16 +219,16 @@
 
   .photo-placeholder-icon {
     width: 80px; height: 80px;
-    background: rgba(200,169,110,0.2);
+    background: rgba(240,213,204,0.25);
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    border: 2px solid rgba(200,169,110,0.3);
+    border: 2px solid rgba(240,213,204,0.35);
     position: relative; z-index: 1;
   }
 
   .photo-placeholder-icon svg {
     width: 40px; height: 40px;
-    fill: rgba(200,169,110,0.6);
+    fill: rgba(240,213,204,0.6);
   }
 
   .hero-photo-caption {
@@ -245,7 +246,7 @@
 
   .hero-photo-role {
     font-size: 0.8rem;
-    color: var(--gold-light);
+    color: var(--rose);
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
@@ -253,8 +254,8 @@
   .hero-photo-tag {
     position: absolute;
     top: -14px; right: -14px;
-    background: var(--gold);
-    color: var(--forest-deep);
+    background: var(--rose-dark);
+    color: var(--white);
     padding: 10px 16px;
     border-radius: 2px;
     font-size: 0.75rem;
@@ -274,10 +275,10 @@
     font-size: 0.72rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--gold);
+    color: var(--rose);
     margin-bottom: 16px;
     display: block;
-    border-left: 3px solid var(--rose-deep);
+    border-left: 4px solid var(--rose);
     padding-left: 10px;
   }
 
@@ -311,7 +312,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 2px;
     margin-top: 60px;
-    border: 1px solid rgba(200,169,110,0.2);
+    border: 1px solid rgba(240,213,204,0.25);
   }
 
   .honesty-card {
@@ -325,11 +326,12 @@
 
   .honesty-icon {
     width: 40px; height: 40px;
-    background: rgba(200,169,110,0.15);
+    background: rgba(240,213,204,0.2);
     border-radius: 2px;
     display: flex; align-items: center; justify-content: center;
     margin-bottom: 20px;
     font-size: 1.2rem;
+    border: 1px solid rgba(240,213,204,0.3);
   }
 
   .honesty-card h3 {
@@ -346,8 +348,8 @@
   }
 
   .honesty-card.highlight {
-    background: rgba(200,169,110,0.1);
-    border-color: rgba(200,169,110,0.3);
+    background: rgba(240,213,204,0.12);
+    border-color: rgba(240,213,204,0.4);
   }
 
   /* ── WIE ES FUNKTIONIERT ── */
@@ -407,14 +409,14 @@
     position: absolute; top: -60px; right: -60px;
     width: 200px; height: 200px;
     border-radius: 50%;
-    background: rgba(200,169,110,0.08);
+    background: rgba(240,213,204,0.15);
   }
 
   .example-label {
     font-size: 0.7rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--gold);
+    color: var(--rose);
     margin-bottom: 16px;
     display: block;
   }
@@ -440,15 +442,15 @@
 
   .tag {
     padding: 6px 14px;
-    border: 1px solid rgba(200,169,110,0.3);
+    border: 1px solid rgba(240,213,204,0.35);
     border-radius: 2px;
     font-size: 0.78rem;
-    color: var(--gold-light);
+    color: var(--rose);
     letter-spacing: 0.05em;
   }
 
   /* ── ZIELGRUPPE ── */
-  .audience-section { background: var(--cream-warm); }
+  .audience-section { background: var(--rose-soft); }
 
   .audience-grid {
     display: grid;
@@ -471,7 +473,7 @@
     box-shadow: 0 20px 60px rgba(44,74,62,0.12);
   }
 
-  .audience-card.product { border-top-color: var(--rose-deep); background: linear-gradient(180deg, var(--rose-soft) 0%, white 60%); }
+  .audience-card.product { border-top-color: var(--rose); background: linear-gradient(180deg, rgba(240,213,204,0.25) 0%, white 50%); }
   .audience-card.business { border-top-color: var(--forest); }
 
   .audience-card-type {
@@ -531,11 +533,11 @@
   }
 
   .audience-card.product .audience-cta {
-    background: var(--gold);
+    background: var(--rose);
     color: var(--forest-deep);
   }
 
-  .audience-card.product .audience-cta:hover { background: var(--gold-light); }
+  .audience-card.product .audience-cta:hover { background: var(--rose-deep); color: white; }
 
   .audience-card.business .audience-cta {
     background: var(--forest);
@@ -545,7 +547,7 @@
   .audience-card.business .audience-cta:hover { background: var(--forest-light); }
 
   /* ── FAQ ── */
-  .faq-section { background: var(--rose-soft); }
+  .faq-section { background: var(--rose-blush); }
 
   .faq-layout {
     display: grid;
@@ -587,20 +589,20 @@
 
   .faq-toggle {
     width: 28px; height: 28px;
-    border: 1px solid var(--rose-deep);
+    border: 1px solid var(--rose);
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
     font-size: 1.1rem;
     color: var(--forest);
     transition: all 0.3s;
-    background: var(--rose-blush);
+    background: var(--rose-soft);
   }
 
   .faq-item.open .faq-toggle {
-    background: var(--forest);
+    background: var(--rose-dark);
     color: var(--white);
-    border-color: var(--forest);
+    border-color: var(--rose-dark);
     transform: rotate(45deg);
   }
 
@@ -640,7 +642,7 @@
     padding: 30px;
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(200,169,110,0.2);
+    border: 1px solid rgba(240,213,204,0.25);
   }
 
   .about-photo-placeholder {
@@ -652,19 +654,19 @@
   .about-photo-placeholder .icon-circle {
     width: 90px; height: 90px;
     border-radius: 50%;
-    background: rgba(200,169,110,0.15);
-    border: 2px solid rgba(200,169,110,0.3);
+    background: rgba(240,213,204,0.2);
+    border: 2px solid rgba(240,213,204,0.35);
     display: flex; align-items: center; justify-content: center;
     margin: 0 auto 12px;
   }
 
   .about-photo-placeholder svg {
-    width: 45px; height: 45px; fill: rgba(200,169,110,0.5);
+    width: 45px; height: 45px; fill: rgba(240,213,204,0.55);
   }
 
   .about-photo-placeholder p {
     font-size: 0.75rem;
-    color: rgba(200,169,110,0.5);
+    color: rgba(240,213,204,0.55);
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
@@ -675,14 +677,14 @@
     backdrop-filter: blur(8px);
     padding: 12px 18px;
     border-radius: 3px;
-    border: 1px solid rgba(200,169,110,0.25);
+    border: 1px solid rgba(240,213,204,0.3);
     font-size: 0.82rem;
-    color: var(--gold-light);
+    color: var(--rose);
     letter-spacing: 0.05em;
   }
 
   .about-text .section-title { color: var(--white); }
-  .about-text .section-label { color: var(--gold); }
+  .about-text .section-label { color: var(--rose); }
 
   .about-text p {
     font-size: 0.95rem;
@@ -703,11 +705,11 @@
     font-size: 0.8rem;
     color: var(--rose);
     letter-spacing: 0.05em;
-    background: rgba(237,229,212,0.08);
+    background: rgba(240,213,204,0.15);
   }
 
   /* ── KONTAKT ── */
-  .contact-section { background: var(--rose-soft); }
+  .contact-section { background: var(--rose-blush); }
 
   .contact-layout {
     display: grid;
@@ -732,8 +734,8 @@
   }
 
   .contact-text .honest-note {
-    background: var(--rose-blush);
-    border-left: 3px solid var(--rose-deep);
+    background: rgba(240,213,204,0.3);
+    border-left: 3px solid var(--rose);
     padding: 16px 20px;
     margin-top: 24px;
     border-radius: 0 4px 4px 0;
@@ -746,7 +748,7 @@
     background: var(--white);
     padding: 48px 40px;
     border-radius: 4px;
-    box-shadow: 0 4px 40px rgba(44,74,62,0.08);
+    box-shadow: 0 4px 40px rgba(240,213,204,0.4), 0 2px 12px rgba(44,74,62,0.06);
     text-align: center;
   }
 
@@ -805,6 +807,7 @@
     background: var(--forest-deep);
     padding: 40px;
     text-align: center;
+    border-top: 3px solid var(--rose);
   }
 
   footer p {
@@ -814,11 +817,11 @@
   }
 
   footer a {
-    color: rgba(200,169,110,0.6);
+    color: rgba(240,213,204,0.6);
     text-decoration: none;
   }
 
-  footer a:hover { color: var(--gold-light); }
+  footer a:hover { color: var(--rose); }
 
   /* ── ANIMATIONS ── */
   @keyframes fadeUp {
@@ -970,13 +973,13 @@
       </p>
     </div>
     <!-- KURZVERSION -->
-    <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(200,169,110,0.25);border-radius:3px;padding:24px 28px;margin-bottom:28px;max-width:460px;">
-      <p style="font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-light);margin-bottom:14px;">In 30 Sekunden erklärt</p>
+    <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(240,213,204,0.3);border-radius:3px;padding:24px 28px;margin-bottom:28px;max-width:460px;">
+      <p style="font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--rose);margin-bottom:14px;">In 30 Sekunden erklärt</p>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
-        <li style="font-size:0.88rem;color:rgba(245,240,232,0.85);line-height:1.5;padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--gold);">→</span> <strong style="color:var(--white);">Was:</strong> Selbstständiges Business mit hochwertigen Gesundheitsprodukten</li>
-        <li style="font-size:0.88rem;color:rgba(245,240,232,0.85);line-height:1.5;padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--gold);">→</span> <strong style="color:var(--white);">Wie:</strong> Online, ortsunabhängig, mit deiner eigenen Nische und einem fertigen System</li>
-        <li style="font-size:0.88rem;color:rgba(245,240,232,0.85);line-height:1.5;padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--gold);">→</span> <strong style="color:var(--white);">Für wen:</strong> Frauen, die Freiheit wollen und bereit sind, dafür zu arbeiten</li>
-        <li style="font-size:0.88rem;color:rgba(245,240,232,0.85);line-height:1.5;padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--gold);">→</span> <strong style="color:var(--white);">Wichtig:</strong> Kein Schnellgeld. Echter Aufbau. Echte Ergebnisse.</li>
+        <li style="font-size:0.88rem;color:rgba(245,240,232,0.85);line-height:1.5;padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--rose);">→</span> <strong style="color:var(--white);">Was:</strong> Selbstständiges Business mit hochwertigen Gesundheitsprodukten</li>
+        <li style="font-size:0.88rem;color:rgba(245,240,232,0.85);line-height:1.5;padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--rose);">→</span> <strong style="color:var(--white);">Wie:</strong> Online, ortsunabhängig, mit deiner eigenen Nische und einem fertigen System</li>
+        <li style="font-size:0.88rem;color:rgba(245,240,232,0.85);line-height:1.5;padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--rose);">→</span> <strong style="color:var(--white);">Für wen:</strong> Frauen, die Freiheit wollen und bereit sind, dafür zu arbeiten</li>
+        <li style="font-size:0.88rem;color:rgba(245,240,232,0.85);line-height:1.5;padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--rose);">→</span> <strong style="color:var(--white);">Wichtig:</strong> Kein Schnellgeld. Echter Aufbau. Echte Ergebnisse.</li>
       </ul>
       <p style="font-size:0.78rem;color:rgba(245,240,232,0.4);margin-top:16px;font-style:italic;">Alle Details, Hintergründe und meine persönliche Geschichte findest du weiter unten ↓</p>
     </div>
@@ -990,7 +993,7 @@
     <div class="hero-photo-wrap">
       <div class="hero-photo-frame" style="padding:0; overflow:hidden; display:flex; flex-direction:column;">
         <img src="sabine2.webp" alt="Sabine Kaya" style="width:100%;flex:1;object-fit:cover;object-position:center 15%;display:block;min-height:0;">
-        <div style="background:var(--rose-deep);padding:18px 24px;flex-shrink:0;">
+        <div style="background:var(--rose);padding:18px 24px;flex-shrink:0;">
           <div class="hero-photo-name" style="color:var(--forest-deep);">Sabine Kaya</div>
           <div class="hero-photo-role" style="color:var(--forest);">Ernährungsberaterin · FLP Partner · Basel</div>
         </div>
@@ -1015,7 +1018,7 @@
       <!-- Säule 1: Produkt -->
       <div style="background: var(--white); border-radius: 4px; overflow: hidden; box-shadow: 0 2px 20px rgba(44,74,62,0.07);">
         <div style="background: var(--forest); padding: 28px 32px;">
-          <p style="font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-light);margin-bottom:10px;">Säule 1</p>
+          <p style="font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--rose);margin-bottom:10px;">Säule 1</p>
           <h3 style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--white);line-height:1.3;">Das Produkt:<br>Qualität, die man spürt</h3>
         </div>
         <div style="padding: 28px 32px;">
@@ -1036,7 +1039,7 @@
       <!-- Säule 2: System -->
       <div style="background: var(--white); border-radius: 4px; overflow: hidden; box-shadow: 0 2px 20px rgba(44,74,62,0.07);">
         <div style="background: var(--forest-light); padding: 28px 32px;">
-          <p style="font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-light);margin-bottom:10px;">Säule 2</p>
+          <p style="font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--rose);margin-bottom:10px;">Säule 2</p>
           <h3 style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--white);line-height:1.3;">Das System:<br>Struktur statt Rätselraten</h3>
         </div>
         <div style="padding: 28px 32px;">
@@ -1056,7 +1059,7 @@
 
       <!-- Säule 3: Mensch -->
       <div style="background: var(--white); border-radius: 4px; overflow: hidden; box-shadow: 0 2px 20px rgba(44,74,62,0.07);">
-        <div style="background: var(--gold); padding: 28px 32px;">
+        <div style="background: var(--rose); padding: 28px 32px;">
           <p style="font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--forest-deep);opacity:0.7;margin-bottom:10px;">Säule 3</p>
           <h3 style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--forest-deep);line-height:1.3;">Der Mensch:<br>Niemand startet allein</h3>
         </div>
@@ -1081,7 +1084,7 @@
     <div class="quote-bar" style="background: var(--forest-deep); border-radius: 4px; padding: 32px 28px; display:flex; gap:32px; align-items:center; flex-wrap:wrap;">
       <div style="flex:1;min-width:240px;">
         <p style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--white);line-height:1.4;font-style:italic;">„Produkt, System und Mensch — alle drei müssen stimmen. Hier stimmen alle drei."</p>
-        <p style="font-size:0.82rem;color:var(--gold-light);margin-top:12px;">— Sabine Kaya, @remote_sisterhood</p>
+        <p style="font-size:0.82rem;color:var(--rose);margin-top:12px;">— Sabine Kaya, @remote_sisterhood</p>
       </div>
       <div style="flex:0 0 auto;">
         <a href="https://wa.me/41768163836?text=Hallo%20Sabine%2C%20ich%20m%C3%B6chte%20mehr%20erfahren." target="_blank" class="btn-primary">Jetzt Gespräch anfragen</a>
@@ -1182,7 +1185,7 @@
           </div>
         </div>
 
-        <div style="margin-top: 24px; padding: 28px; background: var(--cream-warm); border-radius: 4px; border-left: 4px solid var(--gold);">
+        <div style="margin-top: 24px; padding: 28px; background: var(--cream-warm); border-radius: 4px; border-left: 4px solid var(--rose);">
           <p style="font-size: 0.88rem; color: var(--text-mid); line-height: 1.75;">
             <strong style="color: var(--forest-deep);">Und wenn du noch kein Thema hast?</strong><br>
             Kein Problem — und kein Ausschlusskriterium. Ich hatte am Anfang auch keines. Ich wusste nicht, wohin mich der Weg führt. Erst durch die Produkte selbst — durch das, was ich an mir beobachtet habe, was mich neugierig gemacht hat — bin ich zur Ernährungsberatung gekommen und habe mein Steckenpferd gefunden.<br><br>
@@ -1206,20 +1209,20 @@
     <div class="grid-3col" style="margin-bottom: 48px;">
 
       <!-- Offizielle Präsentation -->
-      <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(200,169,110,0.2); border-radius: 4px; overflow: hidden; transition: all 0.3s;" onmouseover="this.style.background='rgba(200,169,110,0.1)'; this.style.borderColor='rgba(200,169,110,0.5)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(200,169,110,0.2)'">
-        <div style="background: var(--gold); padding: 28px 32px;">
+      <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(240,213,204,0.25); border-radius: 4px; overflow: hidden; transition: all 0.3s;" onmouseover="this.style.background='rgba(200,169,110,0.1)'; this.style.borderColor='rgba(240,213,204,0.55)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(240,213,204,0.25)'">
+        <div style="background: var(--rose); padding: 28px 32px;">
           <div style="font-size:2rem; margin-bottom:8px;">🎯</div>
           <p style="font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--forest-deep);opacity:0.7;margin-bottom:6px;">Version 1</p>
           <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--forest-deep);line-height:1.3;">Offizielle Präsentation</h3>
         </div>
         <div style="padding: 28px 32px;">
           <p style="font-size:0.88rem;color:rgba(245,240,232,0.7);line-height:1.75;margin-bottom:24px;">Die vollständige Erklärung des Konzepts — für alle, die wissen wollen wie das Modell wirklich funktioniert. Ideal als Einstieg.</p>
-          <a href="https://info.die10stundenwoche.com/" target="_blank" style="display:inline-block;background:var(--gold);color:var(--forest-deep);padding:12px 24px;border-radius:2px;font-size:0.84rem;font-weight:600;letter-spacing:0.04em;text-decoration:none;transition:all 0.3s;width:100%;text-align:center;box-sizing:border-box;" onmouseover="this.style.background='var(--gold-light)'" onmouseout="this.style.background='var(--gold)'">Präsentation ansehen →</a>
+          <a href="https://info.die10stundenwoche.com/" target="_blank" style="display:inline-block;background:var(--rose);color:var(--forest-deep);padding:12px 24px;border-radius:2px;font-size:0.84rem;font-weight:600;letter-spacing:0.04em;text-decoration:none;transition:all 0.3s;width:100%;text-align:center;box-sizing:border-box;" onmouseover="this.style.background='var(--rose)'" onmouseout="this.style.background='var(--rose)'">Präsentation ansehen →</a>
         </div>
       </div>
 
       <!-- Mama Präsentation -->
-      <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(200,169,110,0.2); border-radius: 4px; overflow: hidden; transition: all 0.3s;" onmouseover="this.style.background='rgba(200,169,110,0.1)'; this.style.borderColor='rgba(200,169,110,0.5)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(200,169,110,0.2)'">
+      <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(240,213,204,0.25); border-radius: 4px; overflow: hidden; transition: all 0.3s;" onmouseover="this.style.background='rgba(200,169,110,0.1)'; this.style.borderColor='rgba(240,213,204,0.55)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(240,213,204,0.25)'">
         <div style="background: var(--forest-light); padding: 28px 32px;">
           <div style="font-size:2rem; margin-bottom:8px;">👩‍👧‍👦</div>
           <p style="font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(245,240,232,0.6);margin-bottom:6px;">Version 2</p>
@@ -1232,7 +1235,7 @@
       </div>
 
       <!-- Work & Travel -->
-      <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(200,169,110,0.2); border-radius: 4px; overflow: hidden; transition: all 0.3s;" onmouseover="this.style.background='rgba(200,169,110,0.1)'; this.style.borderColor='rgba(200,169,110,0.5)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(200,169,110,0.2)'">
+      <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(240,213,204,0.25); border-radius: 4px; overflow: hidden; transition: all 0.3s;" onmouseover="this.style.background='rgba(200,169,110,0.1)'; this.style.borderColor='rgba(240,213,204,0.55)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(240,213,204,0.25)'">
         <div style="background: var(--forest); padding: 28px 32px;">
           <div style="font-size:2rem; margin-bottom:8px;">✈️</div>
           <p style="font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(245,240,232,0.6);margin-bottom:6px;">Version 3</p>
@@ -1247,12 +1250,12 @@
     </div>
 
     <!-- Hinweis -->
-    <div style="text-align:center; padding: 28px; background: rgba(200,169,110,0.08); border: 1px solid rgba(200,169,110,0.2); border-radius: 4px;">
+    <div style="text-align:center; padding: 28px; background: rgba(240,213,204,0.15); border: 1px solid rgba(240,213,204,0.25); border-radius: 4px;">
       <p style="font-size:0.88rem;color:rgba(245,240,232,0.65);line-height:1.75;">
         Nach der Präsentation hast du Fragen? Melde dich direkt bei mir —<br>
         ich begleite dich persönlich durch die nächsten Schritte.
       </p>
-      <a href="https://wa.me/41768163836?text=Hallo%20Sabine%2C%20ich%20habe%20mir%20die%20Pr%C3%A4sentation%20angeschaut%20und%20m%C3%B6chte%20mehr%20erfahren." target="_blank" style="display:inline-block;margin-top:16px;background:var(--gold);color:var(--forest-deep);padding:13px 32px;border-radius:2px;font-size:0.86rem;font-weight:600;letter-spacing:0.04em;text-decoration:none;">Jetzt bei Sabine melden →</a>
+      <a href="https://wa.me/41768163836?text=Hallo%20Sabine%2C%20ich%20habe%20mir%20die%20Pr%C3%A4sentation%20angeschaut%20und%20m%C3%B6chte%20mehr%20erfahren." target="_blank" style="display:inline-block;margin-top:16px;background:var(--rose);color:var(--forest-deep);padding:13px 32px;border-radius:2px;font-size:0.86rem;font-weight:600;letter-spacing:0.04em;text-decoration:none;">Jetzt bei Sabine melden →</a>
     </div>
 
   </div>
@@ -1280,7 +1283,7 @@
 
         <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--accent-soft);text-align:center;">
           <p style="font-size:0.78rem;color:var(--text-light);margin-bottom:8px;">Noch unsicher? Starte hier:</p>
-          <a href="https://remotesisterhood.github.io/darmchallenge" target="_blank" style="font-size:0.84rem;color:var(--forest);font-weight:600;text-decoration:none;letter-spacing:0.02em;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--forest)'">→ Kostenlose 30-Tage-Darm-Challenge</a>
+          <a href="https://remotesisterhood.github.io/darmchallenge" target="_blank" style="font-size:0.84rem;color:var(--forest);font-weight:600;text-decoration:none;letter-spacing:0.02em;" onmouseover="this.style.color='var(--rose)'" onmouseout="this.style.color='var(--forest)'">→ Kostenlose 30-Tage-Darm-Challenge</a>
         </div>
       </div>
 
@@ -1311,38 +1314,38 @@
 
     <div class="grid-3col grid-3col--tight" style="background: var(--cream-warm);">
 
-      <div style="background: var(--white); padding: 40px 36px; transition: all 0.3s;" onmouseover="this.style.background='var(--forest)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--white)' : 'rgba(245,240,232,0.7)'); this.querySelector('.sys-icon').style.background='rgba(200,169,110,0.15)';" onmouseout="this.style.background='var(--white)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--forest-deep)' : 'var(--text-mid)'); this.querySelector('.sys-icon').style.background='var(--accent-soft)';">
+      <div style="background: var(--white); padding: 40px 36px; transition: all 0.3s;" onmouseover="this.style.background='var(--forest)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--white)' : 'rgba(245,240,232,0.7)'); this.querySelector('.sys-icon').style.background='rgba(240,213,204,0.2)';" onmouseout="this.style.background='var(--white)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--forest-deep)' : 'var(--text-mid)'); this.querySelector('.sys-icon').style.background='var(--accent-soft)';">
         <div class="sys-icon" style="width:48px;height:48px;background:var(--accent-soft);border-radius:2px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;font-size:1.4rem;transition:background 0.3s;">🎓</div>
         <h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--forest-deep);margin-bottom:12px;transition:color 0.3s;">Online-Akademie</h3>
         <p style="font-size:0.88rem;color:var(--text-mid);line-height:1.75;transition:color 0.3s;">Aufgezeichnete Module für jeden Schritt — von Null an, ohne Vorkenntnisse. Du lernst in deinem Tempo, wann es dir passt. Kein Präsenzkurs, kein Vorwissen nötig.</p>
       </div>
 
-      <div style="background: var(--white); padding: 40px 36px; transition: all 0.3s;" onmouseover="this.style.background='var(--forest)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--white)' : 'rgba(245,240,232,0.7)'); this.querySelector('.sys-icon').style.background='rgba(200,169,110,0.15)';" onmouseout="this.style.background='var(--white)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--forest-deep)' : 'var(--text-mid)'); this.querySelector('.sys-icon').style.background='var(--accent-soft)';">
+      <div style="background: var(--white); padding: 40px 36px; transition: all 0.3s;" onmouseover="this.style.background='var(--forest)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--white)' : 'rgba(245,240,232,0.7)'); this.querySelector('.sys-icon').style.background='rgba(240,213,204,0.2)';" onmouseout="this.style.background='var(--white)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--forest-deep)' : 'var(--text-mid)'); this.querySelector('.sys-icon').style.background='var(--accent-soft)';">
         <div class="sys-icon" style="width:48px;height:48px;background:var(--accent-soft);border-radius:2px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;font-size:1.4rem;transition:background 0.3s;">💬</div>
         <h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--forest-deep);margin-bottom:12px;transition:color 0.3s;">Community App</h3>
         <p style="font-size:0.88rem;color:var(--text-mid);line-height:1.75;transition:color 0.3s;">Eine eigene App für das gesamte Team. Fragen stellen, Erfahrungen teilen, Antworten erhalten — von Menschen, die denselben Weg gehen. Du wirst nie allein gelassen.</p>
       </div>
 
-      <div style="background: var(--white); padding: 40px 36px; transition: all 0.3s;" onmouseover="this.style.background='var(--forest)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--white)' : 'rgba(245,240,232,0.7)'); this.querySelector('.sys-icon').style.background='rgba(200,169,110,0.15)';" onmouseout="this.style.background='var(--white)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--forest-deep)' : 'var(--text-mid)'); this.querySelector('.sys-icon').style.background='var(--accent-soft)';">
+      <div style="background: var(--white); padding: 40px 36px; transition: all 0.3s;" onmouseover="this.style.background='var(--forest)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--white)' : 'rgba(245,240,232,0.7)'); this.querySelector('.sys-icon').style.background='rgba(240,213,204,0.2)';" onmouseout="this.style.background='var(--white)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--forest-deep)' : 'var(--text-mid)'); this.querySelector('.sys-icon').style.background='var(--accent-soft)';">
         <div class="sys-icon" style="width:48px;height:48px;background:var(--accent-soft);border-radius:2px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;font-size:1.4rem;transition:background 0.3s;">📋</div>
         <h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--forest-deep);margin-bottom:12px;transition:color 0.3s;">Copy-&-Paste-Vorlagen</h3>
         <p style="font-size:0.88rem;color:var(--text-mid);line-height:1.75;transition:color 0.3s;">Fertige Texte, Captions und Gesprächsleitfäden — für Produktkommunikation und Business-Aufbau. Du musst nicht bei Null anfangen. Du passt an, was bereits funktioniert.</p>
       </div>
 
-      <div style="background: var(--white); padding: 40px 36px; transition: all 0.3s;" onmouseover="this.style.background='var(--forest)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--white)' : 'rgba(245,240,232,0.7)'); this.querySelector('.sys-icon').style.background='rgba(200,169,110,0.15)';" onmouseout="this.style.background='var(--white)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--forest-deep)' : 'var(--text-mid)'); this.querySelector('.sys-icon').style.background='var(--accent-soft)';">
+      <div style="background: var(--white); padding: 40px 36px; transition: all 0.3s;" onmouseover="this.style.background='var(--forest)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--white)' : 'rgba(245,240,232,0.7)'); this.querySelector('.sys-icon').style.background='rgba(240,213,204,0.2)';" onmouseout="this.style.background='var(--white)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--forest-deep)' : 'var(--text-mid)'); this.querySelector('.sys-icon').style.background='var(--accent-soft)';">
         <div class="sys-icon" style="width:48px;height:48px;background:var(--accent-soft);border-radius:2px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;font-size:1.4rem;transition:background 0.3s;">🔥</div>
         <h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--forest-deep);margin-bottom:12px;transition:color 0.3s;">Bootcamps</h3>
         <p style="font-size:0.88rem;color:var(--text-mid);line-height:1.75;transition:color 0.3s;">Geführte Intensivphasen, um Struktur und Routine in den Aufbau zu bringen. Kein Alleingang, sondern gemeinsames Tempo — damit aus Wissen echte Gewohnheit wird.</p>
       </div>
 
-      <div style="background: var(--white); padding: 40px 36px; transition: all 0.3s;" onmouseover="this.style.background='var(--forest)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--white)' : 'rgba(245,240,232,0.7)'); this.querySelector('.sys-icon').style.background='rgba(200,169,110,0.15)';" onmouseout="this.style.background='var(--white)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--forest-deep)' : 'var(--text-mid)'); this.querySelector('.sys-icon').style.background='var(--accent-soft)';">
+      <div style="background: var(--white); padding: 40px 36px; transition: all 0.3s;" onmouseover="this.style.background='var(--forest)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--white)' : 'rgba(245,240,232,0.7)'); this.querySelector('.sys-icon').style.background='rgba(240,213,204,0.2)';" onmouseout="this.style.background='var(--white)'; this.querySelectorAll('h3,p').forEach(e => e.style.color=e.tagName==='H3' ? 'var(--forest-deep)' : 'var(--text-mid)'); this.querySelector('.sys-icon').style.background='var(--accent-soft)';">
         <div class="sys-icon" style="width:48px;height:48px;background:var(--accent-soft);border-radius:2px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;font-size:1.4rem;transition:background 0.3s;">🤝</div>
         <h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--forest-deep);margin-bottom:12px;transition:color 0.3s;">Persönliches Mentoring</h3>
         <p style="font-size:0.88rem;color:var(--text-mid);line-height:1.75;transition:color 0.3s;">Ich begleite dich persönlich — nicht mit einem automatisierten Onboarding. Fragen, Unsicherheiten, Rückschläge: du hast eine direkte Ansprechperson, die den Weg selbst geht.</p>
       </div>
 
       <!-- Highlight-Karte -->
-      <div style="background: var(--gold); padding: 40px 36px;">
+      <div style="background: var(--rose); padding: 40px 36px;">
         <div style="width:48px;height:48px;background:rgba(26,47,40,0.15);border-radius:2px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;font-size:1.4rem;">💎</div>
         <h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--forest-deep);margin-bottom:12px;">Du bist nie allein</h3>
         <p style="font-size:0.88rem;color:var(--forest-deep);line-height:1.75;opacity:0.8;">Das ist kein Versprechen aus einer Imagebroschüre. Es ist das, was ich von meinem Team täglich erlebe — und was ich an jeden weitergebe, der einsteigt.</p>
@@ -1353,7 +1356,7 @@
     <!-- Abgrenzung zu reinem FLP -->
     <div class="unterschied-bar" style="margin-top:48px; background:var(--forest-deep); border-radius:4px; padding:36px 40px;">
       <div style="margin-bottom:16px;">
-        <p style="font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">Der Unterschied</p>
+        <p style="font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--rose);margin-bottom:12px;">Der Unterschied</p>
         <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--white);line-height:1.35;">10-Stunden-Woche + FLP:<br>Mehr als ein Produktvertrieb</h3>
       </div>
       <div>
