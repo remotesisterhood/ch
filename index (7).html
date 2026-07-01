@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sabine Kaya | Zykluswissen & Freiheit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #2C4A3E;
+    --forest-deep: #1A2F28;
+    --forest-light: #3D6357;
+    --cream: #F5F0E8;
+    --rose: #F0D5CC;
+    --rose-mid: #D9A898;
+    --rose-dark: #C4897A;
+    --rose-soft: #F7EAE6;
+    --text-dark: #1C2B26;
+    --text-mid: #4A5E58;
+    --white: #FFFFFF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--rose-soft);
+    color: var(--text-dark);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 18px 48px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(240,213,204,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(196,137,122,0.2);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem; color: var(--forest);
+    letter-spacing: 0.02em;
+  }
+  .nav-cta {
+    background: var(--forest); color: var(--rose);
+    padding: 10px 24px; border-radius: 2px;
+    font-size: 0.8rem; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    text-decoration: none; transition: all 0.3s;
+  }
+  .nav-cta:hover { background: var(--forest-light); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center; padding-top: 80px;
+    background: linear-gradient(135deg, var(--forest-deep) 45%, #3D1E18 100%);
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -100px; right: -100px;
+    width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(240,213,204,0.2) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -80px; left: 10%;
+    width: 400px; height: 400px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(240,213,204,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-text {
+    padding: 80px 60px 80px 80px;
+    position: relative; z-index: 2;
+    animation: fadeUp 1s ease both;
+  }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-bottom: 28px;
+  }
+  .hero-eyebrow span {
+    font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--rose); opacity: 0.85;
+  }
+  .hero-eyebrow::before {
+    content: ''; display: block;
+    width: 32px; height: 1px; background: var(--rose); opacity: 0.5;
+  }
+  h1.hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+    line-height: 1.15; color: var(--white); margin-bottom: 24px;
+  }
+  h1.hero-title em {
+    font-style: italic; color: var(--rose);
+    display: block;
+  }
+  .hero-lead {
+    font-size: 1rem; font-weight: 300;
+    color: rgba(240,213,204,0.8); line-height: 1.8;
+    max-width: 440px; margin-bottom: 44px;
+  }
+  .hero-btn {
+    display: inline-block;
+    background: var(--rose); color: var(--forest-deep);
+    padding: 16px 36px; border-radius: 2px;
+    font-size: 0.88rem; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    text-decoration: none; transition: all 0.3s;
+  }
+  .hero-btn:hover { background: var(--rose-mid); color: var(--white); transform: translateY(-2px); }
+
+  /* Hero Image */
+  .hero-image {
+    padding: 80px 80px 80px 20px;
+    display: flex; justify-content: center;
+    position: relative; z-index: 2;
+    animation: fadeUp 1s 0.2s ease both;
+  }
+  .photo-wrap { width: 340px; height: 460px; position: relative; }
+  .photo-frame {
+    width: 100%; height: 100%;
+    border-radius: 4px; overflow: hidden;
+    display: flex; flex-direction: column;
+    border: 1px solid rgba(240,213,204,0.25);
+  }
+  .photo-frame img {
+    width: 100%; flex: 1; object-fit: cover;
+    object-position: center 15%; display: block; min-height: 0;
+  }
+  .photo-caption {
+    background: var(--rose); padding: 16px 22px;
+  }
+  .photo-caption strong {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; color: var(--forest-deep);
+    display: block;
+  }
+  .photo-caption span {
+    font-size: 0.76rem; color: var(--forest);
+    letter-spacing: 0.05em;
+  }
+  .photo-tag {
+    position: absolute; top: -12px; right: -12px;
+    background: var(--rose-dark); color: var(--white);
+    padding: 8px 14px; border-radius: 2px;
+    font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    transform: rotate(3deg);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  }
+  /* Rose decorative circle */
+  .photo-deco {
+    position: absolute; bottom: -20px; left: -20px;
+    width: 100px; height: 100px; border-radius: 50%;
+    border: 2px solid rgba(240,213,204,0.3);
+    pointer-events: none;
+  }
+
+  /* ZYKLUS SECTION */
+  .zyklus {
+    background: var(--rose);
+    padding: 100px 48px;
+  }
+  .zyklus .inner { max-width: 900px; margin: 0 auto; }
+  .label {
+    font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--forest); border-left: 4px solid var(--forest);
+    padding-left: 12px; margin-bottom: 20px; display: block;
+  }
+  .zyklus h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.9rem, 3vw, 2.6rem);
+    color: var(--forest-deep); line-height: 1.25; margin-bottom: 20px;
+  }
+  .zyklus .lead {
+    font-size: 1rem; color: var(--forest); line-height: 1.8;
+    max-width: 600px; margin-bottom: 56px; font-weight: 300;
+  }
+  .phasen {
+    display: grid; grid-template-columns: repeat(4,1fr); gap: 16px;
+  }
+  .phase {
+    background: rgba(255,255,255,0.55);
+    border-radius: 4px; padding: 28px 22px;
+    border-top: 3px solid var(--forest);
+    backdrop-filter: blur(4px);
+    transition: transform 0.3s, background 0.3s;
+  }
+  .phase:hover { transform: translateY(-4px); background: rgba(255,255,255,0.8); }
+  .phase-icon { font-size: 1.6rem; margin-bottom: 12px; display: block; }
+  .phase h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem; color: var(--forest-deep); margin-bottom: 8px;
+  }
+  .phase p { font-size: 0.83rem; color: var(--text-mid); line-height: 1.7; }
+  .phase .phase-hint {
+    font-size: 0.82rem; color: var(--forest-deep);
+    font-style: italic; font-weight: 700;
+    margin-top: 12px; display: block;
+    padding-top: 12px;
+    border-top: 2px solid var(--rose-mid);
+    line-height: 1.6;
+  }
+
+  /* SABINE */
+  .sabine {
+    background: var(--forest-deep);
+    padding: 100px 48px;
+  }
+  .sabine .inner {
+    max-width: 900px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1.6fr;
+    gap: 64px; align-items: center;
+  }
+  .sabine-photo {
+    border-radius: 4px; overflow: hidden; height: 380px;
+    border: 1px solid rgba(240,213,204,0.2);
+    box-shadow: 0 12px 48px rgba(0,0,0,0.3);
+  }
+  .sabine-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center 15%;
+  }
+  .sabine-text .label { color: var(--rose); border-left-color: var(--rose); }
+  .sabine-text h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.7rem, 2.5vw, 2.2rem);
+    color: var(--white); line-height: 1.3; margin-bottom: 20px;
+  }
+  .sabine-text p {
+    font-size: 0.92rem; color: rgba(240,213,204,0.75);
+    line-height: 1.85; margin-bottom: 14px;
+  }
+  .sabine-text p strong { color: var(--rose); }
+
+  /* FÜR DICH */
+  .fuerdich { background: var(--cream); padding: 100px 48px; }
+  .fuerdich .inner { max-width: 900px; margin: 0 auto; }
+  .profile-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 24px; margin-top: 48px;
+  }
+  .profile-card {
+    background: var(--white); border-radius: 4px; padding: 32px 30px;
+    border-top: 4px solid var(--rose);
+    box-shadow: 0 4px 24px rgba(196,137,122,0.15);
+  }
+  .profile-card .ptag {
+    font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--rose-dark); margin-bottom: 12px; display: block; font-weight: 700;
+  }
+  .profile-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem; color: var(--forest-deep); margin-bottom: 18px;
+  }
+  .profile-card .plabel {
+    font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--forest); margin: 18px 0 8px; font-weight: 700;
+  }
+  .profile-card ul { list-style: none; }
+  .profile-card li {
+    font-size: 0.86rem; color: var(--text-mid);
+    padding: 5px 0 5px 18px; position: relative; line-height: 1.6;
+  }
+  .profile-card li::before {
+    content: '•'; position: absolute; left: 0; color: var(--rose-dark);
+  }
+
+  .wish-strip {
+    margin-top: 48px; background: var(--rose);
+    border-radius: 4px; padding: 32px 36px; text-align: center;
+  }
+  .wish-strip .wish-title {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 1.05rem; color: var(--forest-deep); margin-bottom: 20px;
+  }
+  .wish-chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .wish-chip {
+    background: rgba(255,255,255,0.55); padding: 8px 16px;
+    border-radius: 20px; font-size: 0.82rem; color: var(--forest-deep); font-weight: 500;
+  }
+
+  .concept-block { margin-top: 56px; }
+  .concept-block p {
+    font-size: 0.92rem; color: var(--text-mid);
+    line-height: 1.85; max-width: 680px;
+  }
+  .concept-block .source-note {
+    font-size: 0.74rem; color: #a8a8a4; margin-top: 6px;
+  }
+
+  .offer-grid {
+    display: grid; grid-template-columns: repeat(4,1fr); gap: 2px;
+    margin-top: 36px; background: var(--rose-mid);
+    border-radius: 4px; overflow: hidden;
+  }
+  .offer-item { background: var(--white); padding: 26px 18px; text-align: center; }
+  .offer-item .o-icon { font-size: 1.5rem; display: block; margin-bottom: 10px; }
+  .offer-item h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem; color: var(--forest-deep); margin-bottom: 6px;
+  }
+  .offer-item p { font-size: 0.78rem; color: var(--text-mid); line-height: 1.6; }
+
+  .requirements-row {
+    display: flex; gap: 14px; flex-wrap: wrap;
+    margin-top: 36px; justify-content: center;
+  }
+  .req-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.84rem; color: var(--forest);
+    background: var(--rose-soft); padding: 10px 18px; border-radius: 20px;
+  }
+
+  .fuerdich-cta { text-align: center; margin-top: 48px; }
+
+  /* KONTAKT */
+  .kontakt {
+    background: var(--rose-soft);
+    padding: 100px 48px;
+  }
+  .kontakt .inner { max-width: 720px; margin: 0 auto; text-align: center; }
+  .kontakt h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.9rem, 3vw, 2.6rem);
+    color: var(--forest-deep); line-height: 1.3; margin-bottom: 16px;
+  }
+  .kontakt .lead {
+    font-size: 0.95rem; color: var(--text-mid);
+    line-height: 1.8; margin-bottom: 48px; max-width: 520px; margin-left: auto; margin-right: auto;
+  }
+  .form-box {
+    background: var(--white); border-radius: 4px;
+    padding: 48px 44px; text-align: left;
+    box-shadow: 0 8px 48px rgba(196,137,122,0.2);
+    border-top: 4px solid var(--rose);
+  }
+  .form-group { margin-bottom: 18px; }
+  .form-group label {
+    display: block; font-size: 0.75rem; font-weight: 700;
+    color: var(--forest); letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%; padding: 13px 16px;
+    border: 1px solid rgba(44,74,62,0.18); border-radius: 2px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    color: var(--text-dark); background: var(--rose-soft);
+    transition: border 0.3s, background 0.3s; outline: none;
+    appearance: none;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--rose-mid); background: var(--white);
+  }
+  .form-group textarea { resize: vertical; min-height: 90px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-submit {
+    width: 100%; padding: 16px;
+    background: var(--forest); color: var(--rose);
+    border: none; border-radius: 2px; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: 0.86rem;
+    font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    transition: all 0.3s; margin-top: 8px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .form-submit:hover { background: var(--forest-light); color: var(--white); transform: translateY(-1px); }
+  .divider-or {
+    text-align: center; margin: 20px 0;
+    font-size: 0.75rem; color: #bbb;
+    position: relative;
+  }
+  .divider-or::before, .divider-or::after {
+    content: ''; position: absolute; top: 50%;
+    width: 42%; height: 1px; background: #e8e0d8;
+  }
+  .divider-or::before { left: 0; }
+  .divider-or::after { right: 0; }
+  .btn-wa {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    background: #25D366; color: white; padding: 14px;
+    border-radius: 2px; font-size: 0.88rem; font-weight: 600;
+    text-decoration: none; transition: all 0.3s;
+  }
+  .btn-wa:hover { background: #1ebe5d; transform: translateY(-1px); }
+  .form-note {
+    font-size: 0.74rem; color: #aaa; text-align: center;
+    margin-top: 14px; line-height: 1.5;
+  }
+  .promise-row {
+    display: flex; gap: 16px; margin-top: 36px; flex-wrap: wrap;
+  }
+  .promise-item {
+    flex: 1; min-width: 160px; text-align: center;
+    padding: 20px 16px; background: var(--rose-soft);
+    border-radius: 4px; border-top: 3px solid var(--rose-mid);
+  }
+  .promise-item .p-icon { font-size: 1.4rem; margin-bottom: 8px; display: block; }
+  .promise-item p { font-size: 0.8rem; color: var(--text-mid); line-height: 1.6; }
+  .promise-item strong { color: var(--forest-deep); display: block; margin-bottom: 4px; }
+
+  /* FOOTER */
+  footer {
+    background: var(--forest-deep); padding: 32px 48px;
+    text-align: center; border-top: 4px solid var(--rose);
+  }
+  footer p { font-size: 0.78rem; color: rgba(240,213,204,0.35); line-height: 1.8; }
+  footer a { color: var(--rose); text-decoration: none; }
+  footer a:hover { color: var(--rose-mid); }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 1000;
+    background: rgba(26,47,40,0.88); backdrop-filter: blur(6px);
+    overflow-y: auto; padding: 40px 20px;
+  }
+  .modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; }
+  .modal-box {
+    background: var(--cream); border-radius: 4px;
+    max-width: 660px; width: 100%; padding: 52px 48px;
+    position: relative; margin: auto; border-top: 4px solid var(--rose);
+  }
+  .modal-close {
+    position: absolute; top: 20px; right: 24px;
+    background: none; border: none; cursor: pointer;
+    font-size: 1.4rem; color: var(--text-mid); line-height: 1;
+  }
+  .modal-close:hover { color: var(--forest); }
+  .modal-box h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--forest-deep); margin-bottom: 8px; }
+  .modal-box h3 { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--forest); margin: 22px 0 6px; }
+  .modal-box p, .modal-box li { font-size: 0.86rem; color: var(--text-mid); line-height: 1.8; margin-bottom: 6px; }
+  .modal-box ul { padding-left: 18px; }
+  .modal-box a { color: var(--forest); }
+  .modal-divider { border: none; border-top: 1px solid #e8e0d8; margin: 14px 0; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .hero { grid-template-columns: 1fr; min-height: auto; padding-top: 72px; }
+    .hero-text { padding: 52px 24px 36px; }
+    .hero-image { padding: 16px 24px 56px; }
+    .photo-wrap { width: 260px; height: 360px; }
+    .zyklus, .sabine, .kontakt, .fuerdich { padding: 70px 24px; }
+    .phasen { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .sabine .inner { grid-template-columns: 1fr; gap: 36px; }
+    .sabine-photo { height: 300px; }
+    .profile-grid { grid-template-columns: 1fr; }
+    .offer-grid { grid-template-columns: 1fr 1fr; }
+    .form-box { padding: 32px 24px; }
+    .form-row { grid-template-columns: 1fr; }
+    .promise-row { flex-direction: column; }
+    .modal-box { padding: 36px 20px; }
+  }
+  @media (max-width: 480px) {
+    .phasen { grid-template-columns: 1fr; }
+    .offer-grid { grid-template-columns: 1fr; }
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  @media (max-width: 600px) {
+    .compare-grid { grid-template-columns: 1fr; }
+  }
+
+</style>
+  <script data-goatcounter="https://remotesisterhood.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Sabine Kaya · Zyklusexpertin</div>
+  <a href="https://wa.me/41768163836?text=Hallo%20Sabine%2C%20ich%20m%C3%B6chte%20mehr%20erfahren." target="_blank" class="nav-cta">Schreib mir 🤍</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <div class="hero-eyebrow"><span>raus aus 9to5 · rein in deinen Rhythmus</span></div>
+    <h1 class="hero-title">
+      Dein Körper arbeitet<br>in Phasen.
+      <em>Dein Job leider nicht.</em>
+    </h1>
+    <p class="hero-lead">
+      Was wäre, wenn du ein eigenes Einkommen aufbaust — das sich deinem Zyklus anpasst, nicht umgekehrt? Ich zeige dir wie das für mich funktioniert — und ob es zu dir passen könnte.
+    </p>
+
+    <!-- 3 ehrliche Antworten -->
+    <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:36px;">
+
+      <div style="display:flex;gap:14px;align-items:flex-start;">
+        <span style="width:28px;height:28px;background:rgba(240,213,204,0.15);border:1px solid rgba(240,213,204,0.3);border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem;">01</span>
+        <div>
+          <p style="font-size:0.84rem;color:var(--rose);font-weight:600;margin-bottom:2px;">Was passiert wenn du dich meldest?</p>
+          <p style="font-size:0.82rem;color:rgba(240,213,204,0.65);line-height:1.6;">Ich antworte persönlich — kein Bot, kein Skript. Wir schauen gemeinsam ob es passt — kein Überreden, versprochen.</p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:14px;align-items:flex-start;">
+        <span style="width:28px;height:28px;background:rgba(240,213,204,0.15);border:1px solid rgba(240,213,204,0.3);border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem;">02</span>
+        <div>
+          <p style="font-size:0.84rem;color:var(--rose);font-weight:600;margin-bottom:2px;">Wie viel Aufwand ist es wirklich?</p>
+          <p style="font-size:0.82rem;color:rgba(240,213,204,0.65);line-height:1.6;">10 Stunden pro Woche — mit einem System das bereits funktioniert. Kein Vorwissen nötig.</p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:14px;align-items:flex-start;">
+        <span style="width:28px;height:28px;background:rgba(240,213,204,0.15);border:1px solid rgba(240,213,204,0.3);border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem;">03</span>
+        <div>
+          <p style="font-size:0.84rem;color:var(--rose);font-weight:600;margin-bottom:2px;">Warum der Zyklus kein Marketingspruch ist?</p>
+          <p style="font-size:0.82rem;color:rgba(240,213,204,0.65);line-height:1.6;">Weil ich selbst nach 25 Jahren Anstellung gemerkt habe: Mein Körper ist nicht kaputt — das System war es.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/41768163836?text=Hallo%20Sabine%2C%20ich%20habe%20deinen%20Beitrag%20gesehen%20und%20m%C3%B6chte%20mehr%20erfahren." 
+       target="_blank"
+       style="display:inline-flex;align-items:center;gap:10px;background:var(--rose);color:var(--forest-deep);padding:15px 32px;border-radius:2px;font-size:0.9rem;font-weight:700;letter-spacing:0.04em;text-decoration:none;transition:all 0.3s;box-shadow:0 4px 20px rgba(240,213,204,0.35);margin-bottom:14px;width:100%;justify-content:center;max-width:380px;"
+       onmouseover="this.style.background='var(--rose-dark)';this.style.color='white';this.style.transform='translateY(-2px)'"
+       onmouseout="this.style.background='var(--rose)';this.style.color='var(--forest-deep)';this.style.transform='translateY(0)'">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      Schreib mir direkt auf WhatsApp
+    </a>
+    <br>
+    <a href="#warum" style="font-size:0.84rem;font-weight:700;color:rgba(240,213,204,0.85);text-decoration:none;letter-spacing:0.1em;display:inline-flex;align-items:center;gap:6px;margin-top:4px;border-bottom:1px solid rgba(240,213,204,0.4);padding-bottom:2px;transition:all 0.3s;" onmouseover="this.style.color='var(--rose)';this.style.borderColor='var(--rose)'" onmouseout="this.style.color='rgba(240,213,204,0.75)';this.style.borderColor='rgba(240,213,204,0.3)'">
+      ERST MEHR ERFAHREN ↓
+    </a>
+  </div>
+  <div class="hero-image">
+    <div class="photo-wrap">
+      <div class="photo-frame">
+        <img src="sabine2.webp" alt="Sabine Kaya">
+        <div class="photo-caption">
+          <strong>Sabine Kaya</strong>
+          <span>Basel, Schweiz</span>
+        </div>
+      </div>
+      <div class="photo-tag">@remote_sisterhood</div>
+      <div class="photo-deco"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ZYKLUS -->
+<section class="zyklus reveal">
+  <div class="inner">
+    <span class="label">Warum das zusammenpasst</span>
+    <h2>Was kein normaler Job dir geben kann —<br>aber dein eigenes Business schon.</h2>
+    <p class="lead">
+      Frauen sind nicht jeden Tag gleich — und das ist keine Schwäche, das ist Biologie. Unser Zyklus schenkt uns vier verschiedene Energiephasen pro Monat. Ein eigenes Business ist das einzige Modell, das das wirklich nutzen kann.
+    </p>
+    <div class="phasen">
+      <div class="phase">
+        <span class="phase-icon">🌱</span>
+        <h3>Neue Energie</h3>
+        <p>Frisch, klar, voller Ideen. Du siehst Möglichkeiten, willst etwas bewegen und neu starten.</p>
+        <span class="phase-hint">Im eigenen Business nutzt du diese Phase für neue Pläne und Ziele — kein Chef der dir vorschreibt was heute ansteht.</span>
+      </div>
+      <div class="phase">
+        <span class="phase-icon">🌸</span>
+        <h3>Volle Kraft</h3>
+        <p>Kommunikativ, offen, strahlend. Du liebst Menschen um dich — und sie spüren deine Energie.</p>
+        <span class="phase-hint">Genau jetzt führst du Gespräche, knüpfst Verbindungen und zeigst dich. In einem normalen Job sitzt du trotzdem im Meeting über Quartalszahlen.</span>
+      </div>
+      <div class="phase">
+        <span class="phase-icon">🍂</span>
+        <h3>Nach innen</h3>
+        <p>Analytisch, fokussiert, präzise. Du arbeitest lieber allein, gehst in die Tiefe und bringst Struktur.</p>
+        <span class="phase-hint">Dein Business wartet auf dich — du entscheidest wann du arbeitest. Kein Open-Space-Büro, kein Smalltalk, keine Ablenkung.</span>
+      </div>
+      <div class="phase">
+        <span class="phase-icon">🌙</span>
+        <h3>Ruhe & Reset</h3>
+        <p>Dein Körper braucht Stille und Erholung. Das ist keine Schwäche — das ist Biologie.</p>
+        <span class="phase-hint">In einem normalen Job nimmst du Ibuprofen und funktionierst weiter. In deinem Business gönnst du dir die Pause, die du verdient hast.</span>
+      </div>
+    </div>
+
+    <!-- Business Vergleich -->
+    <div style="margin-top:48px;background:rgba(255,255,255,0.6);border-radius:4px;padding:36px 40px;backdrop-filter:blur(4px);">
+      <p style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--forest-deep);line-height:1.6;text-align:center;margin-bottom:28px;">
+        Kein Job der Welt ist so gebaut wie dein Zyklus.<br>
+        <em style="color:var(--rose-dark);font-size:1.35rem;font-weight:700;display:block;margin-top:8px;letter-spacing:0.01em;text-shadow:0 1px 0 rgba(196,137,122,0.2);">Ein eigenes Business schon.</em>
+      </p>
+      <div class="compare-grid">
+        <div style="background:rgba(196,137,122,0.12);padding:24px 28px;">
+          <p style="font-size:0.72rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--rose-dark);margin-bottom:14px;font-weight:700;">Normaler Job</p>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+            <li style="font-size:0.85rem;color:var(--text-mid);padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--rose-dark);">✗</span> Jeden Tag zur selben Zeit funktionieren</li>
+            <li style="font-size:0.85rem;color:var(--text-mid);padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--rose-dark);">✗</span> Deine Energie passt sich dem Kalender an</li>
+            <li style="font-size:0.85rem;color:var(--text-mid);padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--rose-dark);">✗</span> Ruhe bedeutet Krankschreibung</li>
+            <li style="font-size:0.85rem;color:var(--text-mid);padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--rose-dark);">✗</span> Dein Rhythmus ist unsichtbar</li>
+          </ul>
+        </div>
+        <div style="background:var(--forest);padding:24px 28px;">
+          <p style="font-size:0.72rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--rose);margin-bottom:14px;font-weight:700;">Dein eigenes Business</p>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+            <li style="font-size:0.85rem;color:rgba(240,213,204,0.85);padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--rose);">✓</span> Du arbeitest wann deine Energie da ist</li>
+            <li style="font-size:0.85rem;color:rgba(240,213,204,0.85);padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--rose);">✓</span> Dein Zyklus bestimmt deinen Rhythmus</li>
+            <li style="font-size:0.85rem;color:rgba(240,213,204,0.85);padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--rose);">✓</span> Ruhe ist Teil des Plans</li>
+            <li style="font-size:0.85rem;color:rgba(240,213,204,0.85);padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--rose);">✓</span> Du bist Chef — du entscheidest</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FÜR DICH -->
+<section class="fuerdich reveal">
+  <div class="inner">
+    <span class="label">Erkennst du dich wieder?</span>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.4rem);color:var(--forest-deep);line-height:1.3;">Zwei Typen Frau — eine gemeinsame Sehnsucht</h2>
+
+    <div class="profile-grid">
+      <div class="profile-card">
+        <span class="ptag">Typ 1</span>
+        <h3>Die Ambitionierte</h3>
+        <span class="plabel">Deine Ausgangslage</span>
+        <ul>
+          <li>Du bist ehrgeizig und hast einen guten Job</li>
+          <li>Du siehst noch Perspektiven für deine Karriere</li>
+          <li>Du investierst viel Zeit und Energie in deinen Beruf</li>
+        </ul>
+        <span class="plabel">Deine Herausforderung</span>
+        <ul>
+          <li>Dein Kalender bestimmt deine Energie — nicht dein Zyklus</li>
+          <li>Karriere, Familie und Selbstfürsorge geraten ständig in Konflikt</li>
+          <li>Du fragst dich, ob das auf Dauer so weitergehen kann</li>
+        </ul>
+      </div>
+
+      <div class="profile-card" style="border-top-color:var(--forest);">
+        <span class="ptag" style="color:var(--forest);">Typ 2</span>
+        <h3>Die Familienorientierte</h3>
+        <span class="plabel">Deine Ausgangslage</span>
+        <ul>
+          <li>Deine Familie steht für dich an erster Stelle</li>
+          <li>Flexibilität ist dir wichtiger als ein hohes Gehalt</li>
+          <li>Du denkst oft darüber nach, wie sich Familie und eigenes Einkommen vereinen lassen</li>
+        </ul>
+        <span class="plabel">Deine Herausforderung</span>
+        <ul>
+          <li>Du fühlst dich oft abhängig — vom Job des Partners, vom Alltag</li>
+          <li>Wertschätzung für deine Arbeit zuhause bleibt oft aus</li>
+          <li>Dir fehlt manchmal Erfüllung jenseits des Familienalltags</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="wish-strip">
+      <p class="wish-title">Was sich die meisten Frauen früher oder später wünschen:</p>
+      <div class="wish-chips">
+        <span class="wish-chip">Mehr Flexibilität & Unabhängigkeit</span>
+        <span class="wish-chip">Echte Wertschätzung</span>
+        <span class="wish-chip">Berufliche Perspektive</span>
+        <span class="wish-chip">Gesundheit im Einklang mit dem Körper</span>
+        <span class="wish-chip">Mehr Zeit & finanzieller Spielraum</span>
+      </div>
+    </div>
+
+    <div class="concept-block">
+      <span class="label">Unser Konzept</span>
+      <p>Das Konzept hinter meinem Business — die „10-Stunden-Woche" — gibt es bereits seit 2014 und wurde mittlerweile in über 20 Ländern aufgebaut. Es basiert auf einer fertigen Online-Infrastruktur und echter Teamarbeit: Niemand fängt bei Null an, niemand wird allein gelassen. Das Konzept wurde unter anderem im Wirtschaftsmagazin <em>FOUNDERS</em> vorgestellt.</p>
+      <p class="source-note">Quelle: founders-magazin.de, Ausgabe 20 — Porträt über den Gründer des Konzepts.</p>
+    </div>
+
+    <div class="offer-grid">
+      <div class="offer-item">
+        <span class="o-icon">🎓</span>
+        <h4>Kostenlose Ausbildung</h4>
+        <p>Schritt für Schritt — kein Vorwissen nötig.</p>
+      </div>
+      <div class="offer-item">
+        <span class="o-icon">📋</span>
+        <h4>Fixfertige Konzepte</h4>
+        <p>Vorlagen und Strategien für den sofortigen Start.</p>
+      </div>
+      <div class="offer-item">
+        <span class="o-icon">📱</span>
+        <h4>Flexible Infrastruktur</h4>
+        <p>Alles vom Handy oder Laptop aus — egal wo du bist.</p>
+      </div>
+      <div class="offer-item">
+        <span class="o-icon">🕊️</span>
+        <h4>Zeit- & ortsunabhängig</h4>
+        <p>Du entscheidest wann und wie viel du arbeitest.</p>
+      </div>
+    </div>
+
+    <div class="requirements-row">
+      <span class="req-item">⏱️ Etwas Zeit pro Woche</span>
+      <span class="req-item">📱 Smartphone oder Laptop</span>
+      <span class="req-item">💛 Ein starkes „Warum"</span>
+      <span class="req-item">🌱 Bereitschaft zu lernen</span>
+    </div>
+
+    <div class="fuerdich-cta">
+      <p style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--forest-deep);margin-bottom:20px;font-style:italic;">Klingt das nach dir?</p>
+      <a href="#kontakt" class="hero-btn" style="background:var(--forest);color:var(--rose);">Lass uns sprechen</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section style="background:var(--forest-deep);padding:100px 48px;" class="reveal">
+  <div style="max-width:900px;margin:0 auto;">
+    <span class="label" style="color:var(--rose);border-left-color:var(--rose);">Echte Stimmen</span>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.4rem);color:var(--white);line-height:1.3;margin-bottom:16px;">Frauen wie du — über ihre Erfahrungen</h2>
+    <p style="font-size:0.95rem;color:rgba(240,213,204,0.75);line-height:1.8;max-width:580px;margin-bottom:48px;">Keine Hochglanzwerbung. Echte Menschen, die mit diesem Konzept arbeiten — und erzählen was sie bewegt, was sie überrascht hat und warum sie es nicht mehr missen wollen.</p>
+
+    <!-- YouTube Playlist Embed -->
+    <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:4px;box-shadow:0 12px 48px rgba(0,0,0,0.4);">
+      <iframe
+        src="https://www.youtube.com/embed/videoseries?list=PLx_CeAVe9B47BxXGIFw-6EKzvTho7yoQM&rel=0&modestbranding=1"
+        title="Testimonials — Frauen über ihre Erfahrungen mit dem Konzept"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:4px;">
+      </iframe>
+    </div>
+
+    <div style="margin-top:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+      <p style="font-size:0.82rem;color:rgba(240,213,204,0.55);font-style:italic;">
+        ▶ Klick auf Play — mit den Pfeilen im Player durch alle 9 Videos navigieren
+      </p>
+      <a href="https://youtube.com/playlist?list=PLx_CeAVe9B47BxXGIFw-6EKzvTho7yoQM" 
+         target="_blank"
+         style="font-size:0.82rem;color:var(--rose);font-weight:600;text-decoration:none;white-space:nowrap;border:1px solid rgba(240,213,204,0.3);padding:8px 16px;border-radius:2px;transition:all 0.3s;"
+         onmouseover="this.style.background='rgba(240,213,204,0.1)'"
+         onmouseout="this.style.background='transparent'">
+        Alle 9 Videos auf YouTube →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- SABINE -->
+<section class="sabine reveal">
+  <div class="inner">
+    <div class="sabine-photo">
+      <img src="sabine2.webp" alt="Sabine Kaya">
+    </div>
+    <div class="sabine-text">
+      <span class="label">Wer ich bin</span>
+      <h2>Ich lebe, was ich lehre —<br>im Einklang mit meinem Zyklus.</h2>
+      <p>Nach über 25 Jahren in Führungsassistenz und Office Management wurde ich Anfang 2026 entlassen. In diesem Moment wurde mir klar: Ich will <strong>nie wieder in einem System funktionieren, das meinen natürlichen Rhythmus ignoriert.</strong></p>
+      <p>Zykluswissen hat meine Sicht auf Arbeit, Energie und Erfolg komplett verändert. Ich weiss jetzt, wann ich Gespräche führe, wann ich plane, wann ich kreativ bin — und wann ich einfach ruhe. <strong>Mein Business passt sich mir an, nicht umgekehrt.</strong></p>
+      <p>Genau das möchte ich mit dir teilen — für Frauen, die verstehen, dass ihr Zyklus kein Hindernis ist, sondern ihr grösster Hebel.</p>
+    </div>
+  </div>
+</section>
+
+<!-- KONTAKT -->
+<section class="kontakt reveal" id="kontakt">
+  <div class="inner">
+    <span class="label" style="border-left-color:var(--rose-dark);color:var(--rose-dark);display:inline-block;margin-bottom:16px;">Dein nächster Schritt</span>
+    <h2>Bereit, mehr zu erfahren?</h2>
+    <p class="lead">Ich schicke dir die Präsentation — und zeige dir, wie Zykluswissen und ein eigenes Business zusammenpassen. Füll kurz das Formular aus oder schreib mir direkt.</p>
+
+    <div class="form-box">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Vorname</label>
+          <input type="text" id="f-name" placeholder="Vorname">
+        </div>
+        <div class="form-group">
+          <label>Nachname</label>
+          <input type="text" id="f-lastname" placeholder="Nachname">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Deine WhatsApp Nummer</label>
+        <input type="tel" id="f-phone" placeholder="+41 79 123 45 67">
+      </div>
+      <div class="form-group">
+        <label>Ich interessiere mich für</label>
+        <select id="f-interest">
+            <option value="">Bitte wählen …</option>
+            <option value="ein eigenes Business das zu meinem Zyklus passt">Ein eigenes Business im Einklang mit meinem Zyklus</option>
+            <option value="das C9-Programm als Einstieg in ein gesünderes Wohlbefinden">Das C9-Programm — Einstieg in ein gesünderes Wohlbefinden</option>
+            <option value="beides — Business und Produkte">Beides — Business & Produkte</option>
+          </select>
+      </div>
+      <div class="form-group">
+        <label>Sag mir noch kurz — was ist deine grösste Motivation, etwas zu verändern?</label>
+        <textarea id="f-message" placeholder="Was beschäftigt dich? Was wünschst du dir?"></textarea>
+      </div>
+      <button class="form-submit" onclick="sendWA()">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Präsentation anfordern via WhatsApp
+      </button>
+      <div class="divider-or">oder</div>
+      <a href="https://wa.me/41768163836?text=Hallo%20Sabine%2C%20ich%20m%C3%B6chte%20mehr%20erfahren." target="_blank" class="btn-wa">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Direkt auf WhatsApp schreiben
+      </a>
+      <p class="form-note">Kein Spam. Keine Weitergabe. Persönliche Antwort innerhalb 24h.</p>
+        <div style="text-align:center;margin-top:20px;padding-top:20px;border-top:1px solid var(--rose-soft);">
+          <p style="font-size:0.78rem;color:var(--text-light);margin-bottom:8px;">Noch unsicher? Starte hier kostenlos:</p>
+          <a href="https://remotesisterhood.github.io/darmchallenge" target="_blank" style="font-size:0.84rem;color:var(--forest);font-weight:600;text-decoration:none;">→ Kostenlose 30-Tage-Darm-Challenge</a>
+        </div>
+
+      <div class="promise-row">
+        <div class="promise-item">
+          <span class="p-icon">💌</span>
+          <p><strong>Persönlich</strong>Ich antworte selbst — kein Bot.</p>
+        </div>
+        <div class="promise-item">
+          <span class="p-icon">🎯</span>
+          <p><strong>Passend</strong>Du bekommst die Präsentation, die zu dir passt.</p>
+        </div>
+        <div class="promise-item">
+          <span class="p-icon">🕊️</span>
+          <p><strong>Ohne Druck</strong>Ein Gespräch, keine Verpflichtung.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>
+    © 2026 Sabine Kaya · @remote_sisterhood · 4304 Giebenach, Schweiz<br>
+    <a href="#" onclick="openModal('modal-impressum');return false;">Impressum</a> ·
+    <a href="#" onclick="openModal('modal-datenschutz');return false;">Datenschutz</a>
+  </p>
+</footer>
+
+<!-- IMPRESSUM -->
+<div class="modal-overlay" id="modal-impressum">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-impressum')">✕</button>
+    <h2>Impressum</h2><hr class="modal-divider">
+    <h3>Angaben gemäss Art. 3 UWG</h3>
+    <p><strong>Sabine Kaya</strong><br>Einzelunternehmerin<br>4304 Giebenach, Schweiz</p>
+    <p><strong>E-Mail:</strong> <a href="mailto:hollaswelt20@gmail.com">hollaswelt20@gmail.com</a><br>
+    <strong>Instagram:</strong> <a href="https://instagram.com/remote_sisterhood" target="_blank">@remote_sisterhood</a></p>
+    <p><strong>UID:</strong> Noch nicht eingetragen &nbsp;·&nbsp; <strong>MWST:</strong> Nicht pflichtig</p>
+    <hr class="modal-divider">
+    <h3>Tätigkeit</h3>
+    <p>Selbstständige Partnerin von Forever Living Products (FLP) und Mitglied des Konzepts „Die 10-Stunden-Woche".</p>
+    <h3>Haftungsausschluss</h3>
+    <p>Inhalte wurden mit Sorgfalt erstellt. Für externe Links wird keine Haftung übernommen. Produktangaben ersetzen keine medizinische Beratung.</p>
+  </div>
+</div>
+
+<!-- DATENSCHUTZ -->
+<div class="modal-overlay" id="modal-datenschutz">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-datenschutz')">✕</button>
+    <h2>Datenschutzerklärung</h2>
+    <p style="font-size:0.76rem;color:#aaa;">Gemäss Schweizer revDSG, in Kraft seit 1. September 2023</p>
+    <hr class="modal-divider">
+    <h3>Verantwortliche Person</h3>
+    <p>Sabine Kaya · 4304 Giebenach · <a href="mailto:hollaswelt20@gmail.com">hollaswelt20@gmail.com</a></p>
+    <h3>Datenerfassung</h3>
+    <p>Diese Website speichert keine Daten direkt. Kontaktaufnahme erfolgt über WhatsApp (Meta). Übermittelte Angaben werden ausschliesslich zur Beantwortung deiner Anfrage verwendet.</p>
+    <h3>Hosting</h3>
+    <p>GitHub Pages (GitHub Inc., USA). Weitere Infos: <a href="https://docs.github.com/de/site-policy/privacy-policies/github-privacy-statement" target="_blank">GitHub Privacy Statement</a></p>
+    <h3>Deine Rechte</h3>
+    <ul><li>Auskunft, Berichtigung und Löschung deiner Daten</li></ul>
+    <p>Kontakt: <a href="mailto:hollaswelt20@gmail.com">hollaswelt20@gmail.com</a></p>
+    <p style="font-size:0.75rem;color:#aaa;margin-top:14px;">Stand: April 2026</p>
+  </div>
+</div>
+
+<script>
+  function sendWA() {
+    const name = document.getElementById('f-name').value.trim();
+    const lastname = document.getElementById('f-lastname').value.trim();
+    const phone = document.getElementById('f-phone').value.trim();
+    const interest = document.getElementById('f-interest').value;
+    const msg = document.getElementById('f-message').value.trim();
+    if (!name || !lastname || !phone || !interest || !msg) { alert('Bitte füll alle Felder aus.'); return; }
+    let text = `Hallo Sabine! Ich bin ${name} ${lastname} (WhatsApp: ${phone}) und interessiere mich für: ${interest}. Meine Motivation: ${msg}`;
+    text += ` Kannst du mir die Präsentation schicken?`;
+    window.open(`https://wa.me/41768163836?text=${encodeURIComponent(text)}`, '_blank');
+  }
+  function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+  document.querySelectorAll('.modal-overlay').forEach(o => {
+    o.addEventListener('click', function(e) { if(e.target===this) closeModal(this.id); });
+  });
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
