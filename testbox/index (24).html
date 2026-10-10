@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="description" content="10 kurze Fragen zu Haut, Haaren und Wohlbefinden. Danach stelle ich deine persönliche Testbox zusammen.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Welche Testbox passt zu dir? | Remote Sisterhood">
+<meta property="og:description" content="10 kurze Fragen, 2 Minuten. Danach stelle ich deine persönliche Testbox zusammen.">
+<meta property="og:locale" content="de_CH">
+<title>Welche Testbox passt zu dir? | Remote Sisterhood</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Lato:wght@400;700&family=Dancing+Script:wght@600&display=swap">
+<style>
+/* Layout: one calm column, one question per card, progress as aloe leaf segments */
+:root{color-scheme:light;
+  --bg:#f6f5ef; --surface:#ffffff; --ink:#24302a; --muted:#5f6b63; --line:#dcdfd3;
+  --aloe:#3f6b4f; --aloe-soft:#e3ece2; --gold:#a8833c; --warn:#8a4b2b; --warn-soft:#f6e9df;
+  --display:"Playfair Display",Georgia,"Times New Roman",serif;
+  --body:"Lato","Helvetica Neue",Arial,sans-serif;
+  --script:"Dancing Script","Brush Script MT",cursive;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#161b18; --surface:#1f2622; --ink:#e9ece4; --muted:#a6b0a7; --line:#323b35;
+  --aloe:#8fbf98; --aloe-soft:#25342a; --gold:#d6b26a; --warn:#e3a27f; --warn-soft:#3a2a22; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#161b18; --surface:#1f2622; --ink:#e9ece4; --muted:#a6b0a7; --line:#323b35;
+  --aloe:#8fbf98; --aloe-soft:#25342a; --gold:#d6b26a; --warn:#e3a27f; --warn-soft:#3a2a22; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;padding-inline:16px;padding-block:28px 48px}
+.wrap{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+header{display:flex;flex-direction:column;gap:6px}
+.kicker{font-family:var(--script);color:var(--gold);font-size:1.5rem;line-height:1}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(1.7rem,5vw,2.3rem);line-height:1.15;margin:0;text-wrap:balance}
+.lead{color:var(--muted);margin:0;max-width:60ch}
+.progress{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+.progress span{height:6px;border-radius:6px 0 6px 0;background:var(--line);transition:background .25s}
+.progress span.on{background:var(--aloe)}
+.step-label{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 20px;display:flex;flex-direction:column;gap:16px}
+.card h2{font-family:var(--display);font-weight:500;font-size:1.35rem;line-height:1.25;margin:0;text-wrap:balance}
+.hint{color:var(--muted);font-size:.9rem;margin:-8px 0 0}
+.opts{display:grid;gap:8px}
+.opt{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;cursor:pointer;background:var(--surface);transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--aloe)}
+.opt input{accent-color:var(--aloe);width:18px;height:18px;flex:none;margin:0}
+.opt:has(input:checked){border-color:var(--aloe);background:var(--aloe-soft)}
+.opt:has(input:focus-visible){outline:2px solid var(--gold);outline-offset:2px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:700;font-size:.92rem}
+.field input{font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.field input:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:.9rem;color:var(--muted)}
+.consent input{accent-color:var(--aloe);width:18px;height:18px;margin-top:3px;flex:none}
+.nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+button{font:inherit;font-weight:700;border-radius:999px;padding:12px 22px;cursor:pointer;border:1px solid var(--aloe)}
+.primary{background:var(--aloe);color:var(--surface)}
+.ghost{background:transparent;color:var(--aloe)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.err{color:var(--warn);font-size:.9rem;margin:0}
+.done{text-align:left}
+.msgbox{white-space:pre-wrap;word-break:break-word;font-size:.85rem;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:12px;color:var(--muted)}
+.send{display:flex;flex-wrap:wrap;gap:10px}
+.send a{display:inline-flex;text-decoration:none}
+.note{font-size:.82rem;color:var(--muted)}
+.fine{font-size:.78rem;color:var(--muted);text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <span class="kicker">Remote Sisterhood</span>
+    <h1>Welche Testbox passt zu dir?</h1>
+    <p class="lead">10 kurze Fragen zu Haut, Haaren und Wohlbefinden. Danach stelle ich deine persönliche Forever-Testbox zusammen und melde mich per WhatsApp bei dir.</p>
+  </header>
+
+  <div class="progress" id="progress" aria-hidden="true"></div>
+  <div class="step-label" id="stepLabel">Frage 1 von 10</div>
+
+  <form id="quiz" class="card" novalidate></form>
+
+  <p class="fine">Deine Angaben dienen nur der Auswahl deiner Testprodukte und werden nicht weitergegeben. Kein Ersatz für ärztlichen Rat.</p>
+</div>
+
+<script>
+/* ===== Einstellungen: Sabines Kontakt ===== */
+const SABINE_WHATSAPP = "41768163836";   // +41 76 816 38 36
+
+const Q = [
+ {id:"q1",short:"Interesse",type:"multi",title:"Wofür interessierst du dich für deine Testbox?",hint:"Mehrere Antworten möglich.",
+  opts:[["H","Haare"],["K","Haut- und Körperpflege"],["G","Gewichtsmanagement"],["W","Wohlbefinden & innere Balance"]]},
+ {id:"q2",short:"Hauttyp",type:"single",title:"Wie würdest du deinen Hauttyp beschreiben?",
+  opts:[["t","Eher trocken"],["f","Eher fettig, glänzt schnell"],["m","Mischhaut (T-Zone fettig, Wangen trocken)"],["n","Normal, unkompliziert"],["s","Empfindlich, reagiert schnell"],["x","Weiss ich nicht genau"]]},
+ {id:"q3",short:"Hautthemen",type:"multi",title:"Was beschäftigt dich bei deiner Haut gerade am meisten?",hint:"Mehrere Antworten möglich.",
+  opts:[["tr","Trockenheit, Spannungsgefühl"],["un","Unreinheiten, Pickelchen"],["fa","Fältchen, nachlassende Spannkraft"],["ro","Rötungen, Haut ist schnell gereizt"],["pi","Pigmentflecken, fahler Teint"],["ri","Raue Hände, Füsse oder Lippen"],["ke","Nichts Bestimmtes"]]},
+ {id:"q4",short:"Hauterkrankung",type:"single",title:"Hast du eine ärztlich festgestellte Hauterkrankung?",hint:"Damit ich nur Produkte auswähle, die zu dir passen.",
+  opts:[["no","Nein"],["nd","Neurodermitis oder Ekzem"],["ps","Schuppenflechte (Psoriasis)"],["rs","Rosazea"],["ak","Akne in ärztlicher Behandlung"],["an","Eine andere"],["ka","Möchte ich nicht angeben"]]},
+ {id:"q5",short:"Haare & Kopfhaut",type:"multi",title:"Wie geht es deinen Haaren und deiner Kopfhaut?",hint:"Mehrere Antworten möglich.",
+  opts:[["tr","Trocken oder strapaziert"],["fe","Werden schnell fettig"],["sc","Schuppen oder juckende Kopfhaut"],["du","Werden dünner, ich verliere mehr Haare"],["ge","Gefärbt oder blondiert"],["ke","Alles gut"]]},
+ {id:"q6",short:"Alter",type:"single",title:"Wie alt bist du?",
+  opts:[["a","18–29"],["b","30–39"],["c","40–49"],["d","50 oder älter"]]},
+ {id:"q7",short:"Wunsch Körper & Wohlbefinden",type:"multi",title:"Was wünschst du dir für Körper und Wohlbefinden?",hint:"Mehrere Antworten möglich.",
+  opts:[["ki","Ein paar Kilo verlieren"],["st","Einen strukturierten Neustart bei der Ernährung"],["sa","Weniger Heisshunger, länger satt"],["en","Mehr Energie im Alltag"],["ve","Ein besseres Bauchgefühl"],["ke","Nichts davon"]]},
+ {id:"q8",short:"Besonderheiten",type:"multi",title:"Trifft etwas davon auf dich zu?",hint:"Wichtig, damit ich sicher auswähle. Mehrere Antworten möglich.",
+  opts:[["sw","Ich bin schwanger oder stille"],["me","Ich nehme regelmässig Medikamente"],["bi","Allergie gegen Bienenprodukte (Honig, Propolis, Bienenwachs)"],["al","Allergie gegen Aloe Vera"],["ni","Nichts davon"]]},
+ {id:"q9",short:"Pflegezeit",type:"single",title:"Wie viel Zeit nimmst du dir für deine Pflege?",
+  opts:[["1","So wenig wie möglich, 2 Minuten"],["2","5 bis 10 Minuten am Tag"],["3","Ich liebe ausgiebige Pflegerituale"]]},
+ {id:"q10",type:"contact",title:"Fast geschafft. Wie erreiche ich dich?"}
+];
+const EXCLUSIVE = {q3:"ke",q5:"ke",q7:"ke",q8:"ni"};
+const A = {}; let step = 0;
+const form = document.getElementById("quiz");
+const prog = document.getElementById("progress");
+prog.innerHTML = Q.map(()=>"<span></span>").join("");
+
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+function render(){
+  const q = Q[step];
+  [...prog.children].forEach((s,i)=>s.classList.toggle("on",i<=step));
+  document.getElementById("stepLabel").textContent = `Frage ${step+1} von ${Q.length}`;
+  let h = `<h2>${esc(q.title)}</h2>`;
+  if(q.hint) h += `<p class="hint">${esc(q.hint)}</p>`;
+  if(q.type==="contact"){
+    const c = A.q10||{};
+    h += `<div class="field"><label for="f-name">Vorname und Name</label><input id="f-name" autocomplete="name" value="${esc(c.n||"")}"></div>
+      <div class="field"><label for="f-contact">Deine WhatsApp-Nummer</label><input id="f-contact" type="tel" inputmode="tel" autocomplete="tel" placeholder="z. B. 079 123 45 67" value="${esc(c.c||"")}"></div>
+      <label class="consent" for="f-age"><input type="checkbox" id="f-age" ${c.age?"checked":""}> Ich bin mindestens 18 Jahre alt.</label>
+      <label class="consent" for="f-ok"><input type="checkbox" id="f-ok" ${c.ok?"checked":""}> Ich willige ausdrücklich ein, dass Sabine Kaya (Remote Sisterhood) meine Angaben, auch die zu Haut und Gesundheit, nutzt, um meine Testbox zusammenzustellen und mich dazu zu kontaktieren. Ich kann die Einwilligung jederzeit widerrufen.</label>`;
+  } else {
+    const t = q.type==="multi"?"checkbox":"radio";
+    const cur = A[q.id]||[];
+    h += `<div class="opts" role="group">` + q.opts.map(([v,l])=>
+      `<label class="opt" for="${q.id}-${v}"><input type="${t}" name="${q.id}" id="${q.id}-${v}" value="${v}" ${cur.includes(v)?"checked":""}><span>${esc(l)}</span></label>`).join("") + `</div>`;
+  }
+  h += `<p class="err" id="err" hidden></p><div class="nav">
+    <button type="button" class="ghost" id="back" ${step===0?"disabled":""}>Zurück</button>
+    <button type="submit" class="primary">${step===Q.length-1?"Absenden":"Weiter"}</button></div>`;
+  form.innerHTML = h;
+  if(q.type!=="contact"){
+    form.querySelectorAll("input").forEach(inp=>inp.addEventListener("change",()=>{
+      const ex = EXCLUSIVE[q.id];
+      if(q.type==="multi" && ex && inp.checked){
+        form.querySelectorAll("input").forEach(o=>{ if(inp.value===ex ? o!==inp : o.value===ex) o.checked=false; });
+      }
+    }));
+  }
+  document.getElementById("back").onclick=()=>{save(false); step--; render();};
+}
+
+function save(validate){
+  const q = Q[step]; const err = document.getElementById("err");
+  if(q.type==="contact"){
+    const c = {n:document.getElementById("f-name").value.trim(), c:document.getElementById("f-contact").value.trim(),
+      age:document.getElementById("f-age").checked, ok:document.getElementById("f-ok").checked};
+    A.q10 = c;
+    if(!validate) return true;
+    if(!c.n || !c.c){err.textContent="Bitte gib deinen Namen und deine WhatsApp-Nummer an."; err.hidden=false; return false;}
+    if((c.c.match(/\d/g)||[]).length<9 || /[^\d\s+()\/.-]/.test(c.c)){err.textContent="Bitte gib eine gültige Handynummer ein, z. B. 079 123 45 67."; err.hidden=false; return false;}
+    if(!c.age){err.textContent="Die Testbox ist nur für Personen ab 18 Jahren."; err.hidden=false; return false;}
+    if(!c.ok){err.textContent="Ohne deine Einwilligung kann ich deine Testbox nicht zusammenstellen."; err.hidden=false; return false;}
+    return true;
+  }
+  const vals = [...form.querySelectorAll("input:checked")].map(i=>i.value);
+  A[q.id] = vals;
+  if(validate && !vals.length){err.textContent="Bitte wähle mindestens eine Antwort."; err.hidden=false; return false;}
+  return true;
+}
+
+
+function finish(){
+  const lines = Q.filter(q=>q.type!=="contact").map((q,i)=>{
+    const txt = (A[q.id]||[]).map(v=>(q.opts.find(o=>o[0]===v)||[,v])[1]).join("; ");
+    return `${i+1}. ${q.short}: ${txt}`;
+  });
+  const msg = `Hallo Sabine, hier sind meine Antworten aus dem Testbox-Quiz.\n\nName: ${A.q10.n}\nWhatsApp: ${A.q10.c}\n\n${lines.join("\n")}`;
+  const wa = `https://wa.me/${SABINE_WHATSAPP}?text=${encodeURIComponent(msg)}`;
+  document.getElementById("stepLabel").textContent = "Fertig";
+  [...prog.children].forEach(s=>s.classList.add("on"));
+  form.className = "card done";
+  form.innerHTML = `<h2>Danke, ${esc(A.q10.n.split(" ")[0])}! Ein Schritt noch.</h2>
+    <p style="margin:0">Schick mir deine Antworten mit einem Klick. Ich stelle daraus deine persönliche Testbox zusammen und melde mich in den nächsten Tagen bei dir.</p>
+    <div class="send">
+      <a href="${wa}" target="_blank" rel="noopener"><button type="button" class="primary">Per WhatsApp an Sabine senden</button></a>
+      <button type="button" class="ghost" id="copy">Nachricht kopieren</button>
+    </div>
+    <p class="note">Falls sich WhatsApp nicht öffnet: Nachricht kopieren und an <strong style="user-select:all">+41 76 816 38 36</strong> senden.</p>
+    <div class="msgbox" id="msg">${esc(msg)}</div>
+    <p class="note" id="copied" hidden>Kopiert. Füge die Nachricht jetzt in WhatsApp ein.</p>`;
+  document.getElementById("copy").onclick = async ()=>{
+    try{ await navigator.clipboard.writeText(msg); document.getElementById("copied").hidden=false; }
+    catch(e){ const r=document.createRange(); r.selectNodeContents(document.getElementById("msg")); const s=getSelection(); s.removeAllRanges(); s.addRange(r); }
+  };
+}
+
+form.addEventListener("submit",e=>{
+  e.preventDefault();
+  if(!save(true)) return;
+  if(step<Q.length-1){ step++; render(); window.scrollTo({top:0,behavior:"smooth"}); }
+  else finish();
+});
+render();
+</script>
+
+</body>
+</html>
