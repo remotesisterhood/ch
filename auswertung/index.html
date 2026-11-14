@@ -136,7 +136,7 @@ dt{color:var(--muted)} dd{margin:0;min-width:0}
 .saved .open{flex:1;min-width:0;text-align:left;border:0;background:transparent;color:var(--ink);padding:8px 10px;border-radius:8px;font-weight:400;display:flex;flex-direction:column;gap:0}
 .saved .open:hover{background:var(--aloe-soft)}
 .saved .open.active{background:var(--aloe-soft);box-shadow:inset 3px 0 0 var(--aloe)}
-.saved .open b{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.saved .open b{font-weight:700;line-height:1.25;overflow-wrap:anywhere}
 .saved .open span{font-size:.75rem;color:var(--muted)}
 .saved .del{border:0;background:transparent;color:var(--muted);padding:6px 8px;font-size:.75rem;font-weight:700;border-radius:8px;white-space:nowrap}
 .saved .del:hover{color:var(--warn)}
@@ -146,7 +146,8 @@ dt{color:var(--muted)} dd{margin:0;min-width:0}
 .saved .tick{border:1px solid var(--line);background:transparent;color:var(--muted);width:30px;height:30px;padding:0;border-radius:50%;font-size:.85rem;flex:none;display:inline-flex;align-items:center;justify-content:center}
 .saved .tick:hover{border-color:var(--aloe);color:var(--aloe)}
 .saved .tick.on{background:var(--aloe);border-color:var(--aloe);color:var(--surface)}
-.saved li.is-done .open b{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+.saved li.is-done{background:var(--aloe-soft);border-radius:10px}
+.saved li.is-done .open:hover,.saved li.is-done .open.active{background:transparent}
 .donebtn.on{background:var(--aloe-soft)}
 .saved .del.confirm{color:var(--warn);background:var(--warn-soft)}
 .saved .hint{font-size:.78rem;color:var(--muted);margin:0}
@@ -467,6 +468,7 @@ let ACTIVE=null, DEL_PENDING=null, FILTER=""; const PICKED=new Set();
 /* Ansicht der Liste: offen, fertig oder alle (wird im Browser gemerkt) */
 let STATUS="offen"; try{ const v=localStorage.getItem("rs_testbox_ansicht"); if(["offen","fertig","alle"].includes(v)) STATUS=v; }catch(e){}
 const isDone=e=>!!e.done;
+function nameLines(n){ const p=String(n||"Ohne Namen").trim().split(/\s+/); let nach=p.length>1?p.pop():""; while(p.length>1&&/^(von|van|de|di|da|del|der|den|zu|du|la|le)$/i.test(p[p.length-1])) nach=p.pop()+" "+nach; return esc(p.join(" "))+(nach?"<br>"+esc(nach):""); }
 function visibleList(){ return STORE.filter(e=>(!FILTER||String(e.a.n||"").toLowerCase().includes(FILTER)) && (STATUS==="alle"||(STATUS==="fertig")===isDone(e))); }
 function setDone(k,val){ const e=STORE.find(x=>x.k===k); if(!e) return; e.done=val; e.doneAt=val?Date.now():null; saveAll(); renderList(); syncDoneBtn(); }
 function syncDoneBtn(){ document.querySelectorAll(".donebtn").forEach(b=>{ const e=STORE.find(x=>x.k===b.dataset.k); const on=!!(e&&e.done); b.classList.toggle("on",on); b.textContent=on?"✓ Abgeschlossen, wieder öffnen":"Als abgeschlossen markieren"; }); }
@@ -504,7 +506,7 @@ function renderList(){
     ${!CAN_STORE?`<p class="hint">Speichern ist in diesem Browser nicht möglich, z. B. im privaten Modus.</p>`:
       STORE.length?`<label class="pickall" for="pickall"><input type="checkbox" id="pickall" ${list.length&&list.every(e=>PICKED.has(e.k))?"checked":""}> Alle auswählen</label>
       ${list.length?"":`<p class="hint">${STATUS==="offen"?"Keine offenen Testerinnen. Alles erledigt!":STATUS==="fertig"?"Noch keine abgeschlossen. Hake eine Testerin mit ✓ ab, wenn alles erledigt ist.":"Keine Treffer."}</p>`}
-      <ul>${list.map(e=>`<li class="${isDone(e)?"is-done":""}"><input type="checkbox" class="pick" data-k="${esc(e.k)}" id="pick-${esc(e.k)}" aria-label="${esc(e.a.n||"Ohne Namen")} für Adressen auswählen" ${PICKED.has(e.k)?"checked":""}><button type="button" class="open ${ACTIVE===e.k?"active":""}" data-k="${esc(e.k)}"><b>${esc(e.a.n||"Ohne Namen")}</b><span>${e.a.v===2&&e.a.q1&&BOXNAME[e.a.q1[0]]?esc(BOXNAME[e.a.q1[0]])+" · ":""}${isDone(e)&&e.doneAt?"fertig "+new Date(e.doneAt).toLocaleDateString("de-CH"):new Date(e.t).toLocaleDateString("de-CH")}${e.sel?` · ${e.sel.length+(e.custom||[]).filter(Boolean).length} Produkte`:""}</span></button><button type="button" class="tick ${isDone(e)?"on":""}" data-k="${esc(e.k)}" aria-label="${isDone(e)?"Wieder öffnen":"Als abgeschlossen markieren"}" title="${isDone(e)?"Wieder öffnen":"Abgeschlossen"}">✓</button><button type="button" class="del ${DEL_PENDING===e.k?"confirm":""}" data-k="${esc(e.k)}" aria-label="Auswertung löschen">${DEL_PENDING===e.k?"Wirklich?":"✕"}</button></li>`).join("")}</ul>`
+      <ul>${list.map(e=>`<li class="${isDone(e)?"is-done":""}"><input type="checkbox" class="pick" data-k="${esc(e.k)}" id="pick-${esc(e.k)}" aria-label="${esc(e.a.n||"Ohne Namen")} für Adressen auswählen" ${PICKED.has(e.k)?"checked":""}><button type="button" class="open ${ACTIVE===e.k?"active":""}" data-k="${esc(e.k)}"><b>${nameLines(e.a.n)}</b><span>${e.a.v===2&&e.a.q1&&BOXNAME[e.a.q1[0]]?esc(BOXNAME[e.a.q1[0]])+" · ":""}${isDone(e)&&e.doneAt?"fertig "+new Date(e.doneAt).toLocaleDateString("de-CH"):new Date(e.t).toLocaleDateString("de-CH")}${e.sel?` · ${e.sel.length+(e.custom||[]).filter(Boolean).length} Produkte`:""}</span></button><button type="button" class="tick ${isDone(e)?"on":""}" data-k="${esc(e.k)}" aria-label="${isDone(e)?"Wieder öffnen":"Als abgeschlossen markieren"}" title="${isDone(e)?"Wieder öffnen":"Abgeschlossen"}">✓</button><button type="button" class="del ${DEL_PENDING===e.k?"confirm":""}" data-k="${esc(e.k)}" aria-label="Auswertung löschen">${DEL_PENDING===e.k?"Wirklich?":"✕"}</button></li>`).join("")}</ul>`
       :`<p class="hint">Noch nichts gespeichert. Jede Auswertung landet automatisch hier.</p>`}
     ${PICKED.size?`<div class="addrbar"><b>${PICKED.size} ausgewählt</b>
       <button type="button" class="primary" id="addrCopy">Adressen kopieren</button>
