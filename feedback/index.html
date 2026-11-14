@@ -115,13 +115,14 @@ const QUIZ_URL = "https://remotesisterhood.ch/testbox/";
 
 /* Dieselben Produkt-Kürzel wie in der Auswertung */
 const PRODUCTS = {
-  shampoo:"Aloe-Jojoba Shampoo", conditioner:"Aloe-Jojoba Conditioner", hairoil:"Hair Oil",
+  shampoo:"Aloe-Jojoba Shampoo", conditioner:"Aloe-Jojoba Conditioner", hairoil:"Nourishing Hair Oil",
   gelly:"Aloe Vera Gelly", propolis:"Aloe Propolis Creme", moist:"Logic Soothing Moisturizing Creme",
   toner:"Logic Toner", eye:"Eye Creme", renew:"Renewing Skin Creme", lotion:"Aloe Body Lotion",
   wash:"Aloe Body Wash", cooling:"Aloe Cooling Lotion", msm:"MSM Creme", first:"Aloe First Spray",
   soap:"Aloe Liquid Soap", bright:"Forever Bright Zahngel",
   moistlotion:"Aloe Moisturizing Lotion", lips:"Forever Aloe Lips",
-  serum:"Forever Hydrating Serum", daynight:"Forever Day-to-Night Duo", argi:"Forever ARGI+", fiber:"Forever Fiber Fusion"
+  serum:"Forever Hydrating Serum", daynight:"Forever Day-to-Night Duo", argi:"Forever ARGI+", fiber:"Forever Fiber Fusion",
+  lite:"Forever Lite Ultra Shake"
 };
 const KEEP = [["ja","Möchte ich behalten"],["vielleicht","Vielleicht"],["nein","Eher nicht"],["offen","Noch nicht getestet"]];
 
@@ -130,14 +131,20 @@ let params; try{ params = new URLSearchParams(location.search); }catch(e){ param
 const preName = (params.get("n")||"").slice(0,40);
 const preProds = (params.get("p")||"").split(".").filter(id=>PRODUCTS[id]);
 const preCustom = (params.get("x")||"").split("|").map(t=>t.trim().slice(0,60)).filter(Boolean).slice(0,4);
-const S = { name:preName, prods:[...preProds, ...preCustom.map((_,i)=>"b"+i)], overall:"", rate:{}, keep:{}, fav:"", comment:"", perk:"", story:"", refs:[{},{},{}], extras:[], custom:["",""], noextra:false };
+const S = { next:"", name:preName, prods:[...preProds, ...preCustom.map((_,i)=>"b"+i)], overall:"", rate:{}, keep:{}, fav:"", comment:"", perk:"", story:"", refs:[{},{},{}], extras:[], custom:["",""], noextra:false };
+/* Welche Box hat sie getestet? ?b=H oder ?b=K, sonst aus den Produkten erkannt */
+const HAIR_IDS=["shampoo","conditioner","hairoil"];
+const preBox=["H","K"].includes(params.get("b"))?params.get("b"):"";
+const testedBox=()=>preBox||(S.prods.some(id=>HAIR_IDS.includes(id))?"H":(S.prods.length?"K":""));
+const otherBox=()=>({H:"Gesicht- und Hautbox",K:"Haarbox"}[testedBox()]||"andere Testbox");
+const QUIZ_BOX_URL=()=>"https://remotesisterhood.ch/testbox/"+({H:"?box=K",K:"?box=H"}[testedBox()]||"");
 const LIST=()=>[...S.prods, ...S.extras.filter(id=>!S.prods.includes(id)), ...S.custom.map((c,i)=>c.trim()?"c"+i:null).filter(Boolean)];
 const NAME=id=>PRODUCTS[id]||(id[0]==="c"?S.custom[+id.slice(1)].trim():id[0]==="b"?preCustom[+id.slice(1)]:id);
 const isExtra=id=>!S.prods.includes(id);
 
 const STEPS = [];
 if(!preProds.length && !preCustom.length) STEPS.push("pick");
-STEPS.push("extra","overall","products","fav","perk","refs","finish");
+STEPS.push("extra","overall","products","fav","perk","next","refs","finish");
 
 if(preName) document.getElementById("hello").textContent = `Hallo ${preName}, wie war deine Testbox?`;
 const form = document.getElementById("f"), prog = document.getElementById("progress");
@@ -174,6 +181,9 @@ const VIEW = {
     <div class="perk"><strong>Als Dankeschön für deinen Test</strong><span>Du bekommst einmalig <b>20 % Rabatt</b> auf deine nächste Bestellung. Danach erhältst du als Stammkundin dauerhaft <b>10 % Treuerabatt</b>.</span></div>
     <p class="hint" style="margin:0">Ganz ohne Verpflichtung: Wie möchtest du es handhaben?</p>
     <div class="opts">${[["angebot","Schick mir gern eine Übersicht mit meinem Rabatt für die Produkte, die ich behalten möchte"],["spaeter","Ich melde mich selbst, wenn ich nachbestellen möchte"],["nein","Im Moment nicht, danke"]].map(([v,l])=>`<label class="opt" for="perk-${v}"><input type="radio" name="perk" id="perk-${v}" value="${v}" ${S.perk===v?"checked":""}><span>${l}</span></label>`).join("")}</div>`,
+  next:()=>`<h2>Möchtest du als Nächstes auch die ${esc(otherBox())} testen?</h2>
+    <p class="hint">Ich verschicke eine Box nach der anderen, damit du jede in Ruhe testen kannst. Wenn du magst, schicke ich dir dafür einen kurzen Fragebogen.</p>
+    <div class="opts">${[["ja","Ja, sehr gerne"],["spaeter","Vielleicht später"],["nein","Nein, danke"]].map(([v,l])=>`<label class="opt" for="nx-${v}"><input type="radio" name="next" id="nx-${v}" value="${v}" ${S.next===v?"checked":""}><span>${l}</span></label>`).join("")}</div>`,
   refs:()=>`<h2>Wem in deinem Umfeld würde eine Testbox auch Freude machen?</h2>
     <p class="hint">Freundin, Schwester, Mama, Kollegin? Ich freue mich sehr über jede Empfehlung. Komplett freiwillig, du kannst diesen Schritt auch überspringen.</p>
     ${S.refs.map((r,i)=>`<div class="ref">
@@ -223,6 +233,7 @@ function save(validate){
   }
   if(k==="fav"){ S.fav=document.getElementById("fav").value; S.comment=document.getElementById("comment").value.trim(); }
   if(k==="perk"){ S.perk=val("perk"); if(validate&&!S.perk) return fail("Bitte wähle eine Antwort."); }
+  if(k==="next"){ S.next=val("next"); if(validate&&!S.next) return fail("Bitte wähle eine Antwort."); }
   if(k==="refs"){
     S.refs = S.refs.map((_,i)=>({n:document.getElementById("rn-"+i).value.trim(), r:document.getElementById("rr-"+i).value,
       t:document.getElementById("rt-"+i).value.trim(), ok:document.getElementById("rc-"+i).checked}));
@@ -248,6 +259,8 @@ function finish(){
     `Lieblingsprodukt: ${S.fav==="keins"?"keines so richtig":(S.fav?NAME(S.fav):"keine Angabe")}`,
     S.comment?`Kommentar: ${S.comment}`:null, ``,
     `Testerinnen-Vorteil: ${perkL[S.perk]}`,
+    `Zweite Box (${otherBox()}): ${({ja:"Ja, sehr gerne",spaeter:"Vielleicht später",nein:"Nein, danke"})[S.next]||"keine Angabe"}`,
+    ...(S.next==="ja"||S.next==="spaeter"?[`Fragebogen-Link für die zweite Box: ${QUIZ_BOX_URL()}`]:[]),
     `Erfahrungsbericht: ${storyL[S.story]}`,
     refs.length?`\nEmpfehlungen:\n${refs.join("\n")}`:`Empfehlungen: keine`
   ].filter(l=>l!==null).join("\n");
@@ -255,7 +268,7 @@ function finish(){
   [...prog.children].forEach(s=>s.classList.add("on"));
   document.getElementById("stepLabel").textContent = "Fertig";
   form.innerHTML = `<h2>Danke, ${esc(S.name)}! Ein Klick noch.</h2>
-    <p style="margin:0">Schick mir dein Feedback per WhatsApp. Ich lese jede Rückmeldung persönlich${S.perk==="angebot"?" und schicke dir deine Übersicht mit dem Testerinnen-Rabatt":""}.</p>
+    <p style="margin:0">Schick mir dein Feedback per WhatsApp. Ich lese jede Rückmeldung persönlich${S.perk==="angebot"?" und schicke dir deine Übersicht mit dem Testerinnen-Rabatt":""}${S.next==="ja"?`${S.perk==="angebot"?". Ausserdem bekommst du":" und schicke dir"} den kurzen Fragebogen für deine ${esc(otherBox())}`:""}.</p>
     <div class="send"><a href="${wa}" target="_blank" rel="noopener"><button type="button" class="primary">Per WhatsApp an Sabine senden</button></a>
     <button type="button" class="ghost" id="copy">Nachricht kopieren</button></div>
     <p class="note">Falls sich WhatsApp nicht öffnet: Nachricht kopieren und an <strong style="user-select:all">${SABINE_DISPLAY}</strong> senden.</p>

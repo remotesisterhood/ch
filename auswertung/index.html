@@ -164,7 +164,7 @@ dt{color:var(--muted)} dd{margin:0;min-width:0}
   <main class="main">
   <section class="panel">
     <label for="input" class="small">Nachricht(en) aus dem Testbox-Quiz</label>
-    <textarea id="input" placeholder="Hallo Sabine, hier sind meine Antworten aus dem Testbox-Quiz.&#10;&#10;Name: …&#10;WhatsApp: …&#10;1. Interesse: …"></textarea>
+    <textarea id="input" placeholder="Hallo Sabine, hier sind meine Antworten aus dem Testbox-Quiz.&#10;&#10;Name: …&#10;WhatsApp: …&#10;1. Testbox: …"></textarea>
     <div class="row">
       <button class="primary" id="go">Auswerten</button>
       <button class="ghost" id="demo">Beispiel ansehen</button>
@@ -177,46 +177,89 @@ dt{color:var(--muted)} dd{margin:0;min-width:0}
 
   </main>
   </div>
-  <p class="small">Die Auswertung wählt nur aus deinen Testbox-Produkten. Die Begründungen sind interne Notizen und keine Werbeaussagen: keine Heilversprechen an Testerinnen weitergeben.</p>
+  <p class="small">Die Auswertung wählt je Box nur aus deinen Testbox-Produkten. Die Begründungen sind interne Notizen und keine Werbeaussagen: keine Heilversprechen an Testerinnen weitergeben.</p>
 </div>
 
 <script>
-const L = {
- q1:{H:"Haare",K:"Haut- & Körperpflege",G:"Gewichtsmanagement",W:"Wohlbefinden"},
- q2:{t:"trocken",f:"fettig",m:"Mischhaut",n:"normal",s:"empfindlich",x:"weiss nicht"},
- q3:{tr:"Trockenheit",un:"Unreinheiten",fa:"Fältchen/Spannkraft",ro:"Rötungen/gereizt",pi:"Pigmentflecken/fahler Teint",ri:"raue Hände/Füsse/Lippen",ke:"nichts Bestimmtes"},
- q4:{no:"nein",nd:"Neurodermitis/Ekzem",ps:"Psoriasis",rs:"Rosazea",ak:"Akne in Behandlung",an:"andere",ka:"keine Angabe"},
- q5:{tr:"trocken/strapaziert",fe:"schnell fettig",sc:"Schuppen/juckende Kopfhaut",du:"dünner/mehr Haarausfall",ge:"gefärbt/blondiert",ke:"alles gut"},
- q6:{a:"18–29",b:"30–39",c:"40–49",d:"50+"},
- q7:{ki:"ein paar Kilo verlieren",st:"strukturierter Neustart",sa:"Heisshunger/Sättigung",en:"mehr Energie",ve:"Bauchgefühl",ke:"nichts davon"},
- q8:{sw:"schwanger/stillend",me:"nimmt regelmässig Medikamente",bi:"Allergie Bienenprodukte",gl:"Allergie/Unverträglichkeit Soja oder Gluten",fi:"Allergie Fisch",al:"Allergie Aloe Vera",ni:"nichts davon"},
- q9:{"1":"minimal (2 Min.)","2":"5–10 Min.","3":"ausgiebige Rituale"},
- q11:{w:"nur Wasser",s:"Seife/Duschgel",g:"Waschgel/Schaum",m:"Reinigungsmilch/Mizellenwasser",t:"Abschminktücher",o:"unterschiedlich"},
- q12:{to:"Toner",se:"Serum",fe:"Feuchtigkeitspflege",ey:"Augencreme",sp:"Sonnenschutz",pe:"Peeling/Maske",oe:"Gesichtsöl",ni:"nichts davon"},
- q13:{sh:"Shampoo",co:"Spülung",ku:"Haarkur",oe:"Haaröl/Leave-in",hi:"Hitze-Styling fast täglich",ni:"nur Shampoo"},
- q14:{t:"täglich",z:"alle 2–3 Tage",w:"1–2× pro Woche",s:"seltener"},
- q15:{fr:"frisch und ausgewogen",un:"unregelmässig/unterwegs",su:"Süsses/Snacks",gm:"wenig Obst und Gemüse",ve:"vegetarisch/vegan"},
- q16:{a:"unter 1 Liter",b:"1–2 Liter",c:"über 2 Liter"}
+/* ===== Fragen (gleich in Quiz und Auswertung) =====
+   block: H = Haarbox, K = Gesicht- und Hautbox, A = für alle */
+const Q = [
+ {id:"q1",short:"Testbox",block:"S",type:"single",title:"Welche Testbox möchtest du testen?",hint:"Du testest zuerst eine Box. Ob du danach auch die andere testen möchtest, kannst du mir am Ende deiner Testphase sagen.",
+  opts:[["H","Haarbox: Pflege für Haare und Kopfhaut"],["K","Gesicht- und Hautbox: Pflege für Gesicht und Körper"]]},
+
+ /* --- Haarbox --- */
+ {id:"hl",short:"Haarlänge",block:"H",type:"single",title:"Wie lang sind deine Haare?",
+  opts:[["k","Kurz, bis zum Kinn"],["s","Schulterlang"],["l","Lang, über die Schultern"],["x","Sehr lang, bis zur Brust oder länger"]]},
+ {id:"hd",short:"Haarstärke",block:"H",type:"single",title:"Wie fühlt sich ein einzelnes Haar an?",hint:"Nimm ein Haar zwischen zwei Finger.",
+  opts:[["f","Fein und dünn, kaum spürbar"],["m","Mittel"],["d","Kräftig und dick"]]},
+ {id:"hf",short:"Haarform",block:"H",type:"single",title:"Wie fallen deine Haare natürlich, ohne Styling?",
+  opts:[["g","Glatt"],["w","Wellig"],["l","Lockig"],["k","Kraus oder sehr stark gelockt"]]},
+ {id:"hb",short:"Haarbehandlungen",block:"H",type:"multi",title:"Was wurde in den letzten 12 Monaten mit deinen Haaren gemacht?",hint:"Mehrere Antworten möglich.",
+  opts:[["fa","Gefärbt oder getönt"],["bl","Blondiert oder Strähnchen"],["dw","Dauerwelle"],["gl","Chemisch geglättet oder Keratin-Behandlung"],["ex","Extensions"],["ni","Nichts davon"]]},
+ {id:"q14",short:"Haarwäsche",block:"H",type:"single",title:"Wie oft wäschst du deine Haare?",
+  opts:[["t","Täglich"],["z","Alle 2 bis 3 Tage"],["w","1 bis 2 Mal pro Woche"],["s","Seltener"]]},
+ {id:"hs",short:"Trocknen & Styling",block:"H",type:"multi",title:"Wie trocknest und stylst du deine Haare meistens?",hint:"Mehrere Antworten möglich.",
+  opts:[["lu","An der Luft trocknen lassen"],["fo","Föhnen"],["gi","Glätteisen"],["lo","Lockenstab oder Welleisen"],["zo","Oft im Zopf oder Dutt"],["pr","Mit Stylingprodukten wie Schaum, Spray oder Wachs"]]},
+ {id:"q5",short:"Haare (Längen)",block:"H",type:"multi",title:"Wie geht es deinen Längen und Spitzen?",hint:"Mehrere Antworten möglich.",
+  opts:[["tr","Trocken oder strapaziert"],["sp","Spliss oder brüchige Spitzen"],["fr","Frizz, Haare stehen ab"],["vo","Wenig Volumen, hängen schnell platt"],["gz","Glanzlos und matt"],["ke","Alles gut"]]},
+ {id:"hk",short:"Kopfhaut",block:"H",type:"multi",title:"Und wie ist deine Kopfhaut?",hint:"Mehrere Antworten möglich.",
+  opts:[["no","Unkompliziert"],["fe","Fettet schnell nach"],["tr","Trocken, spannt"],["ju","Juckt oder ist empfindlich"],["sc","Schuppen"],["du","Ich verliere mehr Haare als früher"]]},
+ {id:"q13",short:"Haarpflege bisher",block:"H",type:"multi",title:"Was benutzt du heute für deine Haare?",hint:"Nur die Art, nicht die Marke. Mehrere Antworten möglich.",
+  opts:[["sh","Shampoo"],["co","Spülung oder Conditioner"],["ku","Haarkur oder Haarmaske"],["oe","Haaröl oder Leave-in-Pflege"],["hs","Hitzeschutz"],["ni","Nur Shampoo, sonst nichts"]]},
+
+ /* --- Gesicht- und Hautbox --- */
+ {id:"q2",short:"Hauttyp Gesicht",block:"K",type:"single",title:"Wie ist die Haut in deinem Gesicht?",
+  opts:[["t","Eher trocken, spannt manchmal"],["f","Eher fettig, glänzt schnell"],["m","Mischhaut: Stirn, Nase und Kinn glänzen, Wangen eher trocken"],["n","Normal, unkompliziert"],["s","Empfindlich, reagiert schnell"],["x","Weiss ich nicht genau"]]},
+ {id:"q3",short:"Gesichtshaut",block:"K",type:"multi",title:"Was beschäftigt dich bei deiner Gesichtshaut gerade am meisten?",hint:"Mehrere Antworten möglich.",
+  opts:[["tr","Trockenheit, Spannungsgefühl"],["un","Unreinheiten, Pickelchen"],["po","Mitesser oder grosse Poren"],["fa","Fältchen, nachlassende Spannkraft"],["ro","Rötungen, Haut ist schnell gereizt"],["pi","Pigmentflecken, fahler Teint"],["au","Augenpartie: Schatten, Schwellungen oder Fältchen"],["ke","Nichts Bestimmtes"]]},
+ {id:"q11",short:"Gesichtsreinigung",block:"K",type:"single",title:"Wie reinigst du dein Gesicht meistens?",
+  opts:[["w","Nur mit Wasser"],["s","Mit Seife oder Duschgel"],["g","Mit Waschgel oder Reinigungsschaum"],["m","Mit Reinigungsmilch oder Mizellenwasser"],["t","Mit Abschminktüchern"],["o","Ganz unterschiedlich"]]},
+ {id:"mk",short:"Make-up",block:"K",type:"single",title:"Trägst du Make-up?",
+  opts:[["t","Ja, fast täglich"],["m","Manchmal"],["n","Selten oder nie"]]},
+ {id:"q12",short:"Gesichtspflege bisher",block:"K",type:"multi",title:"Was gehört heute schon zu deiner Gesichtspflege?",hint:"Nur die Art, nicht die Marke. Mehrere Antworten möglich.",
+  opts:[["to","Toner oder Gesichtswasser"],["se","Serum"],["fe","Feuchtigkeitscreme oder -gel"],["ey","Augencreme"],["sp","Sonnenschutz fürs Gesicht"],["pe","Peeling oder Maske"],["oe","Gesichtsöl"],["ni","Nichts davon"]]},
+ {id:"kb",short:"Körperhaut",block:"K",type:"multi",title:"Und wie ist die Haut an deinem Körper?",hint:"Mehrere Antworten möglich.",
+  opts:[["no","Unkompliziert"],["tr","Trocken, spannt nach dem Duschen"],["ra","Raue Stellen, z. B. an Ellbogen, Knien oder Füssen"],["ha","Raue oder rissige Hände"],["li","Trockene Lippen"],["ju","Empfindlich, juckt schnell"],["un","Unreinheiten an Rücken oder Dekolleté"]]},
+
+ /* --- Für alle --- */
+ {id:"q4",short:"Hauterkrankung",block:"A",type:"single",title:"Hast du eine ärztlich festgestellte Hauterkrankung, auch an der Kopfhaut?",hint:"Damit ich nur Produkte auswähle, die zu dir passen.",
+  opts:[["no","Nein"],["nd","Neurodermitis oder Ekzem"],["ps","Schuppenflechte (Psoriasis)"],["rs","Rosazea"],["ak","Akne in ärztlicher Behandlung"],["an","Eine andere"],["ka","Möchte ich nicht angeben"]]},
+ {id:"q6",short:"Alter",block:"A",type:"single",title:"Wie alt bist du?",
+  opts:[["a","18–29"],["b","30–39"],["c","40–49"],["d","50 oder älter"]]},
+ {id:"q8",short:"Besonderheiten",block:"A",type:"multi",title:"Trifft etwas davon auf dich zu?",hint:"Wichtig, damit ich sicher auswähle. Mehrere Antworten möglich.",
+  opts:[["sw","Ich bin schwanger oder stille"],["me","Ich nehme regelmässig Medikamente"],["bi","Allergie gegen Bienenprodukte (Honig, Propolis, Bienenwachs)"],["gl","Allergie oder Unverträglichkeit: Soja oder Gluten (Weizen, Gerste)"],["al","Allergie gegen Aloe Vera"],["ni","Nichts davon"]]},
+ {id:"q9",short:"Pflegezeit",block:"A",type:"single",title:"Wie viel Zeit nimmst du dir für deine Pflege?",
+  opts:[["1","So wenig wie möglich, 2 Minuten"],["2","5 bis 10 Minuten am Tag"],["3","Ich liebe ausgiebige Pflegerituale"]]},
+ {id:"q7",short:"Weitere Themen",block:"A",type:"multi",title:"Gibt es noch ein Thema, das dich interessiert?",hint:"Freiwillig. Dazu gibt es aktuell keine Box, aber ich erzähle dir gern mehr darüber. Mehrere Antworten möglich.",
+  opts:[["ki","Ein paar Kilo verlieren"],["st","Einen strukturierten Neustart bei der Ernährung"],["sa","Weniger Heisshunger, länger satt"],["en","Mehr Energie im Alltag"],["ve","Ein besseres Bauchgefühl"],["ke","Nein, mir geht es nur um die Testbox"]]},
+ {id:"q15",short:"Ernährung",block:"A",type:"multi",show:a=>(a.q7||[]).some(v=>v!=="ke"),title:"Wie isst du im Alltag meistens?",hint:"Mehrere Antworten möglich.",
+  opts:[["fr","Meist frisch und ausgewogen"],["un","Unregelmässig, oft nebenbei oder unterwegs"],["su","Gerne Süsses oder Snacks zwischendurch"],["gm","Eher wenig Obst und Gemüse"],["ve","Vegetarisch oder vegan"]]},
+ {id:"q16",short:"Trinken",block:"A",type:"single",show:a=>(a.q7||[]).some(v=>v!=="ke"),title:"Wie viel trinkst du am Tag, zum Beispiel Wasser oder Tee?",
+  opts:[["a","Weniger als 1 Liter"],["b","1 bis 2 Liter"],["c","Mehr als 2 Liter"]]}
+];
+/* ===== Ältere Quiz-Versionen: Antworttexte, damit alte Nachrichten lesbar bleiben ===== */
+const LEGACY = {
+ q1:{short:"Interesse",opts:[["H","Haare"],["K","Haut- und Körperpflege"],["G","Gewichtsmanagement"],["W","Wohlbefinden & innere Balance"]]},
+ q2:{short:"Hauttyp",opts:[["t","Eher trocken"],["m","Mischhaut (T-Zone fettig, Wangen trocken)"]]},
+ q3:{short:"Hautthemen",opts:[["ri","Raue Hände, Füsse oder Lippen"]]},
+ q5:{short:"Haare & Kopfhaut",opts:[["fe","Werden schnell fettig"],["sc","Schuppen oder juckende Kopfhaut"],["du","Werden dünner, ich verliere mehr Haare"],["ge","Gefärbt oder blondiert"]]},
+ q7:{short:"Wunsch Körper & Wohlbefinden",opts:[["ke","Nichts davon"]]},
+ q13:{opts:[["hi","Föhn, Glätteisen oder Lockenstab, fast täglich"]]},
+ q8:{opts:[["fi","Allergie gegen Fisch"]]}
 };
-/* Antworttexte genau wie im Quiz, damit die WhatsApp-Nachricht gelesen werden kann */
-const OPTS = {
- q1:[["H","Haare"],["K","Haut- und Körperpflege"],["G","Gewichtsmanagement"],["W","Wohlbefinden & innere Balance"]],
- q2:[["t","Eher trocken"],["f","Eher fettig, glänzt schnell"],["m","Mischhaut (T-Zone fettig, Wangen trocken)"],["n","Normal, unkompliziert"],["s","Empfindlich, reagiert schnell"],["x","Weiss ich nicht genau"]],
- q3:[["tr","Trockenheit, Spannungsgefühl"],["un","Unreinheiten, Pickelchen"],["fa","Fältchen, nachlassende Spannkraft"],["ro","Rötungen, Haut ist schnell gereizt"],["pi","Pigmentflecken, fahler Teint"],["ri","Raue Hände, Füsse oder Lippen"],["ke","Nichts Bestimmtes"]],
- q4:[["no","Nein"],["nd","Neurodermitis oder Ekzem"],["ps","Schuppenflechte (Psoriasis)"],["rs","Rosazea"],["ak","Akne in ärztlicher Behandlung"],["an","Eine andere"],["ka","Möchte ich nicht angeben"]],
- q5:[["tr","Trocken oder strapaziert"],["fe","Werden schnell fettig"],["sc","Schuppen oder juckende Kopfhaut"],["du","Werden dünner, ich verliere mehr Haare"],["ge","Gefärbt oder blondiert"],["ke","Alles gut"]],
- q6:[["a","18–29"],["b","30–39"],["c","40–49"],["d","50 oder älter"]],
- q7:[["ki","Ein paar Kilo verlieren"],["st","Einen strukturierten Neustart bei der Ernährung"],["sa","Weniger Heisshunger, länger satt"],["en","Mehr Energie im Alltag"],["ve","Ein besseres Bauchgefühl"],["ke","Nichts davon"]],
- q8:[["sw","Ich bin schwanger oder stille"],["me","Ich nehme regelmässig Medikamente"],["bi","Allergie gegen Bienenprodukte (Honig, Propolis, Bienenwachs)"],["gl","Allergie oder Unverträglichkeit: Soja oder Gluten (Weizen, Gerste)"],["fi","Allergie gegen Fisch"],["al","Allergie gegen Aloe Vera"],["ni","Nichts davon"]],
- q9:[["1","So wenig wie möglich, 2 Minuten"],["2","5 bis 10 Minuten am Tag"],["3","Ich liebe ausgiebige Pflegerituale"]],
- q11:[["w","Nur mit Wasser"],["s","Mit Seife oder Duschgel"],["g","Mit Waschgel oder Reinigungsschaum"],["m","Mit Reinigungsmilch oder Mizellenwasser"],["t","Mit Abschminktüchern"],["o","Ganz unterschiedlich"]],
- q12:[["to","Toner oder Gesichtswasser"],["se","Serum"],["fe","Feuchtigkeitscreme oder -gel"],["ey","Augencreme"],["sp","Sonnenschutz fürs Gesicht"],["pe","Peeling oder Maske"],["oe","Gesichtsöl"],["ni","Nichts davon"]],
- q13:[["sh","Shampoo"],["co","Spülung oder Conditioner"],["ku","Haarkur oder Haarmaske"],["oe","Haaröl oder Leave-in-Pflege"],["hi","Föhn, Glätteisen oder Lockenstab, fast täglich"],["ni","Nur Shampoo, sonst nichts"]],
- q14:[["t","Täglich"],["z","Alle 2 bis 3 Tage"],["w","1 bis 2 Mal pro Woche"],["s","Seltener"]],
- q15:[["fr","Meist frisch und ausgewogen"],["un","Unregelmässig, oft nebenbei oder unterwegs"],["su","Gerne Süsses oder Snacks zwischendurch"],["gm","Eher wenig Obst und Gemüse"],["ve","Vegetarisch oder vegan"]],
- q16:[["a","Weniger als 1 Liter"],["b","1 bis 2 Liter"],["c","Mehr als 2 Liter"]]
-};
-const LBL={"interesse":"q1","hauttyp":"q2","hautthemen":"q3","gesichtsreinigung":"q11","gesichtspflege bisher":"q12","hauterkrankung":"q4","haare & kopfhaut":"q5","haarpflege bisher":"q13","haarwäsche":"q14","alter":"q6","wunsch körper & wohlbefinden":"q7","ernährung":"q15","trinken":"q16","besonderheiten":"q8","pflegezeit":"q9"};
+const QD = {}; Q.forEach(q=>QD[q.id]=q);
+const OPTS = {}, L = {}, LBL = {}, QFULL = {}, QL = {};
+Q.forEach(q=>{ OPTS[q.id]=q.opts.slice(); LBL[q.short.toLowerCase()]=q.id; QL[q.id]=q.short;
+  QFULL[q.id]=typeof q.title==="function"?"Möchtest du später auch die andere Box testen?":q.title; });
+Object.entries(LEGACY).forEach(([k,v])=>{ OPTS[k]=OPTS[k].concat(v.opts); if(v.short) LBL[v.short.toLowerCase()]=k; });
+Object.keys(OPTS).forEach(k=>{ L[k]={}; OPTS[k].forEach(([c,t])=>{ if(!(c in L[k])) L[k][c]=t; }); });
+/* Kurze Bezeichnungen für Chips und Hinweise */
+Object.assign(L.q1,{H:"Haarbox",K:"Gesicht- und Hautbox",G:"Gewichtsmanagement",W:"Wohlbefinden"});
+Object.assign(L.q4,{nd:"Neurodermitis/Ekzem",ps:"Psoriasis",rs:"Rosazea",ak:"Akne in Behandlung",an:"andere",ka:"keine Angabe"});
+Object.assign(L.q7,{ki:"ein paar Kilo verlieren",st:"strukturierter Neustart",sa:"Heisshunger/Sättigung",en:"mehr Energie",ve:"Bauchgefühl",ke:"nichts davon"});
+Object.assign(L.q11,{w:"nur Wasser",s:"Seife/Duschgel",o:"unterschiedlich"});
+const BOXNAME={H:"Haarbox",K:"Gesicht- und Hautbox"};
+
 function parseText(block){
   const a={v:1,d:""}; let found=0;
   const nm=block.match(/^\s*Name:\s*(.+)$/m); if(nm) a.n=nm[1].trim();
@@ -226,6 +269,7 @@ function parseText(block){
   block.split(/\r?\n/).forEach(line=>{
     const m=line.match(/^\s*(?:\d+\.\s*)?([^:\[\]]+):\s*(.*)$/); if(!m) return;
     const k=LBL[m[1].trim().toLowerCase()]; if(!k||!OPTS[k]) return;
+    if(m[1].trim().toLowerCase()==="testbox") a.v=2;
     const segs=m[2].split(/;\s*/).map(x=>x.trim().toLowerCase()).filter(Boolean);
     const out=[];
     segs.forEach(seg=>{
@@ -237,102 +281,121 @@ function parseText(block){
   });
   return found>=5?a:null;
 }
-const QFULL = {q1:"Wofür interessierst du dich für deine Testbox?",q2:"Wie würdest du deinen Hauttyp beschreiben?",q3:"Was beschäftigt dich bei deiner Haut gerade am meisten?",q11:"Wie reinigst du dein Gesicht meistens?",q12:"Was gehört heute schon zu deiner Gesichtspflege?",q4:"Hast du eine ärztlich festgestellte Hauterkrankung?",q5:"Wie geht es deinen Haaren und deiner Kopfhaut?",q13:"Was benutzt du heute für deine Haare?",q14:"Wie oft wäschst du deine Haare?",q6:"Wie alt bist du?",q7:"Was wünschst du dir für Körper und Wohlbefinden?",q15:"Wie isst du im Alltag meistens?",q16:"Wie viel trinkst du am Tag?",q8:"Trifft etwas davon auf dich zu?",q9:"Wie viel Zeit nimmst du dir für deine Pflege?"};
-const optText=(k,v)=>((OPTS[k]||[]).find(o=>o[0]===v)||[,L[k]&&L[k][v]||v])[1];
-const QL = {q1:"Interesse",q2:"Hauttyp",q3:"Hautthemen",q11:"Gesichtsreinigung",q12:"Gesichtspflege bisher",q4:"Hauterkrankung",q5:"Haare & Kopfhaut",q13:"Haarpflege bisher",q14:"Haarwäsche",q6:"Alter",q7:"Körper & Wohlbefinden",q15:"Ernährung",q16:"Trinken",q8:"Besonderheiten",q9:"Pflegezeit"};
-
-/* Produktkatalog = Sabines Testbox-Produkte. cat = Bereich aus Frage 1 (H Haare, K Haut & Körper), bee = enthält Bienenprodukte */
-const has=(a,k,v)=>a[k].includes(v);
+const optText=(k,v)=>(L[k]&&L[k][v])||v;
+/* Alte Antworten auf die neuen Fragen umlegen (ändert nichts, wenn schon neu) */
+function normalize(a){
+  Q.forEach(q=>{ a[q.id]=Array.isArray(a[q.id])?a[q.id]:[]; });
+  const mv=(from,code,to,codes)=>{ if(a[from].includes(code)){ a[from]=a[from].filter(c=>c!==code); codes.forEach(c=>{ if(!a[to].includes(c)) a[to].push(c); }); } };
+  mv("q5","fe","hk",["fe"]); mv("q5","sc","hk",["sc"]); mv("q5","du","hk",["du"]); mv("q5","ge","hb",["fa"]);
+  mv("q13","hi","hs",["fo","gi"]); mv("q3","ri","kb",["ha","li"]);
+  return a;
+}
+/* Boxen dieser Testerin: [erste Box, zweite Box oder null]. Alte Quiz-Version: alles aus Frage 1. */
+function boxesOf(a){
+  const q1=a.q1.filter(c=>c==="H"||c==="K");
+  if(a.v===2) return {first:q1[0]||"K", second:null, later:false};
+  return {first:q1.length?q1.join(""):"K", second:null, later:false, legacy:true};
+}
+/* ===== Produktkatalog: Regeln je Box (H = Haarbox, K = Gesicht- und Hautbox, W = zum Einnehmen) ===== */
+const has=(a,k,v)=>(a[k]||[]).includes(v);
+const any=(a,k,vs)=>vs.some(v=>has(a,k,v));
+const age40=a=>["c","d"].includes(a.q6[0]);
 const P = [
- {id:"shampoo",name:"Aloe-Jojoba Shampoo",cat:["H"],rules:a=>[
-   [3,"Interesse Haare"],[has(a,"q5","tr")&&1,"trockenes Haar"],[has(a,"q5","fe")&&1,"Haar fettet schnell"],[has(a,"q5","sc")&&1,"Kopfhaut-Thema"],[has(a,"q5","ge")&&1,"gefärbtes Haar"]]},
- {id:"conditioner",name:"Aloe-Jojoba Conditioner",cat:["H"],rules:a=>[
-   [2,"Interesse Haare"],[has(a,"q5","tr")&&2,"trockenes/strapaziertes Haar"],[has(a,"q5","ge")&&2,"gefärbtes Haar"],[has(a,"q5","fe")&&-1,"Haar fettet schnell"],[(a.q13.length>0&&!has(a,"q13","co"))&&2,"nutzt noch keine Spülung"]]},
- {id:"hairoil",name:"Hair Oil",cat:["H"],rules:a=>[
-   [has(a,"q5","tr")&&3,"trockenes/strapaziertes Haar"],[has(a,"q5","ge")&&2,"gefärbtes Haar"],[has(a,"q13","hi")&&2,"Hitze-Styling fast täglich"],[has(a,"q13","oe")&&1,"kennt Haaröl schon"],[has(a,"q5","fe")&&-2,"Haar fettet schnell"],[a.q9[0]==="1"&&-1,"wenig Pflegezeit"]]},
- {id:"gelly",name:"Aloe Vera Gelly",cat:["K"],rules:a=>[
-   [1,"vielseitige Basispflege"],[has(a,"q3","ro")&&2,"Haut schnell gereizt"],[has(a,"q2","s")&&2,"empfindlicher Hauttyp"]]},
- {id:"propolis",name:"Aloe Propolis Creme",cat:["K"],bee:1,rules:a=>[
-   [has(a,"q3","tr")&&2,"Trockenheit"],[has(a,"q3","ri")&&2,"raue Hände/Füsse"],[has(a,"q2","t")&&1,"trockener Hauttyp"]]},
- {id:"moist",name:"Logic Soothing Moisturizing Creme",cat:["K"],rules:a=>[
-   [has(a,"q3","tr")&&2,"Trockenheit im Gesicht"],[has(a,"q2","t")&&1,"trockener Hauttyp"],[(a.q12.length>0&&!has(a,"q12","fe"))&&2,"nutzt noch keine Feuchtigkeitspflege"],[has(a,"q2","s")&&2,"empfindlicher Hauttyp"],[has(a,"q3","ro")&&1,"Haut schnell gereizt"],[has(a,"q2","n")&&1,"Tagespflege"]]},
- {id:"toner",name:"Logic Toner",cat:["K"],rules:a=>[
-   [has(a,"q3","un")&&3,"Unreinheiten"],[(has(a,"q2","f")||has(a,"q2","m"))&&2,"fettige/Mischhaut"],[a.q9[0]==="1"&&-1,"wenig Pflegezeit"]]},
- {id:"eye",name:"Eye Creme",cat:["K"],rules:a=>[
-   [has(a,"q3","fa")&&2,"Thema Fältchen/Spannkraft"],[["c","d"].includes(a.q6[0])&&2,"Alter 40+"],[a.q9[0]==="3"&&1,"mag Pflegerituale"],[has(a,"q12","ey")&&1,"kennt Augenpflege schon"]]},
- {id:"renew",name:"Renewing Skin Creme",cat:["K"],rules:a=>[
-   [has(a,"q3","fa")&&3,"Thema Fältchen/Spannkraft"],[has(a,"q3","pi")&&2,"fahler Teint/Pigmentflecken"],[["c","d"].includes(a.q6[0])&&1,"Alter 40+"],[has(a,"q2","s")&&-1,"empfindliche Haut, erst kleine Stelle testen"]]},
- {id:"moistlotion",name:"Aloe Moisturizing Lotion",cat:["K"],rules:a=>[
-   [has(a,"q3","tr")&&2,"Trockenheit"],[has(a,"q2","t")&&1,"trockener Hauttyp"],[has(a,"q2","n")&&1,"Feuchtigkeit für Gesicht und Körper"],[(a.q12.length>0&&!has(a,"q12","fe"))&&1,"nutzt noch keine Feuchtigkeitspflege"]]},
- {id:"lips",name:"Forever Aloe Lips",cat:["K"],bee:1,rules:a=>[
-   [has(a,"q3","ri")&&3,"raue Lippen/Hände"],[has(a,"q2","t")&&1,"trockener Hauttyp"]]},
- {id:"serum",name:"Forever Hydrating Serum",cat:["K"],rules:a=>[
-   [has(a,"q3","fa")&&3,"Thema Fältchen/Spannkraft"],[has(a,"q3","tr")&&2,"Trockenheit, Spannungsgefühl"],[has(a,"q2","t")&&1,"trockener Hauttyp"],[["b","c","d"].includes(a.q6[0])&&1,"Alter ab 30"],[has(a,"q12","fe")&&1,"ergänzt ihre Feuchtigkeitspflege"],[(a.q12.length>0&&!has(a,"q12","se"))&&1,"nutzt noch kein Serum"],[a.q9[0]==="1"&&-1,"wenig Pflegezeit"]]},
- {id:"daynight",name:"Forever Day-to-Night Duo (Vitamin C + Bakuchiol)",cat:["K"],rules:a=>[
-   [has(a,"q3","pi")&&3,"fahler Teint/Pigmentflecken"],[has(a,"q3","fa")&&2,"Thema Fältchen/Spannkraft"],[["c","d"].includes(a.q6[0])&&1,"Alter 40+"],[a.q9[0]==="1"&&-1,"wenig Pflegezeit"],[has(a,"q2","s")&&-1,"empfindliche Haut, erst kleine Stelle testen"]]},
- {id:"argi",name:"Forever ARGI+",cat:["W","G"],inner:1,rules:a=>[
-   [has(a,"q7","en")&&3,"wünscht mehr Energie"],[a.q1.includes("W")&&1,"Interesse Wohlbefinden"]]},
- {id:"fiber",name:"Forever Fiber Fusion",cat:["G","W"],inner:1,rules:a=>[
-   [has(a,"q7","sa")&&3,"wünscht weniger Heisshunger"],[has(a,"q7","ve")&&2,"wünscht ein besseres Bauchgefühl"],[has(a,"q7","st")&&1,"Neustart bei der Ernährung"],[has(a,"q15","gm")&&1,"isst eher wenig Obst und Gemüse"],[has(a,"q7","ki")&&1,"Gewichtsziel"]]},
- {id:"lite",name:"Forever Lite Ultra Shake (Vanille oder Schokolade)",cat:["G","W"],inner:1,soygluten:1,rules:a=>[
-   [has(a,"q7","ki")&&3,"Gewichtsziel"],[has(a,"q7","st")&&2,"Neustart bei der Ernährung"],[has(a,"q15","un")&&2,"isst oft unregelmässig oder unterwegs"],[has(a,"q7","sa")&&1,"wünscht weniger Heisshunger"],[has(a,"q15","ve")&&-1,"isst vegetarisch/vegan: Zutaten auf der Packung prüfen"]]},
- {id:"lotion",name:"Aloe Body Lotion",cat:["K"],rules:a=>[
-   [1,"Körperpflege"],[has(a,"q3","tr")&&2,"Trockenheit"],[has(a,"q2","t")&&1,"trockener Hauttyp"]]},
- {id:"wash",name:"Aloe Body Wash",cat:["K"],rules:a=>[
-   [1,"Körperpflege"],[has(a,"q2","s")&&1,"empfindliche Haut"],[a.q9[0]==="1"&&1,"schnelle Routine"]]},
- {id:"cooling",name:"Aloe Cooling Lotion",cat:["K"],rules:a=>[
-   [1,"erfrischende Körperpflege"],[a.q9[0]==="3"&&1,"mag Pflegerituale"],[has(a,"q2","s")&&-2,"empfindliche Haut"]]},
- {id:"msm",name:"MSM Creme",cat:["K"],rules:a=>[
-   [1,"Körperpflege"],[a.q9[0]==="3"&&1,"mag Pflegerituale"]]},
- {id:"first",name:"Aloe First Spray",cat:["K"],rules:a=>[
-   [has(a,"q3","ro")&&2,"Haut schnell gereizt"],[has(a,"q2","s")&&1,"empfindliche Haut"],[a.q9[0]==="1"&&1,"schnell aufgesprüht"]]},
- {id:"soap",name:"Aloe Liquid Soap",cat:["K"],rules:a=>[
-   [has(a,"q3","ri")&&2,"raue Hände"],[a.q9[0]==="1"&&1,"schnelle Routine"],[(a.q1.includes("K")&&["w","s","o"].includes(a.q11[0]))&&2,`Gesicht bisher: ${L.q11[a.q11[0]]||""}`]]},
- {id:"bright",name:"Forever Bright Zahngel",cat:["H","K","G","W"],bee:1,rules:a=>[
-   [1,"passt in jede Box als Alltagsprodukt"]]}
+ {id:"shampoo",name:"Aloe-Jojoba Shampoo",box:{H:a=>[
+   [3,"Basis jeder Haarbox"],[has(a,"hk","fe")&&1,"Kopfhaut fettet schnell nach"],[any(a,"hk",["sc","ju","tr"])&&1,"Kopfhaut-Thema"],[any(a,"hb",["fa","bl","dw","gl"])&&1,"behandeltes Haar: sulfatfreie Pflege"],[has(a,"q14","t")&&1,"wäscht täglich"]]}},
+ {id:"conditioner",name:"Aloe-Jojoba Conditioner",box:{H:a=>[
+   [3,"gehört zum Shampoo"],[any(a,"q5",["tr","sp","fr"])&&1,"trockene Längen, Spliss oder Frizz"],[any(a,"hb",["fa","bl","dw","gl"])&&1,"behandeltes Haar"],[any(a,"hl",["l","x"])&&1,"lange Haare"],[any(a,"hf",["l","k"])&&1,"Locken"],[(a.q13.length>0&&!has(a,"q13","co"))&&1,"nutzt noch keine Spülung"],[(has(a,"hd","f")&&has(a,"q5","vo"))&&-1,"feines Haar ohne Volumen: nur in die Spitzen"]]}},
+ {id:"hairoil",name:"Nourishing Hair Oil",box:{H:a=>[
+   [any(a,"q5",["tr","sp"])&&2,"trockene Längen oder Spliss"],[has(a,"q5","fr")&&2,"Frizz"],[has(a,"q5","gz")&&1,"glanzloses Haar"],[any(a,"hs",["fo","gi","lo"])&&2,"Hitze-Styling"],[any(a,"hb",["bl","dw","gl"])&&1,"stark behandeltes Haar"],[any(a,"hf",["l","k"])&&1,"Locken"],[any(a,"hl",["l","x"])&&1,"lange Haare"],[has(a,"hd","f")&&-1,"feines Haar: nur 1 bis 2 Tropfen in die Spitzen"],[has(a,"q5","vo")&&-1,"wenig Volumen"],[a.q9[0]==="1"&&-1,"wenig Pflegezeit"]]}},
+ {id:"first",name:"Aloe First Spray",bee:1,box:{
+   H:a=>[[1,"für die Kopfhaut, wie in der Hair-Challenge"],[any(a,"hk",["tr","ju","sc"])&&2,"trockene, juckende oder schuppige Kopfhaut"],[a.q9[0]==="1"&&1,"schnell aufgesprüht"]],
+   K:a=>[[has(a,"q3","ro")&&2,"Haut schnell gereizt"],[has(a,"kb","ju")&&1,"Körperhaut juckt schnell"],[has(a,"q2","s")&&1,"empfindliche Haut"],[a.q9[0]==="1"&&1,"schnell aufgesprüht"]]}},
+ {id:"gelly",name:"Aloe Vera Gelly",box:{
+   H:a=>[[1,"etwas in die Spitzen einkneten"],[has(a,"q5","fr")&&1,"bändigt abstehende Härchen"],[any(a,"hf",["l","k"])&&1,"Locken"]],
+   K:a=>[[1,"vielseitige Basispflege"],[has(a,"q3","ro")&&2,"Haut schnell gereizt"],[has(a,"q2","s")&&2,"empfindliche Gesichtshaut"],[has(a,"kb","ju")&&1,"Körperhaut juckt schnell"]]}},
+ {id:"propolis",name:"Aloe Propolis Creme",bee:1,box:{K:a=>[
+   [has(a,"kb","ra")&&2,"raue Stellen am Körper"],[has(a,"kb","ha")&&2,"raue Hände"],[has(a,"q3","tr")&&1,"Trockenheit"],[has(a,"kb","tr")&&1,"trockene Körperhaut"]]}},
+ {id:"moist",name:"Logic Soothing Moisturizing Creme",box:{K:a=>[
+   [has(a,"q3","tr")&&2,"Trockenheit im Gesicht"],[has(a,"q2","t")&&1,"trockene Gesichtshaut"],[(a.q12.length>0&&!has(a,"q12","fe"))&&2,"nutzt noch keine Feuchtigkeitspflege"],[has(a,"q2","s")&&2,"empfindliche Gesichtshaut"],[has(a,"q3","ro")&&1,"Haut schnell gereizt"],[has(a,"q2","n")&&1,"Tagespflege"]]}},
+ {id:"toner",name:"Logic Toner",box:{K:a=>[
+   [has(a,"q3","un")&&3,"Unreinheiten"],[has(a,"q3","po")&&2,"Mitesser oder grosse Poren"],[any(a,"q2",["f","m"])&&2,"fettige oder Mischhaut"],[a.q9[0]==="1"&&-1,"wenig Pflegezeit"]]}},
+ {id:"serum",name:"Forever Hydrating Serum",box:{K:a=>[
+   [has(a,"q3","fa")&&3,"Thema Fältchen/Spannkraft"],[has(a,"q3","tr")&&2,"Trockenheit, Spannungsgefühl"],[has(a,"q2","t")&&1,"trockene Gesichtshaut"],[["b","c","d"].includes(a.q6[0])&&1,"Alter ab 30"],[has(a,"q12","fe")&&1,"ergänzt ihre Feuchtigkeitspflege"],[(a.q12.length>0&&!has(a,"q12","se"))&&1,"nutzt noch kein Serum"],[a.q9[0]==="1"&&-1,"wenig Pflegezeit"]]}},
+ {id:"eye",name:"Eye Creme",box:{K:a=>[
+   [has(a,"q3","au")&&3,"Thema Augenpartie"],[has(a,"q3","fa")&&1,"Thema Fältchen/Spannkraft"],[age40(a)&&1,"Alter 40+"],[a.q9[0]==="3"&&1,"mag Pflegerituale"],[has(a,"q12","ey")&&1,"kennt Augenpflege schon"]]}},
+ {id:"renew",name:"Renewing Skin Creme",box:{K:a=>[
+   [has(a,"q3","fa")&&3,"Thema Fältchen/Spannkraft"],[has(a,"q3","pi")&&2,"fahler Teint/Pigmentflecken"],[age40(a)&&1,"Alter 40+"],[has(a,"q2","s")&&-1,"empfindliche Haut, erst kleine Stelle testen"]]}},
+ {id:"daynight",name:"Forever Day-to-Night Duo (Vitamin C + Bakuchiol)",box:{K:a=>[
+   [has(a,"q3","pi")&&3,"fahler Teint/Pigmentflecken"],[has(a,"q3","fa")&&2,"Thema Fältchen/Spannkraft"],[age40(a)&&1,"Alter 40+"],[a.q9[0]==="1"&&-1,"wenig Pflegezeit"],[has(a,"q2","s")&&-1,"empfindliche Haut, erst kleine Stelle testen"]]}},
+ {id:"moistlotion",name:"Aloe Moisturizing Lotion",box:{K:a=>[
+   [has(a,"q3","tr")&&2,"Trockenheit"],[has(a,"q2","t")&&1,"trockene Gesichtshaut"],[has(a,"q2","n")&&1,"Feuchtigkeit für Gesicht und Körper"],[has(a,"kb","tr")&&1,"trockene Körperhaut"],[(a.q12.length>0&&!has(a,"q12","fe"))&&1,"nutzt noch keine Feuchtigkeitspflege"]]}},
+ {id:"soap",name:"Aloe Liquid Soap",box:{K:a=>[
+   [any(a,"q11",["w","s","o"])&&2,`Gesicht bisher: ${L.q11[a.q11[0]]||""}`],[has(a,"mk","t")&&1,"trägt fast täglich Make-up"],[has(a,"kb","ha")&&1,"raue Hände"],[a.q9[0]==="1"&&1,"schnelle Routine"]]}},
+ {id:"lips",name:"Forever Aloe Lips",bee:1,box:{K:a=>[
+   [has(a,"kb","li")&&3,"trockene Lippen"],[has(a,"q2","t")&&1,"trockene Haut"]]}},
+ {id:"lotion",name:"Aloe Body Lotion",box:{K:a=>[
+   [1,"Körperpflege"],[has(a,"kb","tr")&&2,"trockene Körperhaut"],[has(a,"kb","ra")&&1,"raue Stellen"]]}},
+ {id:"wash",name:"Aloe Body Wash",box:{K:a=>[
+   [1,"Körperpflege"],[has(a,"kb","ju")&&1,"empfindliche Körperhaut"],[has(a,"kb","un")&&1,"Unreinheiten an Rücken oder Dekolleté"],[a.q9[0]==="1"&&1,"schnelle Routine"]]}},
+ {id:"cooling",name:"Aloe Cooling Lotion",box:{K:a=>[
+   [1,"erfrischende Körperpflege"],[a.q9[0]==="3"&&1,"mag Pflegerituale"],[(has(a,"kb","ju")||has(a,"q2","s"))&&-2,"empfindliche Haut"]]}},
+ {id:"msm",name:"MSM Creme",box:{K:a=>[
+   [1,"Körperpflege"],[has(a,"kb","ra")&&1,"raue Stellen"],[a.q9[0]==="3"&&1,"mag Pflegerituale"]]}},
+ {id:"bright",name:"Forever Bright Zahngel",bee:1,box:{H:a=>[[1,"Alltagsprodukt als Ergänzung"]],K:a=>[[1,"Alltagsprodukt als Ergänzung"]]}},
+ {id:"argi",name:"Forever ARGI+",inner:1,box:{W:a=>[
+   [has(a,"q7","en")&&3,"wünscht mehr Energie"]]}},
+ {id:"fiber",name:"Forever Fiber Fusion",inner:1,box:{W:a=>[
+   [has(a,"q7","sa")&&3,"wünscht weniger Heisshunger"],[has(a,"q7","ve")&&2,"wünscht ein besseres Bauchgefühl"],[has(a,"q7","st")&&1,"Neustart bei der Ernährung"],[has(a,"q15","gm")&&1,"isst eher wenig Obst und Gemüse"],[has(a,"q7","ki")&&1,"Gewichtsziel"]]}},
+ {id:"lite",name:"Forever Lite Ultra Shake (Vanille oder Schokolade)",inner:1,soygluten:1,box:{W:a=>[
+   [has(a,"q7","ki")&&3,"Gewichtsziel"],[has(a,"q7","st")&&2,"Neustart bei der Ernährung"],[has(a,"q15","un")&&2,"isst oft unregelmässig oder unterwegs"],[has(a,"q7","sa")&&1,"wünscht weniger Heisshunger"],[has(a,"q15","ve")&&-1,"isst vegetarisch/vegan: Zutaten auf der Packung prüfen"]]}}
 ];
-const BOX_MAX = 6;
+const BOX_MAX = 5, BOX_MIN = 4;
 
-function evaluate(a){
-  ["q1","q2","q3","q4","q5","q6","q7","q8","q9","q11","q12","q13","q14","q15","q16"].forEach(k=>{ a[k]=Array.isArray(a[k])?a[k]:[]; });
-  const flags=[], excl=[], all=[], caution=[];
-  const preg=has(a,"q8","sw"), meds=has(a,"q8","me"), skinDx=a.q4[0]&&!["no","ka"].includes(a.q4[0]);
-  if(has(a,"q8","al")) flags.push("Allergie gegen Aloe Vera angegeben. Alle Testbox-Produkte enthalten Aloe. Bitte persönlich klären, ob eine Testbox überhaupt passt.");
-  if(skinDx) flags.push(`Hauterkrankung angegeben (${L.q4[a.q4[0]]}). Produkte nur als Pflege anbieten, nicht als Behandlung. Empfiehl, neue Produkte mit der Hautärztin abzusprechen und zuerst an einer kleinen Stelle zu testen.`);
-  if(a.q4[0]==="ka") flags.push("Keine Angabe zu Hauterkrankungen. Kurz nachfragen, bevor Gesichtspflege in die Box kommt.");
-  if(preg) flags.push("Schwanger oder stillend. ARGI+, Fiber Fusion und Lite Ultra Shake nur nach ärztlicher Rücksprache. Bei neuen Pflegeprodukten, besonders mit Duft- oder Kühlstoffen, im Zweifel Rücksprache mit Ärztin oder Hebamme empfehlen.");
-  if(has(a,"q8","bi")) flags.push("Allergie gegen Bienenprodukte. Propolis Creme, Aloe Lips und Bright Zahngel sind ausgeschlossen. Bei allen anderen Produkten vor dem Packen die Inhaltsstoffe auf Propolis, Honig oder Bienenwachs prüfen.");
-  const careWish = a.q1.includes("H")||a.q1.includes("K");
-  if(!careWish) flags.push("Interessiert sich nur für Gewicht oder Wohlbefinden. Die Box enthält dafür ARGI+, Fiber Fusion oder den Lite Ultra Shake, ergänzt mit etwas Basispflege.");
-  if(meds) flags.push("Nimmt regelmässig Medikamente. ARGI+, Fiber Fusion und Lite Ultra Shake nur nach Rücksprache mit Ärztin oder Apotheke.");
-
+/* Eine Box berechnen. boxes = "H", "K" oder bei alten Nachrichten "HK" */
+function scoreBox(a,boxes,ctx){
+  const all=[];
   P.forEach(p=>{
-    const inCat = p.cat.some(c=>a.q1.includes(c)) || (!careWish && ["gelly","lotion","wash"].includes(p.id));
-    if(!inCat) return;
-    if(p.bee && has(a,"q8","bi")) return excl.push(`${p.name}: enthält Bienenprodukte (Propolis oder Bienenwachs), Allergie angegeben`);
-    if(p.soygluten && has(a,"q8","gl")) return excl.push(`${p.name}: enthält Soja sowie Zutaten aus Weizen und Gerste, Allergie oder Unverträglichkeit angegeben`);
-    const hits=p.rules(a).filter(r=>r[0]); let score=hits.reduce((s,r)=>s+r[0],0);
-    if(!careWish && ["gelly","lotion","wash"].includes(p.id)) score=Math.max(score,2);
+    const fns=[...boxes].map(b=>p.box[b]).filter(Boolean); if(!fns.length) return;
+    if(p.bee && has(a,"q8","bi")) return ctx.excl.add(`${p.name}: enthält Bienenprodukte (Propolis oder Bienenwachs), Allergie angegeben`);
+    if(p.soygluten && has(a,"q8","gl")) return ctx.excl.add(`${p.name}: enthält Soja sowie Zutaten aus Weizen und Gerste, Allergie oder Unverträglichkeit angegeben`);
+    const hits=[].concat(...fns.map(f=>f(a))).filter(r=>r[0]); const score=hits.reduce((s,r)=>s+r[0],0);
     if(score<=0) return;
-    const item={p,score,why:hits.filter(r=>r[0]>0).map(r=>r[1]),warn:hits.filter(r=>r[0]<0).map(r=>r[1])};
-    if(p.inner && (preg||meds)) return caution.push(item);
+    const item={p,score,why:[...new Set(hits.filter(r=>r[0]>0).map(r=>r[1]))],warn:hits.filter(r=>r[0]<0).map(r=>r[1])};
+    if(p.inner && ctx.risk) return ctx.caution.push(item);
     all.push(item);
   });
   all.sort((x,y)=>y.score-x.score);
-  /* Shampoo und Conditioner gehören zusammen */
   const top=all.filter(i=>i.score>=2).slice(0,BOX_MAX);
   const ids=top.map(i=>i.p.id);
   if(ids.includes("shampoo")&&!ids.includes("conditioner")){const c=all.find(i=>i.p.id==="conditioner"); if(c){ if(top.length>=BOX_MAX) top.pop(); top.push(c);} }
-  /* Mit Zahngel auffüllen, wenn die Box zu klein ist */
-  for(const i of all){ if(top.length>=5) break; if(!top.includes(i)) top.push(i); }
-  const more=all.filter(i=>!top.includes(i)).slice(0,5);
-  if(top.some(i=>i.p.soygluten)) flags.push("Lite Ultra Shake in der Box: Er enthält Soja sowie Zutaten aus Weizen und Gerste (Gluten). Vor dem Packen kurz nachfragen, ob sie das verträgt.");
+  for(const i of all){ if(top.length>=BOX_MIN) break; if(!top.includes(i)) top.push(i); }
+  return {top, more:all.filter(i=>!top.includes(i)).slice(0,4)};
+}
+
+function evaluate(a){
+  normalize(a);
+  const flags=[], excl=new Set(), caution=[];
+  const preg=has(a,"q8","sw"), meds=has(a,"q8","me"), skinDx=a.q4[0]&&!["no","ka"].includes(a.q4[0]);
+  const bx=boxesOf(a);
+  if(has(a,"q8","al")) flags.push("Allergie gegen Aloe Vera angegeben. Alle Testbox-Produkte enthalten Aloe. Bitte persönlich klären, ob eine Testbox überhaupt passt.");
+  if(skinDx) flags.push(`Hauterkrankung angegeben (${L.q4[a.q4[0]]}). Produkte nur als Pflege anbieten, nicht als Behandlung. Empfiehl, neue Produkte mit der Hautärztin abzusprechen und zuerst an einer kleinen Stelle zu testen.`);
+  if(a.q4[0]==="ka") flags.push("Keine Angabe zu Hauterkrankungen. Kurz nachfragen, bevor Pflege für Gesicht oder Kopfhaut in die Box kommt.");
+  if(preg) flags.push("Schwanger oder stillend. ARGI+, Fiber Fusion und Lite Ultra Shake nur nach ärztlicher Rücksprache. Bei neuen Pflegeprodukten, besonders mit Duft- oder Kühlstoffen, im Zweifel Rücksprache mit Ärztin oder Hebamme empfehlen.");
+  if(has(a,"q8","bi")) flags.push("Allergie gegen Bienenprodukte. Aloe First, Propolis Creme, Aloe Lips und Bright Zahngel sind ausgeschlossen. Bei allen anderen Produkten vor dem Packen die Inhaltsstoffe auf Propolis, Honig oder Bienenwachs prüfen.");
+  if(meds) flags.push("Nimmt regelmässig Medikamente. ARGI+, Fiber Fusion und Lite Ultra Shake nur nach Rücksprache mit Ärztin oder Apotheke.");
+  if(has(a,"hk","du")) flags.push("Verliert nach eigener Angabe mehr Haare als früher. Pflege nicht als Mittel dagegen anbieten. Bei starkem oder plötzlichem Haarverlust ärztliche Abklärung empfehlen.");
+  const ctx={excl,caution,risk:preg||meds};
+  const first=scoreBox(a,bx.first,ctx);
+  const second=bx.second?scoreBox(a,bx.second,ctx):null;
+  const inner=a.q7.some(v=>v!=="ke")?scoreBox(a,"W",{excl,caution,risk:preg||meds}):{top:[],more:[]};
+  const innerList=inner.top.concat(inner.more).filter(i=>i.score>=2);
+  if(innerList.some(i=>i.p.soygluten)) flags.push("Lite Ultra Shake: enthält Soja sowie Zutaten aus Weizen und Gerste (Gluten). Vor einer Empfehlung kurz nachfragen, ob sie das verträgt.");
   const talk=a.q7.filter(v=>v!=="ke").map(v=>L.q7[v]);
   const life=[];
   if(a.q16[0]==="a") life.push("trinkt weniger als 1 Liter am Tag");
   ["un","su","gm"].forEach(v=>{ if(has(a,"q15",v)) life.push({un:"isst oft unregelmässig oder unterwegs",su:"mag Süsses und Snacks zwischendurch",gm:"isst eher wenig Obst und Gemüse"}[v]); });
   if(has(a,"q15","ve")) life.push("isst vegetarisch oder vegan");
-  return {flags,excl,top,more,caution,talk,life};
+  return {flags,excl:[...excl],top:first.top,more:first.more,second,bx,inner:innerList,caution,talk,life};
 }
 
 function esc(s){return String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
@@ -371,7 +434,7 @@ function fbMessage(idx){
   box.querySelectorAll(".fbpick label").forEach(l=>l.classList.toggle("is-added", l.dataset.rec==="0" && l.querySelector("input").checked));
   const cus=customs(box); const total=ids.length+cus.length; box.querySelector(".boxcount").textContent=`${total} Produkt${total===1?"":"e"}`;
   const fn=firstName(a);
-  const link=FEEDBACK_URL+"?n="+encodeURIComponent(fn)+"&p="+ids.join(".")+(cus.length?"&x="+cus.map(c=>encodeURIComponent(c.replace(/\|/g," "))).join("%7C"):"");
+  const bxf=boxesOf(normalize(a)).first; const link=FEEDBACK_URL+"?n="+encodeURIComponent(fn)+(bxf==="H"||bxf==="K"?"&b="+bxf:"")+"&p="+ids.join(".")+(cus.length?"&x="+cus.map(c=>encodeURIComponent(c.replace(/\|/g," "))).join("%7C"):"");
   const c9=c9Info(a), c9in=box.querySelector(".c9in"), c9note=box.querySelector(".c9note");
   c9note.textContent=c9.note;
   const ps=(c9in&&c9in.checked)?`\n\n${c9.ps}`:"";
@@ -387,7 +450,7 @@ const STORE_KEY="rs_testbox_auswertungen_v1";
 function loadAll(){try{const v=JSON.parse(localStorage.getItem(STORE_KEY)||"[]");return Array.isArray(v)?v:[]}catch(e){return null}}
 let STORE=loadAll(); const CAN_STORE=STORE!==null; if(!STORE) STORE=[];
 function saveAll(){try{localStorage.setItem(STORE_KEY,JSON.stringify(STORE));return true}catch(e){return false}}
-function keyOf(a){const d=String(a.c||"").replace(/\D/g,"");return d?"t"+d.slice(-9):"n"+String(a.n||"").toLowerCase().replace(/\s+/g,"")}
+function keyOf(a){const d=String(a.c||"").replace(/\D/g,"");const b=a.v===2&&a.q1&&a.q1[0]?"-"+a.q1[0]:"";return (d?"t"+d.slice(-9):"n"+String(a.n||"").toLowerCase().replace(/\s+/g,""))+b}
 function entryFor(a){return a&&!a.demo?STORE.find(x=>x.k===keyOf(a)):undefined}
 function upsert(a){const k=keyOf(a);let e=STORE.find(x=>x.k===k);
   if(e){e.a=a;e.t=Date.now();} else {e={k,a,t:Date.now(),sel:null,note:""};STORE.unshift(e);}
@@ -425,7 +488,7 @@ function renderList(){
     ${STORE.length>6?`<input class="saved-search" id="savedSearch" type="search" placeholder="Name suchen" value="${esc(FILTER)}">`:""}
     ${!CAN_STORE?`<p class="hint">Speichern ist in diesem Browser nicht möglich, z. B. im privaten Modus.</p>`:
       STORE.length?`<label class="pickall" for="pickall"><input type="checkbox" id="pickall" ${list.length&&list.every(e=>PICKED.has(e.k))?"checked":""}> Alle auswählen</label>
-      <ul>${list.map(e=>`<li><input type="checkbox" class="pick" data-k="${esc(e.k)}" id="pick-${esc(e.k)}" aria-label="${esc(e.a.n||"Ohne Namen")} für Adressen auswählen" ${PICKED.has(e.k)?"checked":""}><button type="button" class="open ${ACTIVE===e.k?"active":""}" data-k="${esc(e.k)}"><b>${esc(e.a.n||"Ohne Namen")}</b><span>${new Date(e.t).toLocaleDateString("de-CH")}${e.sel?` · ${e.sel.length+(e.custom||[]).filter(Boolean).length} Produkte`:""}</span></button><button type="button" class="del ${DEL_PENDING===e.k?"confirm":""}" data-k="${esc(e.k)}" aria-label="Auswertung löschen">${DEL_PENDING===e.k?"Wirklich?":"✕"}</button></li>`).join("")}</ul>`
+      <ul>${list.map(e=>`<li><input type="checkbox" class="pick" data-k="${esc(e.k)}" id="pick-${esc(e.k)}" aria-label="${esc(e.a.n||"Ohne Namen")} für Adressen auswählen" ${PICKED.has(e.k)?"checked":""}><button type="button" class="open ${ACTIVE===e.k?"active":""}" data-k="${esc(e.k)}"><b>${esc(e.a.n||"Ohne Namen")}</b><span>${e.a.v===2&&e.a.q1&&BOXNAME[e.a.q1[0]]?esc(BOXNAME[e.a.q1[0]])+" · ":""}${new Date(e.t).toLocaleDateString("de-CH")}${e.sel?` · ${e.sel.length+(e.custom||[]).filter(Boolean).length} Produkte`:""}</span></button><button type="button" class="del ${DEL_PENDING===e.k?"confirm":""}" data-k="${esc(e.k)}" aria-label="Auswertung löschen">${DEL_PENDING===e.k?"Wirklich?":"✕"}</button></li>`).join("")}</ul>`
       :`<p class="hint">Noch nichts gespeichert. Jede Auswertung landet automatisch hier.</p>`}
     ${PICKED.size?`<div class="addrbar"><b>${PICKED.size} ausgewählt</b>
       <button type="button" class="primary" id="addrCopy">Adressen kopieren</button>
@@ -451,18 +514,23 @@ function persist(idx){
 function sheet(a,idx){
   idx=idx||0; SHEETS[idx]=a; const ENT=entryFor(a);
   const r=evaluate(a);
-  const focus=(a.q1||[]).map(k=>`<span class="chip">${esc(L.q1[k])}</span>`).join("");
+  const boxLabel=b=>[...b].map(c=>BOXNAME[c]||c).join(" + ");
+  const focus=`<span class="chip">${esc(boxLabel(r.bx.first))}</span>`+(r.bx.second?`<span class="chip">später: ${esc(boxLabel(r.bx.second))}</span>`:"")+(r.talk.length?`<span class="chip">interessiert an: ${esc(r.talk.join(", "))}</span>`:"");
   const warn=r.flags.length?`<span class="chip warn">${r.flags.length} Hinweis${r.flags.length>1?"e":""}</span>`:"";
-  const ans=Object.keys(QFULL).map((k,n)=>`<dt>${n+1}. ${esc(QFULL[k])}</dt><dd>${esc((a[k]||[]).map(v=>optText(k,v)).join("; ")||"–")}</dd>`).join("");
+  const ans=Object.keys(QFULL).filter(k=>(a[k]||[]).length).map((k,n)=>`<dt>${n+1}. ${esc(QFULL[k])}</dt><dd>${esc(a[k].map(v=>optText(k,v)).join("; "))}</dd>`).join("");
   return `<article class="sheet">
     <div class="sheet-head"><h2>${esc(a.n||"Ohne Namen")}</h2><span class="small">WhatsApp ${esc(a.c||"–")}${a.d?" · "+esc(a.d):""}</span></div>
     <div class="addr">${a.addr?`<span class="small">Lieferadresse</span><strong>${esc(a.n||"")}</strong><span>${esc(a.addr).replace(/,\s*/,"<br>")}</span>`:`<span class="small">Keine Adresse übermittelt. Bitte per WhatsApp nachfragen.</span>`}</div>
     ${a.wish?`<div class="wish"><span class="small">Ihre Wünsche / ihr Kommentar</span><p>${esc(a.wish)}</p></div>`:""}
     <div class="chips">${focus}${warn}</div>
     ${r.flags.length?`<div class="flags">${r.flags.map(f=>`<div class="flag">${esc(f)}</div>`).join("")}</div>`:""}
-    <h3>Empfehlung für die Box (${r.top.length} Produkte)</h3>
+    <h3>Empfehlung ${esc(boxLabel(r.bx.first))} (${r.top.length} Produkte)</h3>
     ${r.top.length?`<div class="prods">${r.top.map(i=>card(i,"top")).join("")}</div>`:`<p class="small">Kein Produkt mit klarer Passung. Persönlich nachfragen.</p>`}
     ${r.more.length?`<h3>Passt ebenfalls</h3><div class="prods">${r.more.map(i=>card(i,"")).join("")}</div>`:""}
+    ${r.second?`<h3>Zweite Box, später verschicken: ${esc(boxLabel(r.bx.second))} (${r.second.top.length} Produkte)</h3><div class="prods">${r.second.top.map(i=>card(i,"")).join("")}</div>${r.second.more.length?`<p class="small" style="margin:0">Passt dort ebenfalls: ${esc(r.second.more.map(i=>i.p.name).join(", "))}</p>`:""}`:""}
+    ${r.bx.later?`<p class="small" style="margin:0">Möchte vielleicht später auch die ${esc(boxLabel(r.bx.first==="H"?"K":"H"))} testen. Dann einfach den Quiz-Link nochmals schicken.</p>`:""}
+    ${r.bx.legacy?"":`<p class="small" style="margin:0">Möchte sie nach dem Test auch die ${esc(boxLabel(r.bx.first==="H"?"K":"H"))}? Fragebogen-Link dafür: <strong style="user-select:all">remotesisterhood.ch/testbox/?box=${r.bx.first==="H"?"K":"H"}</strong></p>`}
+    ${r.inner.length?`<h3>Zum Einnehmen, nur fürs Gespräch (aktuell keine Box)</h3><div class="prods">${r.inner.map(i=>card(i,"")).join("")}</div>`:""}
     ${r.caution.length?`<h3>Nur nach ärztlicher Rücksprache</h3><div class="prods">${r.caution.map(i=>card(i,"caution")).join("")}</div>`:""}
     ${(r.talk.length||r.life.length)?`<h3>Gesprächsthemen ausserhalb der Box</h3>${r.talk.length?`<p class="small" style="margin:0">Wünscht sich: ${esc(r.talk.join(", "))}. Guter Aufhänger für dein Nachgespräch, zum Beispiel zu C9.</p>`:""}${r.life.length?`<p class="small" style="margin:0">Alltag: ${esc(r.life.join(", "))}.</p>`:""}`:""}
     ${r.excl.length?`<h3>Nicht in die Box</h3><ul class="excl">${r.excl.map(e=>`<li>${esc(e)}</li>`).join("")}</ul>`:""}
@@ -501,7 +569,7 @@ function run(text){
 }
 document.getElementById("go").onclick=()=>run(document.getElementById("input").value);
 document.getElementById("demo").onclick=()=>{
-  const ex={demo:true,v:1,d:"Beispiel",n:"Beispiel: Anna Muster",c:"+41 79 000 00 00",addr:"Musterweg 1, 4051 Basel",q1:["H","K","W"],q2:["t"],q3:["tr","fa"],q4:["no"],q5:["du","ge"],q6:["c"],q7:["en","ve"],q8:["bi"],q9:["2"],q11:["s"],q12:["se","ey"],q13:["sh","hi"],q14:["z"],q15:["un","su"],q16:["a"]};
+  const ex={demo:true,v:2,d:"Beispiel",n:"Beispiel: Anna Muster",c:"+41 79 000 00 00",addr:"Musterweg 1, 4051 Basel",q1:["H"],hl:["l"],hd:["f"],hf:["w"],hb:["fa"],q14:["z"],hs:["fo","gi"],q5:["tr","sp","fr"],hk:["fe"],q13:["sh"],q2:["m"],q3:["un","au"],q11:["s"],mk:["t"],q12:["fe"],kb:["tr","li"],q4:["no"],q6:["c"],q8:["ni"],q9:["2"],q7:["en"],q15:["un"],q16:["a"]};
   ACTIVE=null; SHEETS.length=0; document.getElementById("out").innerHTML=sheet(ex,0); fbMessage(0); renderList();
   document.getElementById("status").textContent="Beispieldaten, keine echte Testerin";
 };
@@ -509,21 +577,23 @@ document.getElementById("demo").onclick=()=>{
 function notionText(idx){
   const a=SHEETS[idx], r=evaluate(a), box=document.getElementById("fb-"+idx);
   const sel=[...box.querySelectorAll(".fbpick label")].filter(l=>l.querySelector("input").checked)
-    .map(l=>{const id=l.querySelector("input").value, p=P.find(x=>x.id===id), t=r.top.find(i=>i.p.id===id)||r.more.find(i=>i.p.id===id);
+    .map(l=>{const id=l.querySelector("input").value, p=P.find(x=>x.id===id), t=r.top.find(i=>i.p.id===id)||r.more.find(i=>i.p.id===id)||r.inner.find(i=>i.p.id===id);
       return {name:p.name, added:l.dataset.rec==="0", why:t?t.why.join(", "):""};});
   customs(box).forEach(c=>sel.push({name:c,added:true,why:""}));
   const note=box.querySelector(".note-in").value.trim();
   const link=(box.querySelector(".fbmsg").textContent.match(/https:\S+/)||[""])[0];
   const today=new Date().toLocaleDateString("de-CH");
-  const ans=Object.keys(QL).map(k=>[QL[k],(a[k]||[]).map(v=>L[k][v]||v).join(", ")||"–"]);
+  const ans=Object.keys(QL).filter(k=>(a[k]||[]).length).map(k=>[QL[k],a[k].map(v=>optText(k,v)).join(", ")]);
+  const boxTxt=[...r.bx.first].map(c=>BOXNAME[c]).join(" + ")+(r.bx.second?` (später auch: ${BOXNAME[r.bx.second]})`:"");
   const md=[`## Testbox-Auswertung (${today})`,
     `**WhatsApp:** ${a.c||"–"}`, `**Adresse:** ${a.addr||"fehlt, bitte nachfragen"}`,
-    `**Interesse:** ${(a.q1||[]).map(k=>L.q1[k]).join(", ")||"–"}`, ``,
+    `**Testbox:** ${boxTxt}`, ``,
     ...(a.wish?[`### Ihre Wünsche / Kommentar`,`> ${a.wish}`,``]:[]),
     ...(r.flags.length?[`### Hinweise`,...r.flags.map(f=>`- ⚠️ ${f}`),``]:[]),
     `### Box-Inhalt (${sel.length} Produkte)`,
     ...sel.map(x=>`- [ ] ${x.name}${x.added?" (von mir ergänzt)":""}${x.why?" – "+x.why:""}`),
     ...(note?[``,`**Notiz:** ${note}`]:[]), ``,
+    ...(r.second?[`### Zweite Box (später): ${BOXNAME[r.bx.second]}`,...r.second.top.map(i=>`- ${i.p.name} – ${i.why.join(", ")}`),``]:[]),
     ...(r.excl.length?[`### Nicht in die Box`,...r.excl.map(e=>`- ${e}`),``]:[]),
     ...((r.talk.length||r.life.length)?[`### Gesprächsthemen`,...(r.talk.length?[`- Wünscht sich: ${r.talk.join(", ")}`]:[]),...(r.life.length?[`- Alltag: ${r.life.join(", ")}`]:[]),``]:[]),
     ...(link?[`### Feedback-Link`,link,``]:[]),
@@ -531,11 +601,12 @@ function notionText(idx){
   ].join("\n");
   const h=x=>esc(x);
   const html=`<h2>Testbox-Auswertung (${today})</h2>
-<p><strong>WhatsApp:</strong> ${h(a.c||"–")}<br><strong>Adresse:</strong> ${h(a.addr||"fehlt, bitte nachfragen")}<br><strong>Interesse:</strong> ${h((a.q1||[]).map(k=>L.q1[k]).join(", ")||"–")}</p>
+<p><strong>WhatsApp:</strong> ${h(a.c||"–")}<br><strong>Adresse:</strong> ${h(a.addr||"fehlt, bitte nachfragen")}<br><strong>Testbox:</strong> ${h(boxTxt)}</p>
 ${a.wish?`<h3>Ihre Wünsche / Kommentar</h3><blockquote>${h(a.wish)}</blockquote>`:""}
 ${r.flags.length?`<h3>Hinweise</h3><ul>${r.flags.map(f=>`<li>⚠️ ${h(f)}</li>`).join("")}</ul>`:""}
 <h3>Box-Inhalt (${sel.length} Produkte)</h3><ul>${sel.map(x=>`<li>${h(x.name)}${x.added?" (von mir ergänzt)":""}${x.why?" – "+h(x.why):""}</li>`).join("")}</ul>
 ${note?`<p><strong>Notiz:</strong> ${h(note)}</p>`:""}
+${r.second?`<h3>Zweite Box (später): ${h(BOXNAME[r.bx.second])}</h3><ul>${r.second.top.map(i=>`<li>${h(i.p.name)} – ${h(i.why.join(", "))}</li>`).join("")}</ul>`:""}
 ${r.excl.length?`<h3>Nicht in die Box</h3><ul>${r.excl.map(e=>`<li>${h(e)}</li>`).join("")}</ul>`:""}
 ${(r.talk.length||r.life.length)?`<h3>Gesprächsthemen</h3><ul>${r.talk.length?`<li>Wünscht sich: ${h(r.talk.join(", "))}</li>`:""}${r.life.length?`<li>Alltag: ${h(r.life.join(", "))}</li>`:""}</ul>`:""}
 ${link?`<h3>Feedback-Link</h3><p><a href="${h(link)}">${h(link)}</a></p>`:""}
