@@ -149,6 +149,23 @@ dt{color:var(--muted)} dd{margin:0;min-width:0}
 .saved li.is-done{background:var(--aloe-soft);border-radius:10px}
 .saved li.is-done .open:hover,.saved li.is-done .open.active{background:transparent}
 .donebtn.on{background:var(--aloe-soft)}
+.pendingfb{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.assign{background:var(--warn-soft);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.assign select{font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);min-width:0;flex:1 1 220px}
+.fbres{border:1px solid var(--aloe);background:var(--aloe-soft);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.fbres h3{margin:0}
+.fbres-overall{margin:0;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.stars{color:var(--gold);letter-spacing:.06em;white-space:nowrap}
+.fbtab{width:100%;border-collapse:collapse;font-size:.9rem}
+.fbtab th{text-align:left;font-size:.75rem;color:var(--muted);font-weight:700;padding:4px 6px;border-bottom:1px solid var(--line)}
+.fbtab td{padding:6px;border-bottom:1px solid var(--line);vertical-align:top}
+.keep{font-size:.8rem;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--surface);white-space:nowrap}
+.keep-yes{background:var(--aloe);color:var(--surface)}
+.keep-no{color:var(--muted)}
+.fbdl{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:0;font-size:.92rem}
+.fbdl dt{color:var(--muted);font-size:.82rem}
+.fbdl dd{margin:0}
+@media (max-width:560px){.fbdl{grid-template-columns:1fr}.fbtab{font-size:.84rem}}
 .saved .del.confirm{color:var(--warn);background:var(--warn-soft)}
 .saved .hint{font-size:.78rem;color:var(--muted);margin:0}
 .saved .pick,.pickall input{accent-color:var(--aloe);width:18px;height:18px;flex:none;margin:0 2px 0 4px;cursor:pointer}
@@ -182,6 +199,7 @@ dt{color:var(--muted)} dd{margin:0;min-width:0}
     </div>
   </section>
 
+  <div id="pendingfb" class="pendingfb" hidden></div>
   <div id="out"><div class="empty">Noch keine Auswertung. Füge eine Nachricht ein oder sieh dir das Beispiel an.</div></div>
 
   </main>
@@ -437,13 +455,14 @@ function c9Info(a){
     : w.length ? `Passt zu ihrem Wunsch: ${w.join(", ")}. Persönlicher C9-Tipp.` : "Hat keinen C9-Wunsch angekreuzt. Allgemeiner, sanfter C9-Hinweis.";
   return {ps,note,risk,wish:w.length>0};
 }
+function ENTk(a){ const e=entryFor(a); return e?e.k:""; }
 function fbMessage(idx){
   const a=SHEETS[idx]; const box=document.getElementById("fb-"+idx);
   const ids=[...box.querySelectorAll(".fbin:checked")].map(i=>i.value);
   box.querySelectorAll(".fbpick label").forEach(l=>l.classList.toggle("is-added", l.dataset.rec==="0" && l.querySelector("input").checked));
   const cus=customs(box); const total=ids.length+cus.length; box.querySelector(".boxcount").textContent=`${total} Produkt${total===1?"":"e"}`;
   const fn=firstName(a);
-  const bxf=boxesOf(normalize(a)).first; const link=FEEDBACK_URL+"?n="+encodeURIComponent(fn)+(bxf==="H"||bxf==="K"?"&b="+bxf:"")+"&p="+ids.join(".")+(cus.length?"&x="+cus.map(c=>encodeURIComponent(c.replace(/\|/g," "))).join("%7C"):"");
+  const bxf=boxesOf(normalize(a)).first; const link=FEEDBACK_URL+"?n="+encodeURIComponent(fn)+(bxf==="H"||bxf==="K"?"&b="+bxf:"")+(ENTk(a)?"&r="+ENTk(a):"")+"&p="+ids.join(".")+(cus.length?"&x="+cus.map(c=>encodeURIComponent(c.replace(/\|/g," "))).join("%7C"):"");
   const c9=c9Info(a), c9in=box.querySelector(".c9in"), c9note=box.querySelector(".c9note");
   c9note.textContent=c9.note;
   const ps=(c9in&&c9in.checked)?`\n\n${c9.ps}`:"";
@@ -506,7 +525,7 @@ function renderList(){
     ${!CAN_STORE?`<p class="hint">Speichern ist in diesem Browser nicht möglich, z. B. im privaten Modus.</p>`:
       STORE.length?`<label class="pickall" for="pickall"><input type="checkbox" id="pickall" ${list.length&&list.every(e=>PICKED.has(e.k))?"checked":""}> Alle auswählen</label>
       ${list.length?"":`<p class="hint">${STATUS==="offen"?"Keine offenen Testerinnen. Alles erledigt!":STATUS==="fertig"?"Noch keine abgeschlossen. Hake eine Testerin mit ✓ ab, wenn alles erledigt ist.":"Keine Treffer."}</p>`}
-      <ul>${list.map(e=>`<li class="${isDone(e)?"is-done":""}"><input type="checkbox" class="pick" data-k="${esc(e.k)}" id="pick-${esc(e.k)}" aria-label="${esc(e.a.n||"Ohne Namen")} für Adressen auswählen" ${PICKED.has(e.k)?"checked":""}><button type="button" class="open ${ACTIVE===e.k?"active":""}" data-k="${esc(e.k)}"><b>${nameLines(e.a.n)}</b><span>${e.a.v===2&&e.a.q1&&BOXNAME[e.a.q1[0]]?esc(BOXNAME[e.a.q1[0]])+" · ":""}${isDone(e)&&e.doneAt?"fertig "+new Date(e.doneAt).toLocaleDateString("de-CH"):new Date(e.t).toLocaleDateString("de-CH")}${e.sel?` · ${e.sel.length+(e.custom||[]).filter(Boolean).length} Produkte`:""}</span></button><button type="button" class="tick ${isDone(e)?"on":""}" data-k="${esc(e.k)}" aria-label="${isDone(e)?"Wieder öffnen":"Als abgeschlossen markieren"}" title="${isDone(e)?"Wieder öffnen":"Abgeschlossen"}">✓</button><button type="button" class="del ${DEL_PENDING===e.k?"confirm":""}" data-k="${esc(e.k)}" aria-label="Auswertung löschen">${DEL_PENDING===e.k?"Wirklich?":"✕"}</button></li>`).join("")}</ul>`
+      <ul>${list.map(e=>`<li class="${isDone(e)?"is-done":""}"><input type="checkbox" class="pick" data-k="${esc(e.k)}" id="pick-${esc(e.k)}" aria-label="${esc(e.a.n||"Ohne Namen")} für Adressen auswählen" ${PICKED.has(e.k)?"checked":""}><button type="button" class="open ${ACTIVE===e.k?"active":""}" data-k="${esc(e.k)}"><b>${nameLines(e.a.n)}</b><span>${e.a.v===2&&e.a.q1&&BOXNAME[e.a.q1[0]]?esc(BOXNAME[e.a.q1[0]])+" · ":""}${isDone(e)&&e.doneAt?"fertig "+new Date(e.doneAt).toLocaleDateString("de-CH"):new Date(e.t).toLocaleDateString("de-CH")}${e.sel?` · ${e.sel.length+(e.custom||[]).filter(Boolean).length} Produkte`:""}${e.fb?` · Feedback ${e.fb.overall||"–"}/5`:""}</span></button><button type="button" class="tick ${isDone(e)?"on":""}" data-k="${esc(e.k)}" aria-label="${isDone(e)?"Wieder öffnen":"Als abgeschlossen markieren"}" title="${isDone(e)?"Wieder öffnen":"Abgeschlossen"}">✓</button><button type="button" class="del ${DEL_PENDING===e.k?"confirm":""}" data-k="${esc(e.k)}" aria-label="Auswertung löschen">${DEL_PENDING===e.k?"Wirklich?":"✕"}</button></li>`).join("")}</ul>`
       :`<p class="hint">Noch nichts gespeichert. Jede Auswertung landet automatisch hier.</p>`}
     ${PICKED.size?`<div class="addrbar"><b>${PICKED.size} ausgewählt</b>
       <button type="button" class="primary" id="addrCopy">Adressen kopieren</button>
@@ -540,7 +559,8 @@ function sheet(a,idx){
     <div class="sheet-head"><h2>${esc(a.n||"Ohne Namen")}</h2><span class="small">WhatsApp ${esc(a.c||"–")}${a.d?" · "+esc(a.d):""}</span></div>
     <div class="addr">${a.addr?`<span class="small">Lieferadresse</span><strong>${esc(a.n||"")}</strong><span>${esc(a.addr).replace(/,\s*/,"<br>")}</span>`:`<span class="small">Keine Adresse übermittelt. Bitte per WhatsApp nachfragen.</span>`}</div>
     ${a.wish?`<div class="wish"><span class="small">Ihre Wünsche / ihr Kommentar</span><p>${esc(a.wish)}</p></div>`:""}
-    <div class="chips">${focus}${warn}</div>
+    <div class="chips">${focus}${warn}${ENT&&ENT.fb?`<span class="chip">Feedback ${ENT.fb.overall||"–"}/5</span>`:""}</div>
+    ${ENT&&ENT.fb?feedbackHtml(ENT.fb):""}
     ${r.flags.length?`<div class="flags">${r.flags.map(f=>`<div class="flag">${esc(f)}</div>`).join("")}</div>`:""}
     <h3>Empfehlung ${esc(boxLabel(r.bx.first))} (${r.top.length} Produkte)</h3>
     ${r.top.length?`<div class="prods">${r.top.map(i=>card(i,"top")).join("")}</div>`:`<p class="small">Kein Produkt mit klarer Passung. Persönlich nachfragen.</p>`}
@@ -572,20 +592,92 @@ function sheet(a,idx){
   </article>`;
 }
 
+/* ===== Feedback aus der Umfrage nach dem Test ===== */
+function parseFeedback(block){
+  const g=re=>{const m=block.match(re);return m?m[1].trim():""};
+  const fb={t:Date.now(),name:g(/^\s*Name:\s*(.+)$/m),ref:g(/^\s*Ref:\s*([A-Za-z0-9_-]+)\s*$/m),
+    overall:parseInt(g(/^\s*Gesamteindruck:\s*(\d)/m))||null,keep:g(/^\s*Möchte ich behalten:\s*(.+)$/m),
+    fav:g(/^\s*Lieblingsprodukt:\s*(.+)$/m),comment:g(/^\s*Kommentar:\s*(.+)$/m),perk:g(/^\s*Testerinnen-Vorteil:\s*(.+)$/m),
+    next:g(/^\s*Zweite Box[^:]*:\s*(.+)$/m),nextBox:g(/^\s*Zweite Box \(([^)]+)\)/m),story:g(/^\s*Erfahrungsbericht:\s*(.+)$/m),prods:[],refs:[]};
+  const pm=block.match(/(?:^|\n)\s*Produkte:\s*\n([\s\S]*?)(?=\n\s*\n|$)/);
+  if(pm) pm[1].split(/\n/).forEach(l=>{const m=l.match(/^\s*-\s*(.+?)(\s*\(zusätzlich\))?:\s*(\d|–)(?:\s*von 5)?,\s*(.+)$/); if(m) fb.prods.push({n:m[1].trim(),extra:!!m[2],r:m[3]==="–"?null:+m[3],k:m[4].trim()});});
+  const em=block.match(/(?:^|\n)\s*Empfehlungen:\s*\n([\s\S]*?)(?=\n\s*\n|\n\s*Ref:|$)/);
+  if(em) fb.refs=em[1].split(/\n/).map(l=>l.replace(/^\s*-\s*/,"").trim()).filter(Boolean);
+  return fb;
+}
+const isFeedback=block=>/^\s*Gesamteindruck:/m.test(block);
+const PENDING_FB=[];
+function matchFeedback(fb){
+  if(fb.ref){ const e=STORE.find(x=>x.k===fb.ref); if(e) return [e]; }
+  const fn=String(fb.name||"").trim().toLowerCase().split(/\s+/)[0]; if(!fn) return [];
+  const c=STORE.filter(e=>firstName(e.a).toLowerCase()===fn);
+  const withBox=c.filter(e=>e.sel&&!e.fb); return withBox.length===1?withBox:c;
+}
+function attachFeedback(e,fb){ e.fb=fb; e.t=Date.now(); STORE.sort((x,y)=>y.t-x.t); saveAll(); }
+function fbStars(n){ return n?"★".repeat(n)+"☆".repeat(5-n):"–"; }
+function feedbackHtml(fb){
+  if(!fb) return "";
+  const keepCls=k=>/behalten/i.test(k)?"keep-yes":/vielleicht/i.test(k)?"keep-maybe":/eher nicht/i.test(k)?"keep-no":"";
+  return `<div class="fbres">
+    <div class="sheet-head"><h3>Feedback nach dem Test</h3><span class="small">eingetragen ${new Date(fb.t).toLocaleDateString("de-CH")}</span></div>
+    <p class="fbres-overall"><span class="stars" aria-label="${fb.overall||0} von 5">${fbStars(fb.overall)}</span> <span class="small">Gesamteindruck ${fb.overall||"–"} von 5</span></p>
+    ${fb.prods.length?`<table class="fbtab"><thead><tr><th>Produkt</th><th>Bewertung</th><th>Behalten?</th></tr></thead><tbody>${fb.prods.map(p=>`<tr><td>${esc(p.n)}${p.extra?' <span class="small">(zusätzlich)</span>':""}</td><td class="stars">${fbStars(p.r)}</td><td><span class="keep ${keepCls(p.k)}">${esc(p.k)}</span></td></tr>`).join("")}</tbody></table>`:""}
+    <dl class="fbdl">
+      <dt>Lieblingsprodukt</dt><dd>${esc(fb.fav||"–")}</dd>
+      ${fb.comment?`<dt>Kommentar</dt><dd>${esc(fb.comment)}</dd>`:""}
+      <dt>Testerinnen-Vorteil</dt><dd>${esc(fb.perk||"–")}</dd>
+      ${fb.next?`<dt>Zweite Box${fb.nextBox?" ("+esc(fb.nextBox)+")":""}</dt><dd>${esc(fb.next)}</dd>`:""}
+      <dt>Erfahrungsbericht</dt><dd>${esc(fb.story||"–")}</dd>
+      <dt>Empfehlungen</dt><dd>${fb.refs.length?fb.refs.map(esc).join("<br>"):"keine"}</dd>
+    </dl></div>`;
+}
+function feedbackText(fb){
+  if(!fb) return [];
+  return [`### Feedback nach dem Test`,`Gesamteindruck: ${fb.overall||"–"} von 5`,...fb.prods.map(p=>`- ${p.n}${p.extra?" (zusätzlich)":""}: ${p.r?p.r+" von 5":"–"}, ${p.k}`),
+    `Lieblingsprodukt: ${fb.fav||"–"}`,...(fb.comment?[`Kommentar: ${fb.comment}`]:[]),`Testerinnen-Vorteil: ${fb.perk||"–"}`,...(fb.next?[`Zweite Box: ${fb.next}`]:[]),
+    `Erfahrungsbericht: ${fb.story||"–"}`,`Empfehlungen: ${fb.refs.length?fb.refs.join("; "):"keine"}`,``];
+}
+function renderPending(){
+  const box=document.getElementById("pendingfb"); if(!box) return;
+  box.innerHTML=PENDING_FB.map((fb,i)=>`<div class="assign"><p style="margin:0"><strong>Feedback von ${esc(fb.name||"ohne Namen")}</strong> (${fb.overall||"–"} von 5): Zu wem gehört es?</p>
+    <div class="row"><select class="assign-sel" id="as-${i}" aria-label="Testerin auswählen"><option value="">Testerin auswählen …</option>${STORE.map(e=>`<option value="${esc(e.k)}">${esc(e.a.n||"Ohne Namen")}${e.a.v===2&&BOXNAME[e.a.q1&&e.a.q1[0]]?" · "+esc(BOXNAME[e.a.q1[0]]):""}</option>`).join("")}</select>
+    <button type="button" class="primary assign-go" data-i="${i}">Zuordnen</button><button type="button" class="ghost assign-skip" data-i="${i}">Verwerfen</button></div></div>`).join("");
+  box.hidden=!PENDING_FB.length;
+}
+function runFeedback(blocks){
+  const done=[];
+  blocks.forEach(b=>{ const fb=parseFeedback(b); const m=matchFeedback(fb); if(m.length===1){ attachFeedback(m[0],fb); done.push(m[0]); } else PENDING_FB.push(fb); });
+  renderPending(); renderList();
+  if(done.length===1&&!PENDING_FB.length) showEntry(done[0].k);
+  return done;
+}
+
 function run(text){
   const out=document.getElementById("out"), st=document.getElementById("status");
   const ok=[]; let bad=0;
   /* Lesbare Nachrichten: jede beginnt bei «Name:» */
-  const parts=text.split(/^(?=\s*Name:)/m).filter(p=>/^\s*Name:/.test(p));
+  const all=text.split(/^(?=\s*Name:)/m).filter(p=>/^\s*Name:/.test(p));
+  const fbBlocks=all.filter(isFeedback), parts=all.filter(p=>!isFeedback(p));
+  if(fbBlocks.length){
+    const done=runFeedback(fbBlocks);
+    if(!parts.length){ document.getElementById("input").value=""; st.textContent=((done.length?`Feedback eingetragen bei: ${done.map(e=>e.a.n).join(", ")}.`:"")+(PENDING_FB.length?` ${PENDING_FB.length} Feedback${PENDING_FB.length>1?"s":""} bitte unten zuordnen.`:"")).trim(); return; }
+  }
   parts.forEach(p=>{const a=parseText(p); a?ok.push(a):bad++;});
   /* Ältere Nachrichten mit Code */
   [...new Set(text.match(/TB1\.[A-Za-z0-9_-]+/g)||[])].forEach(c=>{try{ok.push(decode(c))}catch(e){bad++}});
-  if(!ok.length && !bad){st.textContent="Keine Quiz-Antworten gefunden. Bitte die ganze WhatsApp-Nachricht ab «Name:» einfügen.";return;}
+  if(!ok.length && !bad){st.textContent="Keine Quiz-Antworten oder Feedbacks gefunden. Bitte die ganze WhatsApp-Nachricht ab «Name:» einfügen.";return;}
   ok.forEach(upsert); ACTIVE=ok.length===1?keyOf(ok[0]):null; SHEETS.length=0; out.innerHTML=ok.map((a,i)=>sheet(a,i)).join("")||`<div class="empty">Die Nachricht liess sich nicht lesen. Bitte die ganze Nachricht erneut einfügen.</div>`;
   ok.forEach((_,i)=>fbMessage(i)); renderList(); syncDoneBtn(); if(ok.length) document.getElementById("input").value=""; document.getElementById("printall").hidden=ok.length<2;
   st.textContent=`${ok.length} Testerin${ok.length===1?"":"nen"} ausgewertet`+(bad?`, ${bad} Nachricht(en) unvollständig`:"");
 }
 document.getElementById("go").onclick=()=>run(document.getElementById("input").value);
+document.getElementById("pendingfb").addEventListener("click",e=>{
+  const go=e.target.closest(".assign-go"), sk=e.target.closest(".assign-skip");
+  if(go){ const i=+go.dataset.i, k=document.getElementById("as-"+i).value; const en=STORE.find(x=>x.k===k); if(!en) return;
+    const fb=PENDING_FB.splice(i,1)[0]; attachFeedback(en,fb); renderPending(); showEntry(en.k);
+    document.getElementById("status").textContent=`Feedback eingetragen bei ${en.a.n}.`; }
+  if(sk){ PENDING_FB.splice(+sk.dataset.i,1); renderPending(); }
+});
 document.getElementById("demo").onclick=()=>{
   const ex={demo:true,v:2,d:"Beispiel",n:"Beispiel: Anna Muster",c:"+41 79 000 00 00",addr:"Musterweg 1, 4051 Basel",q1:["H"],hl:["l"],hd:["f"],hf:["w"],hb:["fa"],q14:["z"],hs:["fo","gi"],q5:["tr","sp","fr"],hk:["fe"],q13:["sh"],q2:["m"],q3:["un","au"],q11:["s"],mk:["t"],q12:["fe"],kb:["tr","li"],q4:["no"],q6:["c"],q8:["ni"],q9:["2"],q7:["en"],q15:["un"],q16:["a"]};
   ACTIVE=null; SHEETS.length=0; document.getElementById("out").innerHTML=sheet(ex,0); fbMessage(0); renderList();
@@ -615,6 +707,7 @@ function notionText(idx){
     ...(r.excl.length?[`### Nicht in die Box`,...r.excl.map(e=>`- ${e}`),``]:[]),
     ...((r.talk.length||r.life.length)?[`### Gesprächsthemen`,...(r.talk.length?[`- Wünscht sich: ${r.talk.join(", ")}`]:[]),...(r.life.length?[`- Alltag: ${r.life.join(", ")}`]:[]),``]:[]),
     ...(link?[`### Feedback-Link`,link,``]:[]),
+    ...feedbackText((entryFor(a)||{}).fb),
     `### Alle Antworten`, ...ans.map(([q,v])=>`- **${q}:** ${v}`)
   ].join("\n");
   const h=x=>esc(x);
@@ -628,6 +721,7 @@ ${r.second?`<h3>Zweite Box (später): ${h(BOXNAME[r.bx.second])}</h3><ul>${r.sec
 ${r.excl.length?`<h3>Nicht in die Box</h3><ul>${r.excl.map(e=>`<li>${h(e)}</li>`).join("")}</ul>`:""}
 ${(r.talk.length||r.life.length)?`<h3>Gesprächsthemen</h3><ul>${r.talk.length?`<li>Wünscht sich: ${h(r.talk.join(", "))}</li>`:""}${r.life.length?`<li>Alltag: ${h(r.life.join(", "))}</li>`:""}</ul>`:""}
 ${link?`<h3>Feedback-Link</h3><p><a href="${h(link)}">${h(link)}</a></p>`:""}
+${(entryFor(a)||{}).fb?feedbackHtml(entryFor(a).fb).replace(/<span class="stars"[^>]*>[^<]*<\/span>/g,""):""}
 <h3>Alle Antworten</h3><ul>${ans.map(([q,v])=>`<li><strong>${h(q)}:</strong> ${h(v)}</li>`).join("")}</ul>`;
   return {md,html};
 }

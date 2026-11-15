@@ -129,6 +129,8 @@ const KEEP = [["ja","Möchte ich behalten"],["vielleicht","Vielleicht"],["nein",
 /* Personalisierung aus dem Link: ?n=Vorname&p=gelly.lotion.wash */
 let params; try{ params = new URLSearchParams(location.search); }catch(e){ params = new URLSearchParams(""); }
 const preName = (params.get("n")||"").slice(0,40);
+/* Zuordnung in Sabines Auswertung */
+const REF = (params.get("r")||"").replace(/[^A-Za-z0-9_-]/g,"").slice(0,40);
 const preProds = (params.get("p")||"").split(".").filter(id=>PRODUCTS[id]);
 const preCustom = (params.get("x")||"").split("|").map(t=>t.trim().slice(0,60)).filter(Boolean).slice(0,4);
 const S = { next:"", name:preName, prods:[...preProds, ...preCustom.map((_,i)=>"b"+i)], overall:"", rate:{}, keep:{}, fav:"", comment:"", perk:"", story:"", refs:[{},{},{}], extras:[], custom:["",""], noextra:false };
@@ -262,7 +264,8 @@ function finish(){
     `Zweite Box (${otherBox()}): ${({ja:"Ja, sehr gerne",spaeter:"Vielleicht später",nein:"Nein, danke"})[S.next]||"keine Angabe"}`,
     ...(S.next==="ja"||S.next==="spaeter"?[`Fragebogen-Link für die zweite Box: ${QUIZ_BOX_URL()}`]:[]),
     `Erfahrungsbericht: ${storyL[S.story]}`,
-    refs.length?`\nEmpfehlungen:\n${refs.join("\n")}`:`Empfehlungen: keine`
+    refs.length?`\nEmpfehlungen:\n${refs.join("\n")}`:`Empfehlungen: keine`,
+    REF?`\nRef: ${REF}`:null
   ].filter(l=>l!==null).join("\n");
   const wa = `https://wa.me/${SABINE_WHATSAPP}?text=${encodeURIComponent(msg)}`;
   [...prog.children].forEach(s=>s.classList.add("on"));
