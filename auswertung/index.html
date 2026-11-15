@@ -85,6 +85,13 @@ dt{color:var(--muted)} dd{margin:0;min-width:0}
 .c9opt input{accent-color:var(--aloe);width:18px;height:18px;margin-top:2px;flex:none}
 .note-in{font:inherit;font-size:.9rem;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);width:100%;resize:vertical}
 .note-print{display:none}
+.packbox{border:2px solid var(--gold);background:var(--gold-soft);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.packbox h3{margin:0}
+.noteswrap{display:flex;flex-direction:column;gap:6px;background:var(--surface);border:1.5px dashed var(--gold);border-radius:10px;padding:10px 12px}
+.noteswrap label{font-size:.95rem;color:var(--ink)}
+.noteswrap .note-in{background:var(--surface)}
+.noteswrap.has-note{border:2px solid var(--warn);background:var(--warn-soft)}
+.noteswrap.has-note label strong{color:var(--warn)}
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 @media print{
   :root{--bg:#fff;--surface:#fff;--ink:#000;--muted:#333;--line:#999;--aloe:#000;--aloe-soft:#fff;--gold:#000;--warn:#000;--warn-soft:#fff}
@@ -107,6 +114,9 @@ dt{color:var(--muted)} dd{margin:0;min-width:0}
   .sheet{border:0;padding:0;break-after:page;gap:10px}
   .sheet:last-child{break-after:auto}
   .fb{border:0;padding:0}
+  .packbox{border:1.5px solid #000;background:#fff;padding:10px}
+  .noteswrap,.noteswrap.has-note{border:2px solid #000;background:#fff}
+  .noteswrap label .small{display:none}
   .sheet .fb h3{font-size:12pt;color:#000;margin:6px 0 0}
   .fbpick{display:block;font-size:11pt}
   .fbpick label{display:flex;padding:6px 0;border-bottom:1px solid #ccc}
@@ -538,7 +548,7 @@ function renderList(){
 function showEntry(k){
   const e=STORE.find(x=>x.k===k); if(!e) return;
   ACTIVE=k; DEL_PENDING=null; SHEETS.length=0;
-  document.getElementById("out").innerHTML=sheet(e.a,0); fbMessage(0); syncDoneBtn();
+  document.getElementById("out").innerHTML=sheet(e.a,0); fbMessage(0); syncDoneBtn(); syncNotes();
   document.getElementById("printall").hidden=true;
   document.getElementById("status").textContent=`Gespeicherte Auswertung von ${e.a.n||"ohne Namen"}`;
   renderList(); document.getElementById("out").scrollIntoView({behavior:"smooth",block:"start"});
@@ -573,12 +583,14 @@ function sheet(a,idx){
     ${(r.talk.length||r.life.length)?`<h3>Gesprächsthemen ausserhalb der Box</h3>${r.talk.length?`<p class="small" style="margin:0">Wünscht sich: ${esc(r.talk.join(", "))}. Guter Aufhänger für dein Nachgespräch, zum Beispiel zu C9.</p>`:""}${r.life.length?`<p class="small" style="margin:0">Alltag: ${esc(r.life.join(", "))}.</p>`:""}`:""}
     ${r.excl.length?`<h3>Nicht in die Box</h3><ul class="excl">${r.excl.map(e=>`<li>${esc(e)}</li>`).join("")}</ul>`:""}
     <div class="fb" id="fb-${idx}">
+      <div class="packbox">
+      <div class="field noteswrap"><label for="note-${idx}"><strong>Nicht vergessen:</strong> <span class="small">Notiz für die Box, wird mitgedruckt</span></label><textarea id="note-${idx}" class="note-in" data-idx="${idx}" rows="2" placeholder="z. B. Probe extra beilegen, Allergie beachten, Gutschein dazulegen">${esc(ENT&&ENT.note||"")}</textarea><div class="note-print"></div></div>
       <div class="sheet-head"><h3>Box-Inhalt für ${esc(firstName(a)||"die Testerin")}</h3><span class="small boxcount"></span></div>
       <p class="small noprint" style="margin:0">Die Empfehlung ist vorausgewählt. Hake weitere Produkte an oder entferne welche. Von dir ergänzte Produkte sind mit ✎ markiert.</p>
       <div class="fbpick">${P.map(p=>{const rec=r.top.some(i=>i.p.id===p.id);return `<label for="fb-${idx}-${p.id}" data-rec="${rec?1:0}"><input type="checkbox" class="fbin" data-idx="${idx}" id="fb-${idx}-${p.id}" value="${p.id}" ${(ENT&&ENT.sel?ENT.sel.includes(p.id):rec)?"checked":""}><span>${esc(p.name)}</span><span class="added" aria-label="von dir ergänzt">✎</span></label>`}).join("")}</div>
       <span class="small fbcustom-label noprint">Eigene Produkte, die nicht in der Liste stehen (z. B. Serum):</span>
       <div class="fbcustom">${[0,1].map(i=>`<label class="cust-row" for="cust-${idx}-${i}"><span class="box" aria-hidden="true"></span><input id="cust-${idx}-${i}" class="cust-in" data-idx="${idx}" maxlength="60" placeholder="${i===0?"Weiteres Produkt":"Noch ein Produkt"}" value="${esc(ENT&&ENT.custom&&ENT.custom[i]||"")}"></label>`).join("")}</div>
-      <div class="field noteswrap"><label for="note-${idx}" class="small">Notiz für die Box (wird mitgedruckt)</label><textarea id="note-${idx}" class="note-in" data-idx="${idx}" rows="2" placeholder="z. B. Probe extra beilegen, Allergie beachten">${esc(ENT&&ENT.note||"")}</textarea><div class="note-print"></div></div>
+      </div>
       <div class="row noprint"><button type="button" class="primary printone" data-idx="${idx}">Auswertung drucken</button><button type="button" class="ghost notioncopy" data-idx="${idx}">Für Notion kopieren</button>${ENT?`<button type="button" class="ghost donebtn" data-k="${esc(ENT.k)}">Als abgeschlossen markieren</button>`:""}<span class="small notionok" hidden>Kopiert. Jetzt in ihren Eintrag im Interessenten Tracker einfügen.</span>${PRINT_HINT}</div>
       <div class="noprint fbblock">
         <h3>Nach dem Test: Feedback-Link</h3>
@@ -667,7 +679,7 @@ function run(text){
   [...new Set(text.match(/TB1\.[A-Za-z0-9_-]+/g)||[])].forEach(c=>{try{ok.push(decode(c))}catch(e){bad++}});
   if(!ok.length && !bad){st.textContent="Keine Quiz-Antworten oder Feedbacks gefunden. Bitte die ganze WhatsApp-Nachricht ab «Name:» einfügen.";return;}
   ok.forEach(upsert); ACTIVE=ok.length===1?keyOf(ok[0]):null; SHEETS.length=0; out.innerHTML=ok.map((a,i)=>sheet(a,i)).join("")||`<div class="empty">Die Nachricht liess sich nicht lesen. Bitte die ganze Nachricht erneut einfügen.</div>`;
-  ok.forEach((_,i)=>fbMessage(i)); renderList(); syncDoneBtn(); if(ok.length) document.getElementById("input").value=""; document.getElementById("printall").hidden=ok.length<2;
+  ok.forEach((_,i)=>fbMessage(i)); renderList(); syncDoneBtn(); syncNotes(); if(ok.length) document.getElementById("input").value=""; document.getElementById("printall").hidden=ok.length<2;
   st.textContent=`${ok.length} Testerin${ok.length===1?"":"nen"} ausgewertet`+(bad?`, ${bad} Nachricht(en) unvollständig`:"");
 }
 document.getElementById("go").onclick=()=>run(document.getElementById("input").value);
@@ -735,7 +747,7 @@ async function copyNotion(idx){
       ok.textContent="Text ist markiert. Mit Strg+C oder Cmd+C kopieren."; ok.hidden=false; }
   }
 }
-function syncNotes(){ document.querySelectorAll(".fb").forEach(b=>{ const t=b.querySelector(".note-in"), pr=b.querySelector(".note-print"); pr.textContent=t.value.trim()||"Notizen:"; }); }
+function syncNotes(){ document.querySelectorAll(".fb").forEach(b=>{ const t=b.querySelector(".note-in"), pr=b.querySelector(".note-print"); pr.textContent=t.value.trim()||"Notizen:"; const w=b.querySelector(".noteswrap"); if(w) w.classList.toggle("has-note",!!t.value.trim()); }); }
 function doPrint(idx){
   syncNotes();
   document.querySelectorAll(".sheet").forEach(s=>s.classList.remove("print-target"));
@@ -749,7 +761,8 @@ window.addEventListener("afterprint",()=>document.body.classList.remove("print-o
 document.getElementById("printall").onclick=()=>doPrint();
 document.getElementById("out").addEventListener("click",e=>{ const db=e.target.closest(".donebtn"); if(db){ const en=STORE.find(x=>x.k===db.dataset.k); if(en) setDone(en.k,!en.done); return; } const b=e.target.closest(".printone"); if(b) doPrint(+b.dataset.idx); const n=e.target.closest(".notioncopy"); if(n) copyNotion(+n.dataset.idx); });
 document.getElementById("out").addEventListener("change",e=>{ if(e.target.classList.contains("fbin")||e.target.classList.contains("c9in")){ fbMessage(+e.target.dataset.idx); persist(+e.target.dataset.idx); } });
-let noteTimer; document.getElementById("out").addEventListener("input",e=>{ if(e.target.classList.contains("cust-in")) fbMessage(+e.target.dataset.idx); if(e.target.classList.contains("note-in")||e.target.classList.contains("cust-in")){ clearTimeout(noteTimer); const i=+e.target.dataset.idx; noteTimer=setTimeout(()=>persist(i),400); } });
+document.getElementById("out").addEventListener("focusout",e=>{ if(e.target.classList&&(e.target.classList.contains("note-in")||e.target.classList.contains("cust-in"))){ clearTimeout(noteTimer); persist(+e.target.dataset.idx); } });
+let noteTimer; document.getElementById("out").addEventListener("input",e=>{ if(e.target.classList.contains("cust-in")) fbMessage(+e.target.dataset.idx); if(e.target.classList.contains("note-in")) e.target.closest(".noteswrap").classList.toggle("has-note",!!e.target.value.trim()); if(e.target.classList.contains("note-in")||e.target.classList.contains("cust-in")){ clearTimeout(noteTimer); const i=+e.target.dataset.idx; noteTimer=setTimeout(()=>persist(i),400); } });
 document.getElementById("saved").addEventListener("change",e=>{
   const t=e.target;
   if(t.classList.contains("pick")){ t.checked?PICKED.add(t.dataset.k):PICKED.delete(t.dataset.k); renderList(); }
