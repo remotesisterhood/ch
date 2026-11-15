@@ -159,6 +159,24 @@ dt{color:var(--muted)} dd{margin:0;min-width:0}
 .saved li.is-done{background:var(--aloe-soft);border-radius:10px}
 .saved li.is-done .open:hover,.saved li.is-done .open.active{background:transparent}
 .donebtn.on{background:var(--aloe-soft)}
+.logbox{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
+.logbox h3{margin:0}
+.logadd{display:grid;grid-template-columns:max-content 1fr;gap:6px 10px;align-items:center}
+.logadd select,.logadd textarea{font:inherit;font-size:.92rem;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);min-width:0}
+.logadd textarea{resize:vertical}
+.logadd .row{grid-column:2}
+@media (max-width:560px){.logadd{grid-template-columns:1fr}.logadd .row{grid-column:1}}
+.loglist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.loglist li{border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:var(--bg)}
+.loglist p{margin:4px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.loghead{display:flex;align-items:center;gap:8px}
+.logtag{font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--gold-soft);color:var(--ink)}
+.log-gespraech .logtag{background:var(--aloe-soft)}
+.log-bestellung .logtag{background:var(--aloe);color:var(--surface)}
+.log-absage{border-color:var(--warn)!important}
+.log-absage .logtag{background:var(--warn);color:var(--surface)}
+.logdel{margin-left:auto;border:0;background:transparent;color:var(--muted);font-size:.8rem;padding:4px 6px}
+.logdel:hover{color:var(--warn)}
 .pendingfb{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
 .assign{background:var(--warn-soft);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
 .assign select{font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);min-width:0;flex:1 1 220px}
@@ -535,7 +553,7 @@ function renderList(){
     ${!CAN_STORE?`<p class="hint">Speichern ist in diesem Browser nicht möglich, z. B. im privaten Modus.</p>`:
       STORE.length?`<label class="pickall" for="pickall"><input type="checkbox" id="pickall" ${list.length&&list.every(e=>PICKED.has(e.k))?"checked":""}> Alle auswählen</label>
       ${list.length?"":`<p class="hint">${STATUS==="offen"?"Keine offenen Testerinnen. Alles erledigt!":STATUS==="fertig"?"Noch keine abgeschlossen. Hake eine Testerin mit ✓ ab, wenn alles erledigt ist.":"Keine Treffer."}</p>`}
-      <ul>${list.map(e=>`<li class="${isDone(e)?"is-done":""}"><input type="checkbox" class="pick" data-k="${esc(e.k)}" id="pick-${esc(e.k)}" aria-label="${esc(e.a.n||"Ohne Namen")} für Adressen auswählen" ${PICKED.has(e.k)?"checked":""}><button type="button" class="open ${ACTIVE===e.k?"active":""}" data-k="${esc(e.k)}"><b>${nameLines(e.a.n)}</b><span>${e.a.v===2&&e.a.q1&&BOXNAME[e.a.q1[0]]?esc(BOXNAME[e.a.q1[0]])+" · ":""}${isDone(e)&&e.doneAt?"fertig "+new Date(e.doneAt).toLocaleDateString("de-CH"):new Date(e.t).toLocaleDateString("de-CH")}${e.sel?` · ${e.sel.length+(e.custom||[]).filter(Boolean).length} Produkte`:""}${e.fb?` · Feedback ${e.fb.overall||"–"}/5`:""}</span></button><button type="button" class="tick ${isDone(e)?"on":""}" data-k="${esc(e.k)}" aria-label="${isDone(e)?"Wieder öffnen":"Als abgeschlossen markieren"}" title="${isDone(e)?"Wieder öffnen":"Abgeschlossen"}">✓</button><button type="button" class="del ${DEL_PENDING===e.k?"confirm":""}" data-k="${esc(e.k)}" aria-label="Auswertung löschen">${DEL_PENDING===e.k?"Wirklich?":"✕"}</button></li>`).join("")}</ul>`
+      <ul>${list.map(e=>`<li class="${isDone(e)?"is-done":""}"><input type="checkbox" class="pick" data-k="${esc(e.k)}" id="pick-${esc(e.k)}" aria-label="${esc(e.a.n||"Ohne Namen")} für Adressen auswählen" ${PICKED.has(e.k)?"checked":""}><button type="button" class="open ${ACTIVE===e.k?"active":""}" data-k="${esc(e.k)}"><b>${nameLines(e.a.n)}</b><span>${e.a.v===2&&e.a.q1&&BOXNAME[e.a.q1[0]]?esc(BOXNAME[e.a.q1[0]])+" · ":""}${isDone(e)&&e.doneAt?"fertig "+new Date(e.doneAt).toLocaleDateString("de-CH"):new Date(e.t).toLocaleDateString("de-CH")}${e.sel?` · ${e.sel.length+(e.custom||[]).filter(Boolean).length} Produkte`:""}${e.fb?` · Feedback ${e.fb.overall||"–"}/5`:""}${lastLogType(e)==="absage"?" · abgesagt":""}</span></button><button type="button" class="tick ${isDone(e)?"on":""}" data-k="${esc(e.k)}" aria-label="${isDone(e)?"Wieder öffnen":"Als abgeschlossen markieren"}" title="${isDone(e)?"Wieder öffnen":"Abgeschlossen"}">✓</button><button type="button" class="del ${DEL_PENDING===e.k?"confirm":""}" data-k="${esc(e.k)}" aria-label="Auswertung löschen">${DEL_PENDING===e.k?"Wirklich?":"✕"}</button></li>`).join("")}</ul>`
       :`<p class="hint">Noch nichts gespeichert. Jede Auswertung landet automatisch hier.</p>`}
     ${PICKED.size?`<div class="addrbar"><b>${PICKED.size} ausgewählt</b>
       <button type="button" class="primary" id="addrCopy">Adressen kopieren</button>
@@ -571,6 +589,7 @@ function sheet(a,idx){
     ${a.wish?`<div class="wish"><span class="small">Ihre Wünsche / ihr Kommentar</span><p>${esc(a.wish)}</p></div>`:""}
     <div class="chips">${focus}${warn}${ENT&&ENT.fb?`<span class="chip">Feedback ${ENT.fb.overall||"–"}/5</span>`:""}</div>
     ${ENT&&ENT.fb?feedbackHtml(ENT.fb):""}
+    ${logHtml(ENT)}
     ${r.flags.length?`<div class="flags">${r.flags.map(f=>`<div class="flag">${esc(f)}</div>`).join("")}</div>`:""}
     <h3>Empfehlung ${esc(boxLabel(r.bx.first))} (${r.top.length} Produkte)</h3>
     ${r.top.length?`<div class="prods">${r.top.map(i=>card(i,"top")).join("")}</div>`:`<p class="small">Kein Produkt mit klarer Passung. Persönlich nachfragen.</p>`}
@@ -626,6 +645,26 @@ function matchFeedback(fb){
   const withBox=c.filter(e=>e.sel&&!e.fb); return withBox.length===1?withBox:c;
 }
 function attachFeedback(e,fb){ e.fb=fb; e.t=Date.now(); STORE.sort((x,y)=>y.t-x.t); saveAll(); }
+/* ===== Verlauf: eigene Notizen zur Testerin (Gespräche, Absagen …) ===== */
+const LOGTYPES={notiz:"Notiz",gespraech:"Gespräch",absage:"Absage",bestellung:"Bestellung"};
+let LOG_DEL=null;
+function logHtml(ENT){
+  if(!ENT) return "";
+  const log=ENT.log||[];
+  return `<div class="logbox noprint" data-k="${esc(ENT.k)}">
+    <div class="sheet-head"><h3>Verlauf und Notizen</h3><span class="small">${log.length?log.length+" Eintr"+(log.length===1?"ag":"äge"):"noch leer"}</span></div>
+    <div class="logadd">
+      <label class="small" for="logtype-${esc(ENT.k)}">Art</label>
+      <select class="logtype" id="logtype-${esc(ENT.k)}">${Object.entries(LOGTYPES).map(([v,l])=>`<option value="${v}">${l}</option>`).join("")}</select>
+      <label class="small" for="logtext-${esc(ENT.k)}">Was ist passiert?</label>
+      <textarea class="logtext" id="logtext-${esc(ENT.k)}" rows="2" maxlength="1000" placeholder="z. B. Telefoniert, sie überlegt sich die Body Lotion. Melde mich am 20."></textarea>
+      <div class="row"><button type="button" class="primary logsave">Eintrag speichern</button><span class="small logok" hidden>Gespeichert</span></div>
+    </div>
+    ${log.length?`<ul class="loglist">${log.map((l,i)=>`<li class="log-${esc(l.type)}"><div class="loghead"><span class="logtag">${esc(LOGTYPES[l.type]||"Notiz")}</span><span class="small">${new Date(l.t).toLocaleDateString("de-CH")}</span><button type="button" class="logdel" data-i="${i}" aria-label="Eintrag löschen">${LOG_DEL===ENT.k+":"+i?"Wirklich löschen?":"✕"}</button></div><p>${esc(l.text)}</p></li>`).join("")}</ul>`:""}
+  </div>`;
+}
+function rerenderLog(k){ const e=STORE.find(x=>x.k===k); const el=document.querySelector(`.logbox[data-k="${CSS.escape(k)}"]`); if(e&&el) el.outerHTML=logHtml(e); }
+function lastLogType(e){ return e.log&&e.log.length?e.log[0].type:""; }
 function fbStars(n){ return n?"★".repeat(n)+"☆".repeat(5-n):"–"; }
 function feedbackHtml(fb){
   if(!fb) return "";
@@ -720,6 +759,7 @@ function notionText(idx){
     ...((r.talk.length||r.life.length)?[`### Gesprächsthemen`,...(r.talk.length?[`- Wünscht sich: ${r.talk.join(", ")}`]:[]),...(r.life.length?[`- Alltag: ${r.life.join(", ")}`]:[]),``]:[]),
     ...(link?[`### Feedback-Link`,link,``]:[]),
     ...feedbackText((entryFor(a)||{}).fb),
+    ...(((entryFor(a)||{}).log||[]).length?[`### Verlauf`,...entryFor(a).log.map(l=>`- ${new Date(l.t).toLocaleDateString("de-CH")} · ${LOGTYPES[l.type]||"Notiz"}: ${l.text}`),``]:[]),
     `### Alle Antworten`, ...ans.map(([q,v])=>`- **${q}:** ${v}`)
   ].join("\n");
   const h=x=>esc(x);
@@ -733,6 +773,7 @@ ${r.second?`<h3>Zweite Box (später): ${h(BOXNAME[r.bx.second])}</h3><ul>${r.sec
 ${r.excl.length?`<h3>Nicht in die Box</h3><ul>${r.excl.map(e=>`<li>${h(e)}</li>`).join("")}</ul>`:""}
 ${(r.talk.length||r.life.length)?`<h3>Gesprächsthemen</h3><ul>${r.talk.length?`<li>Wünscht sich: ${h(r.talk.join(", "))}</li>`:""}${r.life.length?`<li>Alltag: ${h(r.life.join(", "))}</li>`:""}</ul>`:""}
 ${link?`<h3>Feedback-Link</h3><p><a href="${h(link)}">${h(link)}</a></p>`:""}
+${((entryFor(a)||{}).log||[]).length?`<h3>Verlauf</h3><ul>${entryFor(a).log.map(l=>`<li>${h(new Date(l.t).toLocaleDateString("de-CH"))} · ${h(LOGTYPES[l.type]||"Notiz")}: ${h(l.text)}</li>`).join("")}</ul>`:""}
 ${(entryFor(a)||{}).fb?feedbackHtml(entryFor(a).fb).replace(/<span class="stars"[^>]*>[^<]*<\/span>/g,""):""}
 <h3>Alle Antworten</h3><ul>${ans.map(([q,v])=>`<li><strong>${h(q)}:</strong> ${h(v)}</li>`).join("")}</ul>`;
   return {md,html};
@@ -761,6 +802,15 @@ window.addEventListener("afterprint",()=>document.body.classList.remove("print-o
 document.getElementById("printall").onclick=()=>doPrint();
 document.getElementById("out").addEventListener("click",e=>{ const db=e.target.closest(".donebtn"); if(db){ const en=STORE.find(x=>x.k===db.dataset.k); if(en) setDone(en.k,!en.done); return; } const b=e.target.closest(".printone"); if(b) doPrint(+b.dataset.idx); const n=e.target.closest(".notioncopy"); if(n) copyNotion(+n.dataset.idx); });
 document.getElementById("out").addEventListener("change",e=>{ if(e.target.classList.contains("fbin")||e.target.classList.contains("c9in")){ fbMessage(+e.target.dataset.idx); persist(+e.target.dataset.idx); } });
+document.getElementById("out").addEventListener("click",ev=>{
+  const box=ev.target.closest(".logbox"); if(!box) return; const k=box.dataset.k; const en=STORE.find(x=>x.k===k); if(!en) return;
+  if(ev.target.closest(".logsave")){ const t=box.querySelector(".logtext").value.trim(); if(!t){ box.querySelector(".logtext").focus(); return; }
+    en.log=en.log||[]; en.log.unshift({t:Date.now(),type:box.querySelector(".logtype").value,text:t}); saveAll(); LOG_DEL=null; rerenderLog(k); renderList();
+    const ok=document.querySelector(`.logbox[data-k="${CSS.escape(k)}"] .logok`); if(ok) ok.hidden=false; return; }
+  const d=ev.target.closest(".logdel"); if(d){ const id=k+":"+d.dataset.i;
+    if(LOG_DEL===id){ en.log.splice(+d.dataset.i,1); saveAll(); LOG_DEL=null; renderList(); } else LOG_DEL=id;
+    rerenderLog(k); }
+});
 document.getElementById("out").addEventListener("focusout",e=>{ if(e.target.classList&&(e.target.classList.contains("note-in")||e.target.classList.contains("cust-in"))){ clearTimeout(noteTimer); persist(+e.target.dataset.idx); } });
 let noteTimer; document.getElementById("out").addEventListener("input",e=>{ if(e.target.classList.contains("cust-in")) fbMessage(+e.target.dataset.idx); if(e.target.classList.contains("note-in")) e.target.closest(".noteswrap").classList.toggle("has-note",!!e.target.value.trim()); if(e.target.classList.contains("note-in")||e.target.classList.contains("cust-in")){ clearTimeout(noteTimer); const i=+e.target.dataset.idx; noteTimer=setTimeout(()=>persist(i),400); } });
 document.getElementById("saved").addEventListener("change",e=>{
