@@ -159,6 +159,11 @@ dt{color:var(--muted)} dd{margin:0;min-width:0}
 .saved li.is-done{background:var(--aloe-soft);border-radius:10px}
 .saved li.is-done .open:hover,.saved li.is-done .open.active{background:transparent}
 .donebtn.on{background:var(--aloe-soft)}
+.fbpaste{border:1px dashed var(--aloe);border-radius:12px;padding:10px 14px;display:flex;flex-direction:column;gap:8px}
+.fbpaste summary{cursor:pointer;font-weight:700;color:var(--aloe)}
+.fbpaste[open]{display:flex}
+.fbpaste textarea{font:inherit;font-size:.9rem;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);width:100%;resize:vertical;margin-top:6px}
+.fbpaste .row{margin-top:8px}
 .logbox{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
 .logbox h3{margin:0}
 .logadd{display:grid;grid-template-columns:max-content 1fr;gap:6px 10px;align-items:center}
@@ -589,6 +594,10 @@ function sheet(a,idx){
     ${a.wish?`<div class="wish"><span class="small">Ihre Wünsche / ihr Kommentar</span><p>${esc(a.wish)}</p></div>`:""}
     <div class="chips">${focus}${warn}${ENT&&ENT.fb?`<span class="chip">Feedback ${ENT.fb.overall||"–"}/5</span>`:""}</div>
     ${ENT&&ENT.fb?feedbackHtml(ENT.fb):""}
+    ${ENT?`<details class="fbpaste noprint" data-k="${esc(ENT.k)}" ${ENT.fb?"":"open"}><summary>${ENT.fb?"Neues Feedback einfügen (ersetzt das bisherige)":`Feedback von ${esc(firstName(a)||"ihr")} hier einfügen`}</summary>
+      <label class="small" for="fbp-${esc(ENT.k)}">Kopiere ihre Feedback-Nachricht aus WhatsApp hier hinein.</label>
+      <textarea class="fbp-in" id="fbp-${esc(ENT.k)}" rows="4" placeholder="Hallo Sabine, hier ist mein Feedback zur Testbox. …"></textarea>
+      <div class="row"><button type="button" class="primary fbp-go">Bei ${esc(firstName(a)||"ihr")} speichern</button><span class="small fbp-msg" role="status"></span></div></details>`:""}
     ${logHtml(ENT)}
     ${r.flags.length?`<div class="flags">${r.flags.map(f=>`<div class="flag">${esc(f)}</div>`).join("")}</div>`:""}
     <h3>Empfehlung ${esc(boxLabel(r.bx.first))} (${r.top.length} Produkte)</h3>
@@ -803,6 +812,9 @@ document.getElementById("printall").onclick=()=>doPrint();
 document.getElementById("out").addEventListener("click",e=>{ const db=e.target.closest(".donebtn"); if(db){ const en=STORE.find(x=>x.k===db.dataset.k); if(en) setDone(en.k,!en.done); return; } const b=e.target.closest(".printone"); if(b) doPrint(+b.dataset.idx); const n=e.target.closest(".notioncopy"); if(n) copyNotion(+n.dataset.idx); });
 document.getElementById("out").addEventListener("change",e=>{ if(e.target.classList.contains("fbin")||e.target.classList.contains("c9in")){ fbMessage(+e.target.dataset.idx); persist(+e.target.dataset.idx); } });
 document.getElementById("out").addEventListener("click",ev=>{
+  const pb=ev.target.closest(".fbp-go"); if(pb){ const d=pb.closest(".fbpaste"), en=STORE.find(x=>x.k===d.dataset.k), t=d.querySelector(".fbp-in").value, m=d.querySelector(".fbp-msg");
+    if(!en) return; if(!isFeedback(t)){ m.textContent="Das sieht nicht nach einer Feedback-Nachricht aus. Bitte die ganze Nachricht ab «Hallo Sabine» einfügen."; return; }
+    attachFeedback(en,parseFeedback(t)); showEntry(en.k); document.getElementById("status").textContent=`Feedback bei ${en.a.n} gespeichert.`; return; }
   const box=ev.target.closest(".logbox"); if(!box) return; const k=box.dataset.k; const en=STORE.find(x=>x.k===k); if(!en) return;
   if(ev.target.closest(".logsave")){ const t=box.querySelector(".logtext").value.trim(); if(!t){ box.querySelector(".logtext").focus(); return; }
     en.log=en.log||[]; en.log.unshift({t:Date.now(),type:box.querySelector(".logtype").value,text:t}); saveAll(); LOG_DEL=null; rerenderLog(k); renderList();
