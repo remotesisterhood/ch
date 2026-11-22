@@ -164,6 +164,22 @@ dt{color:var(--muted)} dd{margin:0;min-width:0}
 .fbpaste[open]{display:flex}
 .fbpaste textarea{font:inherit;font-size:.9rem;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);width:100%;resize:vertical;margin-top:6px}
 .fbpaste .row{margin-top:8px}
+:root{--lead-or:#c25e00;--lead-or-soft:#fde3cc;--lead-bl:#1f5fa8;--lead-bl-soft:#dbe8f7}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--lead-or:#f2a35e;--lead-or-soft:#43301f;--lead-bl:#8ab8ec;--lead-bl-soft:#1f2f44}}
+:root[data-theme="dark"]{--lead-or:#f2a35e;--lead-or-soft:#43301f;--lead-bl:#8ab8ec;--lead-bl-soft:#1f2f44}
+.saved li.lead-interesse{background:var(--lead-or-soft);border-radius:10px;box-shadow:inset 0 0 0 2px var(--lead-or)}
+.saved li.lead-bestellt{background:var(--lead-bl-soft);border-radius:10px;box-shadow:inset 0 0 0 2px var(--lead-bl)}
+.leadtag{font-style:normal;font-size:.7rem;font-weight:700;align-self:flex-start;padding:1px 7px;border-radius:99px;color:var(--surface)}
+.lead-interesse .leadtag{background:var(--lead-or)}
+.lead-bestellt .leadtag{background:var(--lead-bl)}
+.legend{margin:0;font-size:.75rem;color:var(--muted);display:flex;align-items:center;gap:5px}
+.ldot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-left:6px}
+.ldot-interesse{background:var(--lead-or)}.ldot-bestellt{background:var(--lead-bl)}
+.leadbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.leadbtn{border:2px solid var(--line);background:var(--surface);color:var(--ink);font-weight:700;font-size:.88rem;padding:8px 14px;border-radius:99px}
+.lb-interesse[aria-pressed="true"]{background:var(--lead-or);border-color:var(--lead-or);color:var(--surface)}
+.lb-bestellt[aria-pressed="true"]{background:var(--lead-bl);border-color:var(--lead-bl);color:var(--surface)}
+.lb-interesse:hover{border-color:var(--lead-or)}.lb-bestellt:hover{border-color:var(--lead-bl)}
 .logbox{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
 .logbox h3{margin:0}
 .logadd{display:grid;grid-template-columns:max-content 1fr;gap:6px 10px;align-items:center}
@@ -520,6 +536,10 @@ let ACTIVE=null, DEL_PENDING=null, FILTER=""; const PICKED=new Set();
 /* Ansicht der Liste: offen, fertig oder alle (wird im Browser gemerkt) */
 let STATUS="offen"; try{ const v=localStorage.getItem("rs_testbox_ansicht"); if(["offen","fertig","alle"].includes(v)) STATUS=v; }catch(e){}
 const isDone=e=>!!e.done;
+/* Kaufstatus: interesse (orange) oder bestellt (blau) */
+const LEAD={interesse:"Interesse",bestellt:"Bestellt"};
+function setLead(k,val){ const e=STORE.find(x=>x.k===k); if(!e) return; e.lead=e.lead===val?"":val; saveAll(); renderList(); syncLeadBtns(); }
+function syncLeadBtns(){ document.querySelectorAll(".leadbar").forEach(b=>{ const e=STORE.find(x=>x.k===b.dataset.k); const v=e&&e.lead||""; b.querySelectorAll(".leadbtn").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.lead===v))); }); }
 function nameLines(n){ const p=String(n||"Ohne Namen").trim().split(/\s+/); let nach=p.length>1?p.pop():""; while(p.length>1&&/^(von|van|de|di|da|del|der|den|zu|du|la|le)$/i.test(p[p.length-1])) nach=p.pop()+" "+nach; return esc(p.join(" "))+(nach?"<br>"+esc(nach):""); }
 function visibleList(){ return STORE.filter(e=>(!FILTER||String(e.a.n||"").toLowerCase().includes(FILTER)) && (STATUS==="alle"||(STATUS==="fertig")===isDone(e))); }
 function setDone(k,val){ const e=STORE.find(x=>x.k===k); if(!e) return; e.done=val; e.doneAt=val?Date.now():null; saveAll(); renderList(); syncDoneBtn(); }
@@ -554,11 +574,12 @@ function renderList(){
   const list=visibleList(); const nDone=STORE.filter(isDone).length, nOpen=STORE.length-nDone;
   el.innerHTML=`<h2>Gespeichert (${STORE.length})</h2>
     ${STORE.length?`<div class="tabs" role="group" aria-label="Liste filtern">${[["offen",`Offen ${nOpen}`],["fertig",`Fertig ${nDone}`],["alle",`Alle ${STORE.length}`]].map(([v,l])=>`<button type="button" class="tab" data-status="${v}" aria-pressed="${STATUS===v}">${l}</button>`).join("")}</div>`:""}
+    ${STORE.some(e=>e.lead)?`<p class="legend"><span class="ldot ldot-interesse"></span>Interesse <span class="ldot ldot-bestellt"></span>Bestellt</p>`:""}
     ${STORE.length>6?`<input class="saved-search" id="savedSearch" type="search" placeholder="Name suchen" value="${esc(FILTER)}">`:""}
     ${!CAN_STORE?`<p class="hint">Speichern ist in diesem Browser nicht möglich, z. B. im privaten Modus.</p>`:
       STORE.length?`<label class="pickall" for="pickall"><input type="checkbox" id="pickall" ${list.length&&list.every(e=>PICKED.has(e.k))?"checked":""}> Alle auswählen</label>
       ${list.length?"":`<p class="hint">${STATUS==="offen"?"Keine offenen Testerinnen. Alles erledigt!":STATUS==="fertig"?"Noch keine abgeschlossen. Hake eine Testerin mit ✓ ab, wenn alles erledigt ist.":"Keine Treffer."}</p>`}
-      <ul>${list.map(e=>`<li class="${isDone(e)?"is-done":""}"><input type="checkbox" class="pick" data-k="${esc(e.k)}" id="pick-${esc(e.k)}" aria-label="${esc(e.a.n||"Ohne Namen")} für Adressen auswählen" ${PICKED.has(e.k)?"checked":""}><button type="button" class="open ${ACTIVE===e.k?"active":""}" data-k="${esc(e.k)}"><b>${nameLines(e.a.n)}</b><span>${e.a.v===2&&e.a.q1&&BOXNAME[e.a.q1[0]]?esc(BOXNAME[e.a.q1[0]])+" · ":""}${isDone(e)&&e.doneAt?"fertig "+new Date(e.doneAt).toLocaleDateString("de-CH"):new Date(e.t).toLocaleDateString("de-CH")}${e.sel?` · ${e.sel.length+(e.custom||[]).filter(Boolean).length} Produkte`:""}${e.fb?` · Feedback ${e.fb.overall||"–"}/5`:""}${lastLogType(e)==="absage"?" · abgesagt":""}</span></button><button type="button" class="tick ${isDone(e)?"on":""}" data-k="${esc(e.k)}" aria-label="${isDone(e)?"Wieder öffnen":"Als abgeschlossen markieren"}" title="${isDone(e)?"Wieder öffnen":"Abgeschlossen"}">✓</button><button type="button" class="del ${DEL_PENDING===e.k?"confirm":""}" data-k="${esc(e.k)}" aria-label="Auswertung löschen">${DEL_PENDING===e.k?"Wirklich?":"✕"}</button></li>`).join("")}</ul>`
+      <ul>${list.map(e=>`<li class="${isDone(e)?"is-done":""} ${e.lead?"lead-"+e.lead:""}"><input type="checkbox" class="pick" data-k="${esc(e.k)}" id="pick-${esc(e.k)}" aria-label="${esc(e.a.n||"Ohne Namen")} für Adressen auswählen" ${PICKED.has(e.k)?"checked":""}><button type="button" class="open ${ACTIVE===e.k?"active":""}" data-k="${esc(e.k)}"><b>${nameLines(e.a.n)}</b>${e.lead?`<em class="leadtag">${LEAD[e.lead]}</em>`:""}<span>${e.a.v===2&&e.a.q1&&BOXNAME[e.a.q1[0]]?esc(BOXNAME[e.a.q1[0]])+" · ":""}${isDone(e)&&e.doneAt?"fertig "+new Date(e.doneAt).toLocaleDateString("de-CH"):new Date(e.t).toLocaleDateString("de-CH")}${e.sel?` · ${e.sel.length+(e.custom||[]).filter(Boolean).length} Produkte`:""}${e.fb?` · Feedback ${e.fb.overall||"–"}/5`:""}${lastLogType(e)==="absage"?" · abgesagt":""}</span></button><button type="button" class="tick ${isDone(e)?"on":""}" data-k="${esc(e.k)}" aria-label="${isDone(e)?"Wieder öffnen":"Als abgeschlossen markieren"}" title="${isDone(e)?"Wieder öffnen":"Abgeschlossen"}">✓</button><button type="button" class="del ${DEL_PENDING===e.k?"confirm":""}" data-k="${esc(e.k)}" aria-label="Auswertung löschen">${DEL_PENDING===e.k?"Wirklich?":"✕"}</button></li>`).join("")}</ul>`
       :`<p class="hint">Noch nichts gespeichert. Jede Auswertung landet automatisch hier.</p>`}
     ${PICKED.size?`<div class="addrbar"><b>${PICKED.size} ausgewählt</b>
       <button type="button" class="primary" id="addrCopy">Adressen kopieren</button>
@@ -593,6 +614,7 @@ function sheet(a,idx){
     <div class="addr">${a.addr?`<span class="small">Lieferadresse</span><strong>${esc(a.n||"")}</strong><span>${esc(a.addr).replace(/,\s*/,"<br>")}</span>`:`<span class="small">Keine Adresse übermittelt. Bitte per WhatsApp nachfragen.</span>`}</div>
     ${a.wish?`<div class="wish"><span class="small">Ihre Wünsche / ihr Kommentar</span><p>${esc(a.wish)}</p></div>`:""}
     <div class="chips">${focus}${warn}${ENT&&ENT.fb?`<span class="chip">Feedback ${ENT.fb.overall||"–"}/5</span>`:""}</div>
+    ${ENT?`<div class="leadbar noprint" data-k="${esc(ENT.k)}" role="group" aria-label="Kaufstatus"><span class="small">Status:</span><button type="button" class="leadbtn lb-interesse" data-lead="interesse" aria-pressed="${ENT.lead==="interesse"}">Hat Interesse</button><button type="button" class="leadbtn lb-bestellt" data-lead="bestellt" aria-pressed="${ENT.lead==="bestellt"}">Bestellt / möchte bestellen</button></div>`:""}
     ${ENT&&ENT.fb?feedbackHtml(ENT.fb):""}
     ${ENT?`<details class="fbpaste noprint" data-k="${esc(ENT.k)}" ${ENT.fb?"":"open"}><summary>${ENT.fb?"Neues Feedback einfügen (ersetzt das bisherige)":`Feedback von ${esc(firstName(a)||"ihr")} hier einfügen`}</summary>
       <label class="small" for="fbp-${esc(ENT.k)}">Kopiere ihre Feedback-Nachricht aus WhatsApp hier hinein.</label>
@@ -812,6 +834,7 @@ document.getElementById("printall").onclick=()=>doPrint();
 document.getElementById("out").addEventListener("click",e=>{ const db=e.target.closest(".donebtn"); if(db){ const en=STORE.find(x=>x.k===db.dataset.k); if(en) setDone(en.k,!en.done); return; } const b=e.target.closest(".printone"); if(b) doPrint(+b.dataset.idx); const n=e.target.closest(".notioncopy"); if(n) copyNotion(+n.dataset.idx); });
 document.getElementById("out").addEventListener("change",e=>{ if(e.target.classList.contains("fbin")||e.target.classList.contains("c9in")){ fbMessage(+e.target.dataset.idx); persist(+e.target.dataset.idx); } });
 document.getElementById("out").addEventListener("click",ev=>{
+  const lb=ev.target.closest(".leadbtn"); if(lb){ setLead(lb.closest(".leadbar").dataset.k,lb.dataset.lead); return; }
   const pb=ev.target.closest(".fbp-go"); if(pb){ const d=pb.closest(".fbpaste"), en=STORE.find(x=>x.k===d.dataset.k), t=d.querySelector(".fbp-in").value, m=d.querySelector(".fbp-msg");
     if(!en) return; if(!isFeedback(t)){ m.textContent="Das sieht nicht nach einer Feedback-Nachricht aus. Bitte die ganze Nachricht ab «Hallo Sabine» einfügen."; return; }
     attachFeedback(en,parseFeedback(t)); showEntry(en.k); document.getElementById("status").textContent=`Feedback bei ${en.a.n} gespeichert.`; return; }
