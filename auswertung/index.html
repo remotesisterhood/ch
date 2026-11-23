@@ -743,7 +743,7 @@ function offerHtml(e){
     <div class="offopts">
       <label>Vorteil <input class="off-pct" inputmode="numeric" value="${esc(o.pct??20)}" aria-label="Rabatt in Prozent"> %</label>
       <label><input type="checkbox" class="off-porto" ${o.porto?"checked":""}> Testbox-Porto CHF 7.– anrechnen (nur wenn bezahlt)</label>
-      <label><input type="checkbox" class="off-shipfree" ${o.shipFree?"checked":""}> Versand der Bestellung schenken</label>
+      <label><input type="checkbox" class="off-shipfree" ${o.shipFree===false?"":"checked"}> Versand der Bestellung schenken</label>
       <label>Versand CHF <input class="off-ship" inputmode="decimal" value="${esc(o.ship??"")}" placeholder="0" aria-label="Versandkosten in CHF"></label>
     </div>
     <div class="offsum small" role="status"></div>
@@ -778,7 +778,7 @@ ${lines.map(l=>`• ${l.n}: statt ${chf(l.p)} nur ${chf(l.d)}`).join("\n")}${por
 
 Total: ${chf(total)}${saved>0?` (du sparst ${chf(saved)})`:""}
 
-Meine nächste Sammelbestellung geht ${nextCollect()} raus. Sag mir einfach Bescheid, ob ich dich dabei berücksichtigen darf.${shipFree?`\n\nDas Porto für den Versand deiner Bestellung schenke ich dir. 🎁`:""}
+Meine nächste Sammelbestellung geht ${nextCollect()} raus. Soll ich dich dabei berücksichtigen?${shipFree?`\nDas Porto für deine Bestellung schenke ich dir. 🎁`:""}
 
 Ganz liebe Grüsse
 Sabine`;
