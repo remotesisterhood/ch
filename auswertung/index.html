@@ -742,7 +742,8 @@ function offerHtml(e){
     </div>
     <div class="offopts">
       <label>Vorteil <input class="off-pct" inputmode="numeric" value="${esc(o.pct??20)}" aria-label="Rabatt in Prozent"> %</label>
-      <label><input type="checkbox" class="off-porto" ${o.porto===false?"":"checked"}> Testbox-Porto CHF 7.– anrechnen</label>
+      <label><input type="checkbox" class="off-porto" ${o.porto?"checked":""}> Testbox-Porto CHF 7.– anrechnen (nur wenn bezahlt)</label>
+      <label><input type="checkbox" class="off-shipfree" ${o.shipFree?"checked":""}> Versand der Bestellung schenken</label>
       <label>Versand CHF <input class="off-ship" inputmode="decimal" value="${esc(o.ship??"")}" placeholder="0" aria-label="Versandkosten in CHF"></label>
     </div>
     <div class="offsum small" role="status"></div>
@@ -757,13 +758,14 @@ function offerUpdate(box){
   const items=[...box.querySelectorAll(".off-in")].filter(i=>i.checked).map(i=>({n:i.dataset.n,p:num(box.querySelector(`.off-price[data-n="${CSS.escape(i.dataset.n)}"]`).value)}));
   const extra=[...box.querySelectorAll(".off-xn")].map((x,i)=>({n:x.value.trim(),p:box.querySelector(`.off-xp[data-i="${i}"]`).value.trim()}));
   extra.filter(x=>x.n).forEach(x=>items.push({n:x.n,p:num(x.p)}));
-  const porto=box.querySelector(".off-porto").checked, ship=num(box.querySelector(".off-ship").value);
-  e.offer={sel:[...box.querySelectorAll(".off-in")].filter(i=>i.checked).map(i=>i.dataset.n),pct,porto,ship:box.querySelector(".off-ship").value,extra}; saveAll();
+  const porto=box.querySelector(".off-porto").checked, shipFree=box.querySelector(".off-shipfree").checked, ship=shipFree?0:num(box.querySelector(".off-ship").value);
+  box.querySelector(".off-ship").disabled=shipFree;
+  e.offer={sel:[...box.querySelectorAll(".off-in")].filter(i=>i.checked).map(i=>i.dataset.n),pct,porto,shipFree,ship:box.querySelector(".off-ship").value,extra}; saveAll();
   const lines=items.map(it=>({...it,d:r05(it.p*(1-pct/100))}));
   const orig=lines.reduce((s,l)=>s+l.p,0), disc=lines.reduce((s,l)=>s+l.d,0);
   const total=Math.max(0,r05(disc-(porto?7:0)+ship)), saved=r05(orig-disc+(porto?7:0));
   const missing=lines.filter(l=>!l.p).map(l=>l.n);
-  box.querySelector(".offsum").textContent=items.length?(missing.length?`Preis fehlt noch: ${missing.join(", ")}`:`Original ${chf(orig)} · mit ${pct} % ${chf(disc)}${porto?" · minus Porto 7.–":""}${ship?" · plus Versand "+chf(ship):""} = ${chf(total)}`):"Bitte mindestens ein Produkt anhaken.";
+  box.querySelector(".offsum").textContent=items.length?(missing.length?`Preis fehlt noch: ${missing.join(", ")}`:`Original ${chf(orig)} · mit ${pct} % ${chf(disc)}${porto?" · minus Porto 7.–":""}${ship?" · plus Versand "+chf(ship):""}${shipFree?" · Versand geschenkt":""} = ${chf(total)}`):"Bitte mindestens ein Produkt anhaken.";
   const fn=firstName(e.a)||"du"; const favs=lines.map(l=>l.n);
   const favTxt=favs.length===1?`mit ${favs[0]} einen Favoriten`:favs.length===2?`mit ${favs[0]} und ${favs[1]} gleich zwei Favoriten`:`gleich mehrere Favoriten`;
   const msg=`Liebe ${fn} 💛
@@ -772,11 +774,11 @@ Ganz herzlichen Dank, dass du meine Produkte getestet hast! Ich freue mich riesi
 
 Wie versprochen bekommst du als Testerin ${pct} % auf deine Bestellung:
 
-${lines.map(l=>`• ${l.n}: statt ${chf(l.p)} nur ${chf(l.d)}`).join("\n")}${porto?`\n• Testbox-Porto angerechnet: – CHF 7.00`:""}${ship?`\n• Versand: ${chf(ship)}`:""}
+${lines.map(l=>`• ${l.n}: statt ${chf(l.p)} nur ${chf(l.d)}`).join("\n")}${porto?`\n• Testbox-Porto angerechnet: – CHF 7.00`:""}${ship?`\n• Versand: ${chf(ship)}`:""}${shipFree?`\n• Versand: geschenkt`:""}
 
 Total: ${chf(total)}${saved>0?` (du sparst ${chf(saved)})`:""}
 
-Meine nächste Sammelbestellung geht ${nextCollect()} raus. Sag mir einfach Bescheid, ob ich dich dabei berücksichtigen darf.${porto?`\n\nDas Porto von CHF 7.– für deine Testbox schenke ich dir, das ist oben schon abgezogen.`:""}
+Meine nächste Sammelbestellung geht ${nextCollect()} raus. Sag mir einfach Bescheid, ob ich dich dabei berücksichtigen darf.${shipFree?`\n\nDas Porto für den Versand deiner Bestellung schenke ich dir. 🎁`:""}
 
 Ganz liebe Grüsse
 Sabine`;
