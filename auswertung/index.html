@@ -180,6 +180,23 @@ dt{color:var(--muted)} dd{margin:0;min-width:0}
 .lb-interesse[aria-pressed="true"]{background:var(--lead-or);border-color:var(--lead-or);color:var(--surface)}
 .lb-bestellt[aria-pressed="true"]{background:var(--lead-bl);border-color:var(--lead-bl);color:var(--surface)}
 .lb-interesse:hover{border-color:var(--lead-or)}.lb-bestellt:hover{border-color:var(--lead-bl)}
+.offer{border:2px solid var(--lead-bl);background:var(--lead-bl-soft);border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;gap:10px}
+.offer[open]{display:flex}
+.offer summary{cursor:pointer;font-weight:700;color:var(--ink)}
+.offrows{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.offrow{display:flex;align-items:center;gap:10px;justify-content:space-between;background:var(--surface);border-radius:8px;padding:6px 10px;flex-wrap:wrap}
+.offrow label{display:flex;align-items:center;gap:8px;cursor:pointer;flex:1 1 220px;min-width:0}
+.offrow input[type=checkbox]{accent-color:var(--lead-bl);width:18px;height:18px}
+.pricewrap{display:flex;align-items:center;gap:6px}
+.off-price,.off-xp,.off-pct,.off-ship,.off-xn{font:inherit;font-size:.9rem;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.off-price,.off-xp{width:7em;text-align:right}
+.off-pct{width:3.5em;text-align:right}.off-ship{width:5em;text-align:right}
+.off-xn{flex:1 1 220px;min-width:0}
+.offopts{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;font-size:.9rem}
+.offopts label{display:flex;align-items:center;gap:6px}
+.offopts input[type=checkbox]{accent-color:var(--lead-bl)}
+.offmsg{background:var(--surface)}
+.offwa.disabled{opacity:.45;pointer-events:auto;cursor:not-allowed}
 .logbox{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
 .logbox h3{margin:0}
 .logadd{display:grid;grid-template-columns:max-content 1fr;gap:6px 10px;align-items:center}
@@ -592,7 +609,7 @@ function renderList(){
 function showEntry(k){
   const e=STORE.find(x=>x.k===k); if(!e) return;
   ACTIVE=k; DEL_PENDING=null; SHEETS.length=0;
-  document.getElementById("out").innerHTML=sheet(e.a,0); fbMessage(0); syncDoneBtn(); syncNotes();
+  document.getElementById("out").innerHTML=sheet(e.a,0); fbMessage(0); syncDoneBtn(); syncNotes(); document.querySelectorAll(".offer").forEach(offerUpdate);
   document.getElementById("printall").hidden=true;
   document.getElementById("status").textContent=`Gespeicherte Auswertung von ${e.a.n||"ohne Namen"}`;
   renderList(); document.getElementById("out").scrollIntoView({behavior:"smooth",block:"start"});
@@ -616,6 +633,7 @@ function sheet(a,idx){
     <div class="chips">${focus}${warn}${ENT&&ENT.fb?`<span class="chip">Feedback ${ENT.fb.overall||"–"}/5</span>`:""}</div>
     ${ENT?`<div class="leadbar noprint" data-k="${esc(ENT.k)}" role="group" aria-label="Kaufstatus"><span class="small">Status:</span><button type="button" class="leadbtn lb-interesse" data-lead="interesse" aria-pressed="${ENT.lead==="interesse"}">Hat Interesse</button><button type="button" class="leadbtn lb-bestellt" data-lead="bestellt" aria-pressed="${ENT.lead==="bestellt"}">Bestellt / möchte bestellen</button></div>`:""}
     ${ENT&&ENT.fb?feedbackHtml(ENT.fb):""}
+    ${offerHtml(ENT)}
     ${ENT?`<details class="fbpaste noprint" data-k="${esc(ENT.k)}" ${ENT.fb?"":"open"}><summary>${ENT.fb?"Neues Feedback einfügen (ersetzt das bisherige)":`Feedback von ${esc(firstName(a)||"ihr")} hier einfügen`}</summary>
       <label class="small" for="fbp-${esc(ENT.k)}">Kopiere ihre Feedback-Nachricht aus WhatsApp hier hinein.</label>
       <textarea class="fbp-in" id="fbp-${esc(ENT.k)}" rows="4" placeholder="Hallo Sabine, hier ist mein Feedback zur Testbox. …"></textarea>
@@ -696,6 +714,76 @@ function logHtml(ENT){
 }
 function rerenderLog(k){ const e=STORE.find(x=>x.k===k); const el=document.querySelector(`.logbox[data-k="${CSS.escape(k)}"]`); if(e&&el) el.outerHTML=logHtml(e); }
 function lastLogType(e){ return e.log&&e.log.length?e.log[0].type:""; }
+/* ===== Testerinnen-Angebot nach dem Feedback ===== */
+const PRICE_KEY="rs_testbox_preise_v1";
+let PRICES={}; try{ PRICES=JSON.parse(localStorage.getItem(PRICE_KEY)||"{}")||{}; }catch(e){ PRICES={}; }
+function savePrices(){ try{ localStorage.setItem(PRICE_KEY,JSON.stringify(PRICES)); }catch(e){} }
+const pkey=n=>String(n||"").trim().toLowerCase();
+const r05=x=>Math.round(x*20)/20;
+const chf=x=>"CHF "+x.toFixed(2);
+function nextCollect(){ const d=new Date(); let m=d.getMonth(), y=d.getFullYear(); if(d.getDate()>25){ m++; if(m>11){m=0;y++;} }
+  return "am 25. "+new Date(y,m,25).toLocaleDateString("de-CH",{month:"long"}); }
+function offerRows(e){
+  const fb=e.fb||{prods:[]}; const names=fb.prods.map(p=>p.n);
+  if(fb.fav&&!names.some(n=>pkey(n)===pkey(fb.fav))&&!/^keins/i.test(fb.fav)) names.push(fb.fav);
+  const o=e.offer||{};
+  return names.map(n=>{ const p=fb.prods.find(x=>pkey(x.n)===pkey(n));
+    const pre=o.sel?o.sel.includes(n):(p&&/behalten/i.test(p.k))||pkey(n)===pkey(fb.fav);
+    return {n,checked:pre,k:p?p.k:"Lieblingsprodukt"}; });
+}
+function offerHtml(e){
+  if(!e||!e.fb) return "";
+  const o=e.offer||{}; const rows=offerRows(e); const ex=o.extra||[{n:"",p:""},{n:"",p:""}];
+  const wants=/rabatt/i.test(e.fb.perk||"");
+  return `<details class="offer noprint" data-k="${esc(e.k)}" ${wants?"open":""}><summary>Testerinnen-Angebot schicken${wants?' <span class="chip">möchte die Übersicht</span>':""}</summary>
+    <p class="small" style="margin:0">Hake an, was sie bekommen soll, und trag den Originalpreis ein. Preise merkt sich die Seite für das nächste Mal.</p>
+    <div class="offrows">${rows.map((r,i)=>`<div class="offrow"><label for="off-${esc(e.k)}-${i}"><input type="checkbox" class="off-in" id="off-${esc(e.k)}-${i}" data-n="${esc(r.n)}" ${r.checked?"checked":""}> ${esc(r.n)} <span class="small">(${esc(r.k)})</span></label><span class="pricewrap"><span class="small">CHF</span><input class="off-price" inputmode="decimal" aria-label="Originalpreis ${esc(r.n)} in CHF" data-n="${esc(r.n)}" value="${esc(PRICES[pkey(r.n)]??"")}"></span></div>`).join("")}
+      ${ex.map((x,i)=>`<div class="offrow"><input class="off-xn" data-i="${i}" maxlength="60" placeholder="Weiteres Produkt" aria-label="Weiteres Produkt ${i+1}" value="${esc(x.n||"")}"><span class="pricewrap"><span class="small">CHF</span><input class="off-xp" data-i="${i}" inputmode="decimal" aria-label="Preis weiteres Produkt ${i+1}" value="${esc(x.p||"")}"></span></div>`).join("")}
+    </div>
+    <div class="offopts">
+      <label>Vorteil <input class="off-pct" inputmode="numeric" value="${esc(o.pct??20)}" aria-label="Rabatt in Prozent"> %</label>
+      <label><input type="checkbox" class="off-porto" ${o.porto===false?"":"checked"}> Testbox-Porto CHF 7.– anrechnen</label>
+      <label>Versand CHF <input class="off-ship" inputmode="decimal" value="${esc(o.ship??"")}" placeholder="0" aria-label="Versandkosten in CHF"></label>
+    </div>
+    <div class="offsum small" role="status"></div>
+    <pre class="fbmsg offmsg"></pre>
+    <div class="row"><a class="offwa" href="#" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex"><button type="button" class="primary" tabindex="-1">In WhatsApp an ${esc(firstName(e.a)||"sie")} öffnen</button></a><button type="button" class="ghost offcopy">Nachricht kopieren</button><span class="small offok" hidden>Kopiert</span></div>
+  </details>`;
+}
+const num=v=>{ const x=parseFloat(String(v||"").replace(",",".").replace(/[^\d.]/g,"")); return isFinite(x)?x:0; };
+function offerUpdate(box){
+  const e=STORE.find(x=>x.k===box.dataset.k); if(!e) return;
+  const pct=Math.min(100,Math.max(0,num(box.querySelector(".off-pct").value)));
+  const items=[...box.querySelectorAll(".off-in")].filter(i=>i.checked).map(i=>({n:i.dataset.n,p:num(box.querySelector(`.off-price[data-n="${CSS.escape(i.dataset.n)}"]`).value)}));
+  const extra=[...box.querySelectorAll(".off-xn")].map((x,i)=>({n:x.value.trim(),p:box.querySelector(`.off-xp[data-i="${i}"]`).value.trim()}));
+  extra.filter(x=>x.n).forEach(x=>items.push({n:x.n,p:num(x.p)}));
+  const porto=box.querySelector(".off-porto").checked, ship=num(box.querySelector(".off-ship").value);
+  e.offer={sel:[...box.querySelectorAll(".off-in")].filter(i=>i.checked).map(i=>i.dataset.n),pct,porto,ship:box.querySelector(".off-ship").value,extra}; saveAll();
+  const lines=items.map(it=>({...it,d:r05(it.p*(1-pct/100))}));
+  const orig=lines.reduce((s,l)=>s+l.p,0), disc=lines.reduce((s,l)=>s+l.d,0);
+  const total=Math.max(0,r05(disc-(porto?7:0)+ship)), saved=r05(orig-disc+(porto?7:0));
+  const missing=lines.filter(l=>!l.p).map(l=>l.n);
+  box.querySelector(".offsum").textContent=items.length?(missing.length?`Preis fehlt noch: ${missing.join(", ")}`:`Original ${chf(orig)} · mit ${pct} % ${chf(disc)}${porto?" · minus Porto 7.–":""}${ship?" · plus Versand "+chf(ship):""} = ${chf(total)}`):"Bitte mindestens ein Produkt anhaken.";
+  const fn=firstName(e.a)||"du"; const favs=lines.map(l=>l.n);
+  const favTxt=favs.length===1?`mit ${favs[0]} einen Favoriten`:favs.length===2?`mit ${favs[0]} und ${favs[1]} gleich zwei Favoriten`:`gleich mehrere Favoriten`;
+  const msg=`Liebe ${fn} 💛
+
+Ganz herzlichen Dank, dass du meine Produkte getestet hast! Ich freue mich riesig, dass du ${favTxt} für dich gefunden hast.
+
+Wie versprochen bekommst du als Testerin ${pct} % auf deine Bestellung:
+
+${lines.map(l=>`• ${l.n}: statt ${chf(l.p)} nur ${chf(l.d)}`).join("\n")}${porto?`\n• Testbox-Porto angerechnet: – CHF 7.00`:""}${ship?`\n• Versand: ${chf(ship)}`:""}
+
+Total: ${chf(total)}${saved>0?` (du sparst ${chf(saved)})`:""}
+
+Meine nächste Sammelbestellung geht ${nextCollect()} raus. Sag mir einfach Bescheid, ob ich dich dabei berücksichtigen darf.
+
+Ganz liebe Grüsse
+Sabine`;
+  box.querySelector(".offmsg").textContent=msg;
+  const ok=items.length&&!missing.length; const wa=box.querySelector(".offwa");
+  const wn=waNumber(e.a.c); wa.href=ok&&wn?`https://wa.me/${wn}?text=${encodeURIComponent(msg)}`:"#"; wa.classList.toggle("disabled",!ok); wa.setAttribute("aria-disabled",String(!ok));
+}
 function fbStars(n){ return n?"★".repeat(n)+"☆".repeat(5-n):"–"; }
 function feedbackHtml(fb){
   if(!fb) return "";
@@ -749,7 +837,7 @@ function run(text){
   [...new Set(text.match(/TB1\.[A-Za-z0-9_-]+/g)||[])].forEach(c=>{try{ok.push(decode(c))}catch(e){bad++}});
   if(!ok.length && !bad){st.textContent="Keine Quiz-Antworten oder Feedbacks gefunden. Bitte die ganze WhatsApp-Nachricht ab «Name:» einfügen.";return;}
   ok.forEach(upsert); ACTIVE=ok.length===1?keyOf(ok[0]):null; SHEETS.length=0; out.innerHTML=ok.map((a,i)=>sheet(a,i)).join("")||`<div class="empty">Die Nachricht liess sich nicht lesen. Bitte die ganze Nachricht erneut einfügen.</div>`;
-  ok.forEach((_,i)=>fbMessage(i)); renderList(); syncDoneBtn(); syncNotes(); if(ok.length) document.getElementById("input").value=""; document.getElementById("printall").hidden=ok.length<2;
+  ok.forEach((_,i)=>fbMessage(i)); renderList(); syncDoneBtn(); syncNotes(); document.querySelectorAll(".offer").forEach(offerUpdate); if(ok.length) document.getElementById("input").value=""; document.getElementById("printall").hidden=ok.length<2;
   st.textContent=`${ok.length} Testerin${ok.length===1?"":"nen"} ausgewertet`+(bad?`, ${bad} Nachricht(en) unvollständig`:"");
 }
 document.getElementById("go").onclick=()=>run(document.getElementById("input").value);
@@ -833,7 +921,14 @@ window.addEventListener("afterprint",()=>document.body.classList.remove("print-o
 document.getElementById("printall").onclick=()=>doPrint();
 document.getElementById("out").addEventListener("click",e=>{ const db=e.target.closest(".donebtn"); if(db){ const en=STORE.find(x=>x.k===db.dataset.k); if(en) setDone(en.k,!en.done); return; } const b=e.target.closest(".printone"); if(b) doPrint(+b.dataset.idx); const n=e.target.closest(".notioncopy"); if(n) copyNotion(+n.dataset.idx); });
 document.getElementById("out").addEventListener("change",e=>{ if(e.target.classList.contains("fbin")||e.target.classList.contains("c9in")){ fbMessage(+e.target.dataset.idx); persist(+e.target.dataset.idx); } });
+document.getElementById("out").addEventListener("input",ev=>{ const b=ev.target.closest(".offer"); if(!b) return;
+  if(ev.target.classList.contains("off-price")){ PRICES[pkey(ev.target.dataset.n)]=ev.target.value.trim(); savePrices(); }
+  offerUpdate(b); });
+document.getElementById("out").addEventListener("change",ev=>{ const b=ev.target.closest(".offer"); if(b) offerUpdate(b); });
 document.getElementById("out").addEventListener("click",ev=>{
+  const ow=ev.target.closest(".offwa"); if(ow&&ow.classList.contains("disabled")){ ev.preventDefault(); return; }
+  const oc=ev.target.closest(".offcopy"); if(oc){ const b=oc.closest(".offer"), t=b.querySelector(".offmsg").textContent, k=b.querySelector(".offok");
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>{k.textContent="Kopiert";k.hidden=false;}).catch(()=>{const rg=document.createRange();rg.selectNodeContents(b.querySelector(".offmsg"));const sl=getSelection();sl.removeAllRanges();sl.addRange(rg);k.textContent="Markiert, mit Strg+C oder Cmd+C kopieren";k.hidden=false;}); return; }
   const lb=ev.target.closest(".leadbtn"); if(lb){ setLead(lb.closest(".leadbar").dataset.k,lb.dataset.lead); return; }
   const pb=ev.target.closest(".fbp-go"); if(pb){ const d=pb.closest(".fbpaste"), en=STORE.find(x=>x.k===d.dataset.k), t=d.querySelector(".fbp-in").value, m=d.querySelector(".fbp-msg");
     if(!en) return; if(!isFeedback(t)){ m.textContent="Das sieht nicht nach einer Feedback-Nachricht aus. Bitte die ganze Nachricht ab «Hallo Sabine» einfügen."; return; }
