@@ -742,8 +742,8 @@ function offerHtml(e){
     </div>
     <div class="offopts">
       <label>Vorteil <input class="off-pct" inputmode="numeric" value="${esc(o.pct??20)}" aria-label="Rabatt in Prozent"> %</label>
-      <label><input type="checkbox" class="off-porto" ${o.porto?"checked":""}> Testbox-Porto CHF 7.– anrechnen (nur wenn bezahlt)</label>
-      <label><input type="checkbox" class="off-shipfree" ${o.shipFree===false?"":"checked"}> Versand der Bestellung schenken</label>
+      <label><input type="checkbox" class="off-porto" ${o.v===2&&o.porto?"checked":""}> Testbox-Porto CHF 7.– anrechnen (nur wenn bezahlt)</label>
+      <label><input type="checkbox" class="off-shipfree" ${o.v===2&&o.shipFree===false?"":"checked"}> Versand der Bestellung schenken</label>
       <label>Versand CHF <input class="off-ship" inputmode="decimal" value="${esc(o.ship??"")}" placeholder="0" aria-label="Versandkosten in CHF"></label>
     </div>
     <div class="offsum small" role="status"></div>
@@ -760,7 +760,7 @@ function offerUpdate(box){
   extra.filter(x=>x.n).forEach(x=>items.push({n:x.n,p:num(x.p)}));
   const porto=box.querySelector(".off-porto").checked, shipFree=box.querySelector(".off-shipfree").checked, ship=shipFree?0:num(box.querySelector(".off-ship").value);
   box.querySelector(".off-ship").disabled=shipFree;
-  e.offer={sel:[...box.querySelectorAll(".off-in")].filter(i=>i.checked).map(i=>i.dataset.n),pct,porto,shipFree,ship:box.querySelector(".off-ship").value,extra}; saveAll();
+  e.offer={v:2,sel:[...box.querySelectorAll(".off-in")].filter(i=>i.checked).map(i=>i.dataset.n),pct,porto,shipFree,ship:box.querySelector(".off-ship").value,extra}; saveAll();
   const lines=items.map(it=>({...it,d:r05(it.p*(1-pct/100))}));
   const orig=lines.reduce((s,l)=>s+l.p,0), disc=lines.reduce((s,l)=>s+l.d,0);
   const total=Math.max(0,r05(disc-(porto?7:0)+ship)), saved=r05(orig-disc+(porto?7:0));
