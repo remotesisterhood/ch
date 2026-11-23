@@ -776,7 +776,7 @@ ${lines.map(l=>`• ${l.n}: statt ${chf(l.p)} nur ${chf(l.d)}`).join("\n")}${por
 
 Total: ${chf(total)}${saved>0?` (du sparst ${chf(saved)})`:""}
 
-Meine nächste Sammelbestellung geht ${nextCollect()} raus. Sag mir einfach Bescheid, ob ich dich dabei berücksichtigen darf.
+Meine nächste Sammelbestellung geht ${nextCollect()} raus. Sag mir einfach Bescheid, ob ich dich dabei berücksichtigen darf.${porto?`\n\nDas Porto von CHF 7.– für deine Testbox schenke ich dir, das ist oben schon abgezogen.`:""}
 
 Ganz liebe Grüsse
 Sabine`;
